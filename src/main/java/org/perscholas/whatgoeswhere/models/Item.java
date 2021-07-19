@@ -22,7 +22,7 @@ public class Item {
 	private int id; // Unique Item identifier
 	@Column(name="name", length=50, nullable=false)
 	private String name; // Item name
-	@Column(name="state", length=50)
+	@Column(name="state", length=50) // "condition" is a reserved keyword in MariaDB
 	private String condition; // Item's condition
 	@Column(name="best_option", length=50, nullable=false)
 	private String bestOption;
@@ -30,7 +30,7 @@ public class Item {
 	private String specialInstruction; // Any special instruction to use the best option
 	@Column(name="notes", length=200)
 	private String notes; // Additional comments or notes
-	@Column(name="added_date")
+	@Column(name="added_date", nullable=false)
 	private LocalDateTime addedDate; // The date the entry is added	
 	
 	public Item() {
