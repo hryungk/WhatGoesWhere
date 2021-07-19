@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 class ModelsTest {
 	
 	@Test
-	void testItem() {
+	void testAddItem() {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();
@@ -37,7 +37,7 @@ class ModelsTest {
 	}	
 	
 	@Test
-	void testUser() {
+	void testAddUser() {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();
@@ -55,7 +55,7 @@ class ModelsTest {
 	}
 	
 	@Test
-	void testUserWithItems() {
+	void testAddUserWithItems() {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();

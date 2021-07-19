@@ -22,10 +22,10 @@ public class User {
 	private String id; // User ID
 	@Column(name="password", length=50, nullable=false)
 	private String password; // User password
+	@Column(name="email", length=50, nullable=false) 
+	private String email; // User's email
 	@Column(name="name", length=50)
-	private String name; // User's full name
-	@Column(name="email", length=50) 
-	private String email;
+	private String name; // User's full name	
 	@OneToMany(targetEntity = Item.class)
 	@JoinTable(
 			name = "User_Item",
