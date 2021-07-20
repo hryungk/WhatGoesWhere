@@ -19,7 +19,8 @@ import javax.persistence.Table;
 @Entity // This should be commented out when first creating tables in the database.
 @Table(name="User_Item")
 @IdClass(UserItemID.class)
-@NamedQuery(name="ItemsByUser", query="SELECT ui FROM UserItem ui WHERE ui.userId = :id")
+@NamedQuery(name="findItemsByUser", query="SELECT ui FROM UserItem ui WHERE ui.userId = :id")
+@NamedQuery(name="findByItemId", query="SELECT ui FROM UserItem ui WHERE ui.itemId = :id")
 public class UserItem {
 	@Id
 	@Column(name="user_id")

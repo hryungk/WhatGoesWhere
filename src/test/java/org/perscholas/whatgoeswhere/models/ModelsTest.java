@@ -61,7 +61,7 @@ class ModelsTest {
 		manager.getTransaction().begin();
 		
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item("Apple", "", "Composting","", "", now);
+		Item item1 = new Item("Banana", "", "Composting","", "", now);
 		manager.persist(item1);
 		
 		Item item2 = new Item("Aerosole cans", "Empty", "Recycling","Must be empty.", "", now);
