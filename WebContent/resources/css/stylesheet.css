@@ -95,6 +95,7 @@ fieldset div {
     margin-top: 2px;
     margin-bottom: 2px;
 }
+
 .reg-btn, .find-btn {
 	background: orange;
 	color: white;
@@ -114,13 +115,15 @@ fieldset div {
 	color: white;
 	cursor: pointer;
 }
-#a-btn {
+
+.a-btn {
 	text-decoration: none;
+	padding: 3px 6px;
 }
+
 .add-btn {
 	position: absolute;
 	left: 0;
-	top: 0;
 	margin: 0;
 }
 table {
@@ -178,10 +181,9 @@ footer {
 	background: #202020;
 	color: beige;
 	padding: 1em;
-}
-footer > div {
 	display: flex;
 }
+
 .footer-nav {
 	flex: 1;
 }
@@ -214,4 +216,15 @@ hr {
 	color: white;
 	background-color: white;
 	width: 90%;
+}
+
+#table-profile {
+	background-color: beige;
+}
+#table-profile th {
+	text-align: right;
+	padding: 1em;
+}
+#table-profile td {
+	text-align: left;
 }

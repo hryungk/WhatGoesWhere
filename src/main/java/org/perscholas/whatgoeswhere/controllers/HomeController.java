@@ -34,6 +34,10 @@ public class HomeController {
 	public String showAddItemPage() {
 		return "additem";
 	}
+	@GetMapping("/edititem")
+	public String showEditItemPage() {
+		return "edititem";
+	}
 	@GetMapping("/about")
 	public String showAboutPage() {
 		return "about";
