@@ -30,17 +30,14 @@ ul {
     margin: 0;
     padding: 0;
 }
+a {
+	text-decoration: none;
+	color: beige;
+}
 header a {
-    text-decoration: none;
-    color: beige;
-}
-header a:visited {
-    color: beige;
-}
-header  a {
     padding: 20px;
 }
-header a:hover {
+header a:hover, .footer-nav a:hover {
     color: orange;
 }
 .menu_container {
@@ -100,6 +97,7 @@ fieldset {
 
 .reg-btn:hover, .find-btn:hover {
 	background: #be3600;
+	color: white;
 	cursor: pointer;
 }
 
@@ -153,6 +151,9 @@ fieldset {
     padding-bottom: 300px;
 }
 
+/* About page */
+
+
 /* Foooter */
 footer {
 	background: #202020;
@@ -172,12 +173,7 @@ footer > div {
 	font-weight: bold;
 }
 
-.footer-nav a {
-	text-decoration: none;
-	color: beige;
-}
-.footer-nav a:hover {
-	text-decoration: none;
+.footer-nav a:hover {	
 	color: orange;
 }
 
