@@ -26,6 +26,26 @@ public class HomeController {
 	public String showIndexPage() {
 		return "index"; // return this to WebAppconfig
 	}
+	@GetMapping("/list")
+	public String showListPage() {
+		return "list";
+	}
+	@GetMapping("/about")
+	public String showAboutPage() {
+		return "about";
+	}
+	@GetMapping("/login")
+	public String showLogInPage() {
+		return "login";
+	}
+	@GetMapping("/register")
+	public String showRegisterPage() {
+		return "register";
+	}
+	@GetMapping("/contact")
+	public String showContactPage() {
+		return "contact";
+	}
 	
 	/*
 	 * Connecting the JSP and model.
