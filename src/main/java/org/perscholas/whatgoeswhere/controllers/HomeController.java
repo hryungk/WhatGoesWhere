@@ -1,5 +1,6 @@
 package org.perscholas.whatgoeswhere.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.perscholas.whatgoeswhere.models.Employee;
@@ -30,16 +31,37 @@ public class HomeController {
 		return "index"; // return this to WebAppconfig
 	}
 	@GetMapping("/list")
-	public String showListPage() {
+	public String showListPage(Model model) {
+		List<Item> items = itemService.getAllItems();
+		model.addAttribute("items", items);
 		return "list";
 	}
 	@GetMapping("/additem")
 	public String showAddItemPage() {
 		return "additem";
 	}
+	@PostMapping("/addNewItem")
+	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model) {
+		LocalDateTime now = LocalDateTime.now();
+		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
+		itemService.addItem(item);
+		return showListPage(model);
+	}
 	@GetMapping("/edititem")
-	public String showEditItemPage() {
+	public String showEditItemPage(Model model) {
+		
 		return "edititem";
+	}
+	@PostMapping("/updateItem")
+	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model) {
+		Item item = itemService.findItemByNameAndState(name, state);
+		item.setName(name);
+		item.setCondition(state);
+		item.setBestOption(bestOption);
+		item.setSpecialInstruction(specialInstruction);
+		item.setNotes(notes);
+		itemService.updateItem(item);		
+		return showProfilePage(model);
 	}
 	@GetMapping("/about")
 	public String showAboutPage() {
@@ -54,7 +76,8 @@ public class HomeController {
 		return "register";
 	}
 	@GetMapping("/profile")
-	public String showProfilePage() {
+	public String showProfilePage(Model model) {
+		
 		return "profile";
 	}
 	@GetMapping("/contact")

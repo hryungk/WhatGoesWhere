@@ -53,7 +53,7 @@
 	        		<tr>
 	        			<td><button class="find-btn a-btn">Delete</button></td>
 	        			<td>
-	        				<form action="edititem" method="get">
+	        				<form action="./edititem" method="get">
 								<input type="hidden" name="id" value="">
 								<button class="find-btn a-btn">Edit</button>
 							</form> 

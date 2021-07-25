@@ -4,7 +4,7 @@
     <section> 
         <h1>Edit an Existing Item</h1>
         <div>
-           <form action="#">
+           <form action="./updateItem" method="POST">
                 <fieldset>
                     <legend>Please modify the data below:</legend>
                     <div class="r-input">

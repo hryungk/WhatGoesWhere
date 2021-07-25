@@ -1,6 +1,7 @@
- <!-- Footer -->
-	<jsp:include page="header.jsp" />
-    
+ <!-- Header -->
+<jsp:include page="header.jsp" />
+<!-- JSTL includes -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     <section> 
         <h1>Item List</h1>
         <div style="height: 4em; position: relative; margin: 1em 0">
@@ -19,22 +20,16 @@
 	        		</tr>
 	        	</thead>
 	        	<tbody>
-	        		<tr>
-	        			<td>Aerosole Can</td>
-	        			<td>Empty</td>
-	        			<td>Recycle</td>
-	        			<td>Must be empty</td>
-	        			<td>If not empty, it is considered hazardous material. Please either empty it or bring it to local drop-off location.</td>
-	        			<td>07/21/2021</td>
-	        		</tr>
-	        		<tr>
-	        			<td>Banana</td>
-	        			<td></td>
-	        			<td>Food & Yard Waste</td>
-	        			<td></td>
-	        			<td></td>
-	        			<td>06/14/2021</td>
-	        		</tr>
+	        		<c:forEach var="item" items="${items}" varStatus="status">
+			       		<tr>
+			       			<td><c:out value="${item.name }" /></td>
+			       			<td><c:out value="${item.condition }" /></td>
+			       			<td><c:out value="${item.bestOption }" /></td>
+			       			<td><c:out value="${item.specialInstruction }" /></td>
+			       			<td><c:out value="${item.notes }" /></td>
+			       			<td><c:out value="${item.addedDate }" /></td>
+			       		</tr>
+			   		</c:forEach>
 	        	</tbody>        	
 	        </table>   
         </div>     

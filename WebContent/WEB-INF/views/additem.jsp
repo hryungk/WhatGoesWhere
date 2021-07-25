@@ -4,11 +4,11 @@
     <section> 
         <h1>Add a New Item</h1>
         <div>
-           <form action="#">
+           <form action="./addNewItem" method="POST">
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <div class="r-input">
-						<input type="text" name="name" placeholder="Item Name (required)" required="required" />
+						<input type="text" name="itemName" placeholder="Item Name (required)" required="required" />
 					</div>
 					<div class="r-input">				
 						<input type="text" name="condition" placeholder="Item Condition" />
@@ -23,8 +23,9 @@
 						<input type="text" name="notes" placeholder="Notes" />
 					</div>
                 </fieldset>
-                <input class="reg-btn" type="submit" value="Add">
+                <input type="submit" value="Add" class="reg-btn" />
             </form>
+            
         </div>
     </section>
     
