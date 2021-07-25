@@ -13,6 +13,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ItemRepository {
 	
+	public ItemRepository() {
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public List<Item> getAllItems() {
 		List<Item> items = findItems("Item.findAll");
 		return items;

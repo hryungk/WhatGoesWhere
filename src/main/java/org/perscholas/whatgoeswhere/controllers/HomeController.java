@@ -1,11 +1,12 @@
 package org.perscholas.whatgoeswhere.controllers;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import org.perscholas.whatgoeswhere.models.Employee;
+import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.services.EmployeeService;
+import org.perscholas.whatgoeswhere.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 
 	private EmployeeService employeeService;
+	private ItemService itemService;
 	
 	@Autowired
-	public HomeController(EmployeeService employeeService) {
+	public HomeController(ItemService itemService, EmployeeService employeeService) {
 		this.employeeService = employeeService; 
+		this.itemService = itemService;
 	}
 	
 	@GetMapping("/") // This is what you type for URL
@@ -64,22 +67,21 @@ public class HomeController {
 	 */
 	@PostMapping("/search") // Match the form's action name
 	public String searchEmployeeByNumber(@RequestParam("employeeNumber") Integer employeeNumber, 
-			@RequestParam("dateInput") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, 
 			Model model) {
-		System.out.println(date);
 		Employee employee = employeeService.findEmployeeById(employeeNumber);
 		System.out.println(employee);
 		model.addAttribute("employee", employee);
 		return "index";
 	}
-//	@PostMapping("/find") // Match the form's action name
-//	public String searchItemName(@RequestParam("itemName") String itemName,			
-//			Model model) {		
-//		Item employee = employeeService.findEmployeeById(itemName);
-//		System.out.println(employee);
-//		model.addAttribute("employee", employee);
-//		return "index";
-//	}
+	@PostMapping("/find") // Match the form's action name
+	public String searchItemName(@RequestParam("itemName") String itemName,			
+			Model model) {	
+		System.out.println(itemName);
+		List<Item> items = itemService.findItemByName(itemName);
+		System.out.println(items);
+		model.addAttribute("items", items);
+		return "index";
+	}
 	
 	@GetMapping("/home")
 	public String showHomePage() {

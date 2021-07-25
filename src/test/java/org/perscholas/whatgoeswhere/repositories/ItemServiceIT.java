@@ -84,12 +84,12 @@ class ItemServiceIT {
 		assertNotNull(mockMvc);
 	}
 	
-//	@Test
-//	void testGetAllItems() {
-//		List<Item> actual = itemService.getAllItems();
-//		actual.forEach(System.out::println);
-//		assertNotNull(actual);
-//	}
+	@Test
+	void testGetAllItems() {
+		List<Item> actual = itemService.getAllItems();
+		actual.forEach(System.out::println);
+		assertNotNull(actual);
+	}
 //	
 //	@Test
 //	void testFindItemByNameAndState() {		
