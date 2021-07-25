@@ -11,6 +11,13 @@ header {
     font-family: 'Lato', sans-serif;
     font-weight: bold;    
 }
+section {	
+    background-color: beige;
+    text-align: center;
+    padding: 20px;
+    padding-bottom: 300px;
+}
+
 .width-60 {
     width: 60%;
     position: relative;
@@ -30,7 +37,7 @@ ul {
     margin: 0;
     padding: 0;
 }
-a {
+header a, footer a {
 	text-decoration: none;
 	color: beige;
 }
@@ -62,6 +69,12 @@ header a:hover, .footer-nav a:hover {
 /* register.html */
 fieldset {
     border: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+fieldset div {
+	margin: 0 auto;
 }
 .r-input {
 	padding: 15px;
@@ -74,7 +87,7 @@ fieldset {
 	font-size: 14px;
 	border-radius: 5px;
 	border-width: 0;
-	background: #f3f3f3;	
+	/* background: #f3f3f3; */
 }
 .r-input select {
     height: 57px;
@@ -90,7 +103,7 @@ fieldset {
 }
 .reg-btn {
 	font-size: 18px;
-	margin-bottom: 40px;
+	margin: 40px auto;
 	padding: 15px 24px;
 	
 }
@@ -99,6 +112,9 @@ fieldset {
 	background: #be3600;
 	color: white;
 	cursor: pointer;
+}
+#a-btn {
+	text-decoration: none;
 }
 
 
@@ -142,13 +158,6 @@ fieldset {
 }
 #how div h2 {
     text-align: center;
-}
-
-#find-item {
-    background-color: beige;
-    text-align: center;
-    padding: 20px;
-    padding-bottom: 300px;
 }
 
 /* About page */

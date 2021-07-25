@@ -31,7 +31,7 @@
                         <a href="about">About</a>
                     </li>
                     <li>
-                        <a href="register">Sign In/Register</a>
+                        <a href="login">Sign In/Register</a>
                     </li>
                 </ul>
             </nav>
