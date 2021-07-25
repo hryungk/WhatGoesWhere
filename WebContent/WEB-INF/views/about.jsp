@@ -3,10 +3,10 @@
     
     <section> 
         <h1>About Us</h1>
-        <div>
-            <p>Pleas join us growing knowledge of proper disposal of anything!</p>
+        <div style="margin: 1em;">
+            <p>Please join us growing knowledge of proper disposal of anything!</p>
         </div>
-        <a href="register" class="reg-btn" id="a-btn">Register Today!</a>
+       	<a href="register" class="reg-btn" id="a-btn">Register Today!</a>
     </section>
     
      <!-- Footer -->

@@ -7,6 +7,7 @@
            <form action="#">
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
+                    <h6>(all fields are required)</h6>
                     <div class="r-input">
 						<input type="email" name="eMail" placeholder="Email" required="required" />
 					</div>

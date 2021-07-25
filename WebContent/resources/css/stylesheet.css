@@ -103,9 +103,10 @@ fieldset div {
 }
 .reg-btn {
 	font-size: 18px;
-	margin: 40px auto;
-	padding: 15px 24px;
-	
+	margin: 2em auto;
+	padding: 1em 2em;
+	position: relative;
+	top: 1em;
 }
 
 .reg-btn:hover, .find-btn:hover {
@@ -115,6 +116,15 @@ fieldset div {
 }
 #a-btn {
 	text-decoration: none;
+}
+.add-btn {
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0;
+}
+table {
+	background-color: white;
 }
 
 

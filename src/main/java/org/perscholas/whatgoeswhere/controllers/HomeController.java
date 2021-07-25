@@ -30,6 +30,10 @@ public class HomeController {
 	public String showListPage() {
 		return "list";
 	}
+	@GetMapping("/additem")
+	public String showAddItemPage() {
+		return "additem";
+	}
 	@GetMapping("/about")
 	public String showAboutPage() {
 		return "about";
@@ -41,6 +45,10 @@ public class HomeController {
 	@GetMapping("/register")
 	public String showRegisterPage() {
 		return "register";
+	}
+	@GetMapping("/profile")
+	public String showProfilePage() {
+		return "profile";
 	}
 	@GetMapping("/contact")
 	public String showContactPage() {
