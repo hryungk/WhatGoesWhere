@@ -72,6 +72,14 @@ public class HomeController {
 		model.addAttribute("employee", employee);
 		return "index";
 	}
+//	@PostMapping("/find") // Match the form's action name
+//	public String searchItemName(@RequestParam("itemName") String itemName,			
+//			Model model) {		
+//		Item employee = employeeService.findEmployeeById(itemName);
+//		System.out.println(employee);
+//		model.addAttribute("employee", employee);
+//		return "index";
+//	}
 	
 	@GetMapping("/home")
 	public String showHomePage() {
