@@ -3,8 +3,10 @@ package org.perscholas.whatgoeswhere.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -26,7 +28,7 @@ public class User {
 	private String email; // User's email
 	@Column(name="name", length=50)
 	private String name; // User's full name	
-	@OneToMany(targetEntity = Item.class)
+	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL)
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 

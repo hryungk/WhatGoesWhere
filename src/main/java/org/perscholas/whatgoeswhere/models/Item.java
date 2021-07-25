@@ -13,7 +13,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Items")
 @NamedQuery(name="Item.findAll", query="SELECT i FROM Item i")
-@NamedQuery(name="Item.findByName", query="SELECT i FROM Item i WHERE i.name = :givenName")
+@NamedQuery(name="Item.findByName", query="SELECT i FROM Item i WHERE i.name = ?1")
+@NamedQuery(name="Item.findByNameAndState", query="SELECT i FROM Item i WHERE i.name = ?1 AND i.condition = ?2")
 public class Item {
 
 	@Id
@@ -51,9 +52,9 @@ public class Item {
 		return id;
 	}
 
-	public void setId(int itemId) {
-		this.id = itemId;
-	}
+//	public void setId(int itemId) {
+//		this.id = itemId;
+//	}
 
 	public String getName() {
 		return name;
@@ -99,17 +100,34 @@ public class Item {
 		return addedDate;
 	}
 
-	public void setAddedDate(LocalDateTime addedDate) {
-		this.addedDate = addedDate;
-	}
+//	public void setAddedDate(LocalDateTime addedDate) {
+//		this.addedDate = addedDate;
+//	}
+	
+//	public User getUser() {
+//		return user;
+//	}
+//	
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((condition == null) ? 0 : condition.hashCode());
+		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
+	
+	@Override
+	public String toString() {
+		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", bestOption=" + bestOption
+				+ ", specialInstruction=" + specialInstruction + ", notes=" + notes + ", addedDate=" + addedDate + "]";
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -122,12 +140,14 @@ public class Item {
 		if (condition == null) {
 			if (other.condition != null)
 				return false;
-		} else if (!condition.equals(other.condition))
+		} else if (!condition.equalsIgnoreCase(other.condition))
 			return false;
+//		if (id != other.id)
+//			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;
 	}
