@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -74,7 +75,7 @@ public class UserRepository {
 			entityManager.persist(user);			
 			
 			entityManager.getTransaction().commit();
-			entityManager.refresh(user);
+//			entityManager.refresh(user);
 			
 			entityManager.close();
 			emfactory.close();
@@ -114,7 +115,6 @@ public class UserRepository {
 		entityManager.getTransaction().begin();
 		
 		User userToUpdate = entityManager.find(User.class, user.getId());
-		userToUpdate.setId(user.getId());
 		userToUpdate.setPassword(user.getPassword());
 		userToUpdate.setEmail(user.getEmail());
 		userToUpdate.setFirstName(user.getFirstName());
@@ -124,5 +124,10 @@ public class UserRepository {
 		entityManager.close();
 		emfactory.close();
 		return true;
+	}
+	
+	public List<Item> getItems(String userId) {
+		User user = findUserById(userId);
+		return user.getItems();
 	}
 }

@@ -3,7 +3,6 @@ package org.perscholas.whatgoeswhere.services;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.perscholas.whatgoeswhere.config.WebAppConfig;
 import org.perscholas.whatgoeswhere.controllers.HomeController;
 import org.perscholas.whatgoeswhere.models.Item;
-import org.perscholas.whatgoeswhere.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -46,17 +44,7 @@ class ItemServiceIT {
 			HomeController homeController, ItemService iService) {
 		this.webApplicationContext = webApplicationContext;
 		this.homeController = homeController;
-		itemService = iService;
-		
-//		// Add items to the database to use for testing if they don't already exist.
-//		LocalDateTime now = LocalDateTime.now();
-//		String itemName = "Aerosole cans";
-//		item1 = new Item(itemName, "Empty", "Recycling", "Must be empty.", "", now);
-//		item2 = new Item(itemName, "full or partially full", "Drop-off - Hazardous Waste", "", "This item is considered hazardous waste and must be disposed of safely.", now);
-//		if (itemService.findItemByNameAndState(item1.getName(), item1.getCondition()) == null)
-//			itemService.addItem(item1);
-//		if (itemService.findItemByNameAndState(item2.getName(), item2.getCondition()) == null)
-//			itemService.addItem(item2);
+		itemService = iService;		
 	}
 	
 	@BeforeEach
@@ -73,15 +61,7 @@ class ItemServiceIT {
 			item1 = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
 		
 		if(!itemService.addItem(item2))
-			item2 = itemService.findItemByNameAndState(item2.getName(), item2.getCondition());
-		
-		// For testing addition, remove the item if it already exists
-//		Item toRemove = new Item("Banana", "", "Food & Yard Waste",
-//				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
-		Item toRemove = itemService.findItemByNameAndState("Banana", "");
-		if (toRemove != null) { // exists in the db
-			itemService.deleteItem(toRemove);
-		}
+			item2 = itemService.findItemByNameAndState(item2.getName(), item2.getCondition());		
 	}
 	
 	@Test
@@ -110,9 +90,6 @@ class ItemServiceIT {
 		Item[] expected = {item1, item2};		
 		
 		List<Item> actualList = itemService.findItemByName(item1.getName());
-//		Item[] actual = new Item[actualList.size()];
-//		actual = actualList.toArray(actual);
-//		assertArrayEquals(expected,actual);
 		
 		boolean result = true;
 		int ii = 0;
@@ -126,9 +103,15 @@ class ItemServiceIT {
 	
 	@Test
 	void testAddItem() {
+		// For testing addition, remove the item if it already exists
+		Item toRemove = itemService.findItemByNameAndState("Chip bags", "");
+		if (toRemove != null) { // exists in the db
+			itemService.deleteItem(toRemove);
+		}
+		
 		LocalDateTime now = LocalDateTime.now();
-		Item expected = new Item("Banana", "", "Food & Yard Waste",
-				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
+		Item expected = new Item("Chip bags", "", "Trash",
+				"", "", now);
 		assertTrue(itemService.addItem(expected));		
 	}
 
@@ -141,10 +124,10 @@ class ItemServiceIT {
 		assertTrue(itemService.updateItem(expected));
 	}
 
-//	@Test
-//	void testDeleteItem() {				
-//		System.out.println("\n\nStarting testDeleteItem()\n\n");
-//		Item expected = itemService.findItemById(item1.getId());
-//		assertTrue(itemService.deleteItem(expected));
-//	}
+	@Test
+	void testDeleteItem() {				
+		System.out.println("\n\nStarting testDeleteItem()\n\n");
+		Item expected = itemService.findItemById(item1.getId());
+		assertTrue(itemService.deleteItem(expected));
+	}
 }

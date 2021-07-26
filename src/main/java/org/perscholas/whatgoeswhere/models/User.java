@@ -25,7 +25,7 @@ public class User {
 	private String username; // User name (unique ID)
 	@Column(name="password", length=50, nullable=false)
 	private String password; // User password
-	@Column(name="email", length=50, nullable=false) 
+	@Column(name="email", length=50, nullable=false, unique=true) 
 	private String email; // User's email
 	@Column(name="fname", length=50)
 	private String firstName; // User's first name	
@@ -62,9 +62,9 @@ public class User {
 	public String getId() {
 		return username;
 	}
-	public void setId(String username) {
-		this.username = username;
-	}	
+//	public void setId(String username) { // Can't change the ID.
+//		this.username = username;
+//	}	
 	public String getPassword() {
 		return password;
 	}

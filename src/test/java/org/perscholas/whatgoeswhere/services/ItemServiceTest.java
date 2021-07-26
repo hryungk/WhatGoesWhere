@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.repositories.ItemRepository;
-import org.perscholas.whatgoeswhere.services.ItemService;
 
 class ItemServiceTest {
 	private static ItemService itemService;
