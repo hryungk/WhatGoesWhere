@@ -30,7 +30,7 @@ public static void main(String[] args) {
 		itemList.add(item1);
 		itemList.add(item2);
 		
-		User user1 = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen Kim", itemList);
+		User user1 = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen","Kim", itemList);
 		manager.persist(user1);
 
 		manager.getTransaction().commit();

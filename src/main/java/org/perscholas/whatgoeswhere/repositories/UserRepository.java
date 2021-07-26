@@ -7,15 +7,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
-import org.perscholas.whatgoeswhere.models.Item;
+import org.perscholas.whatgoeswhere.models.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ItemRepository {
+public class UserRepository {
 	
 	private UserItemRepository uiRepository;
 	
-	public ItemRepository() {
+	public UserRepository() {
 		
 		this.uiRepository = new UserItemRepository();
 		
@@ -26,60 +26,55 @@ public class ItemRepository {
 		}
 	}
 	
-	public List<Item> getAllItems() {
-		List<Item> items = findItems("Item.findAll");
-		return items;
-	}
-	
-	public List<Item> findItemByName(String name) {
-		List<Item> items = findItems("Item.findByName", name);
-		return items;
+	public List<User> getAllUsers() {
+		List<User> users = findUsers("User.findAll");
+		return users;
 	}
 
-	public Item findItemByNameAndState(String name, String state) {	
-		List<Item> items = findItems("Item.findByNameAndState",name,state);	
-		if (items.size() == 0)
-			return null;
-		return items.get(0); 
-	}
-	
-	private List<Item> findItems(String queryName, String ... columns) {
+	public User findUserById(String id) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<Item> query = entityManager.createNamedQuery(queryName, Item.class);
+		User user = entityManager.find(User.class, id);
+		
+		entityManager.close();
+		emfactory.close();
+		return user;
+	}
+	
+	public User findUserByEmail(String email) {	
+		List<User> users = findUsers("User.findByEmail",email);	
+		if (users.size() == 0)
+			return null;
+		return users.get(0); 
+	}
+	
+	private List<User> findUsers(String queryName, String ... columns) {
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManager entityManager = emfactory.createEntityManager();
+		
+		TypedQuery<User> query = entityManager.createNamedQuery(queryName, User.class);
 		for (int i = 1; i <= columns.length; i++) {
 			query.setParameter(i, columns[i-1]);
 		}
-		List<Item> items = query.getResultList();
+		List<User> users = query.getResultList();
 		
 		entityManager.close();
 		emfactory.close();
-		return items;
+		return users;
 	}
 	
-	public Item findItemById(int id) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
-		EntityManager entityManager = emfactory.createEntityManager();
-		
-		Item item = entityManager.find(Item.class, id);
-		
-		entityManager.close();
-		emfactory.close();
-		return item;
-	}
-	
-	public boolean addItem(Item item) {
-		// If there already exists the same item in the system, addition fails.
-		if (findItemByNameAndState(item.getName(),item.getCondition()) == null) {		
+	public boolean addUser(User user) {
+		// If there already exists the same user in the system, addition fails.
+		if (findUserById(user.getId()) == null) {		
 			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
-			entityManager.persist(item);			
+			entityManager.persist(user);			
 			
 			entityManager.getTransaction().commit();
-			entityManager.refresh(item);
+			entityManager.refresh(user);
 			
 			entityManager.close();
 			emfactory.close();
@@ -88,9 +83,9 @@ public class ItemRepository {
 		return false;
 	}
 
-	public boolean deleteItem(Item item) {
-		// if the item doesn't exist in the database, deletion fails.
-		if (findItemById(item.getId()) == null) {
+	public boolean deleteUser(User user) {
+		// if the user doesn't exist in the database, deletion fails.
+		if (findUserById(user.getId()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
@@ -98,33 +93,33 @@ public class ItemRepository {
 		entityManager.getTransaction().begin();
 		
 		// Delete the join table entities first
-		uiRepository.deleteUserItemByItemId(item.getId());
-		
-		Item itemToDelete = entityManager.find(Item.class, item.getId());
-		entityManager.remove(itemToDelete);
-		
+		boolean isUIDeleteSuccessful = uiRepository.deleteUserItemByUserId(user.getId());
+		if (isUIDeleteSuccessful) {
+			User userToDelete = entityManager.find(User.class, user.getId());
+			entityManager.remove(userToDelete);
+		}
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
 		return true;
 	}
 
-	public boolean updateItem(Item item) {
-		// if the item doesn't exist in the database, update fails.
-		if (findItemById(item.getId()) == null) {
+	public boolean updateUser(User user) {
+		// if the user doesn't exist in the database, update fails.
+		if (findUserById(user.getId()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		Item itemToUpdate = entityManager.find(Item.class, item.getId());
-		itemToUpdate.setName(item.getName());
-		itemToUpdate.setCondition(item.getCondition());
-		itemToUpdate.setBestOption(item.getBestOption());
-		itemToUpdate.setSpecialInstruction(item.getSpecialInstruction());
-		itemToUpdate.setNotes(item.getNotes());		
-			
+		User userToUpdate = entityManager.find(User.class, user.getId());
+		userToUpdate.setId(user.getId());
+		userToUpdate.setPassword(user.getPassword());
+		userToUpdate.setEmail(user.getEmail());
+		userToUpdate.setFirstName(user.getFirstName());
+		userToUpdate.setLasttName(user.getLastName());
+		
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();

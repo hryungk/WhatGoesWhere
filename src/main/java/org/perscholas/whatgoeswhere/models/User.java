@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,48 +16,54 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Users")
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
+@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.username = ?1")
+@NamedQuery(name="User.findByEmail", query="SELECT u FROM User u WHERE u.email = ?1")
 public class User {
 
 	@Id
-	@Column(name="id", length=50)
-	private String id; // User ID
+	@Column(name="username", length=50)
+	private String username; // User name (unique ID)
 	@Column(name="password", length=50, nullable=false)
 	private String password; // User password
 	@Column(name="email", length=50, nullable=false) 
 	private String email; // User's email
-	@Column(name="name", length=50)
-	private String name; // User's full name	
+	@Column(name="fname", length=50)
+	private String firstName; // User's first name	
+	@Column(name="lname", length=50)
+	private String lastName; // User's last name	
 	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL)
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 
-				{ @JoinColumn(name = "user_id", referencedColumnName = "id")}, 
+				{ @JoinColumn(name = "user_id", referencedColumnName = "username")}, 
 			inverseJoinColumns = 
 				{ @JoinColumn(name = "item_id", referencedColumnName = "id")})
 	private List<Item> items; // A list of items the user has added to the system
 	
 	public User() {
 		super();
-		id = "";		
+		username = "";		
 		password = "";		
 		email = "";
-		name = "";
+		firstName = "";
+		lastName = "";
 		items = new ArrayList<>();
 	}
-	public User(String id, String password, String email, String name, List<Item> items) {
+	public User(String id, String password, String email, String firstName, String lastName, List<Item> items) {
 		super();
-		this.id = id;
+		this.username = id;
 		this.password = password;
 		this.email = email;
-		this.name = name;		
+		this.firstName = firstName;		
+		this.lastName = lastName;
 		this.items = items;
 	}
 	
 	public String getId() {
-		return id;
+		return username;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String username) {
+		this.username = username;
 	}	
 	public String getPassword() {
 		return password;
@@ -72,11 +77,17 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLasttName(String lastName) {
+		this.lastName = lastName;
 	}
 	public List<Item> getItems() {
 		return items;
@@ -88,7 +99,7 @@ public class User {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 	@Override
@@ -100,10 +111,10 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (username == null) {
+			if (other.username != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!username.equals(other.username))
 			return false;
 		return true;
 	}	

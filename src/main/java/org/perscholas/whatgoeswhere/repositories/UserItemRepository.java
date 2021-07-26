@@ -8,8 +8,17 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.perscholas.whatgoeswhere.models.UserItem;
+import org.perscholas.whatgoeswhere.models.UserItemID;
 
 public class UserItemRepository {
+	
+	public UserItemRepository() {
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 		
 	public UserItem findByItemId(int itemId) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
@@ -17,7 +26,11 @@ public class UserItemRepository {
 		
 		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
 		query.setParameter("id", itemId);
-		UserItem userItem= query.getResultList().get(0);
+		List<UserItem> userItems = query.getResultList();
+		UserItem userItem = null;
+		if (userItems.size() != 0) {
+			userItem= query.getResultList().get(0);
+		}
 		
 		entityManager.close();
 		emfactory.close();
@@ -36,6 +49,7 @@ public class UserItemRepository {
 		emfactory.close();
 		return userItems;
 	}
+	
 	public boolean deleteUserItem(UserItem item) {
 		// if the item doesn't exist in the database, deletion fails.
 		if (findByItemId(item.getItemId()) == null) {
@@ -45,8 +59,51 @@ public class UserItemRepository {
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		UserItem itemToDelete = entityManager.find(UserItem.class, item.getItemId());
+		UserItemID pk = new UserItemID(item.getUserId(),item.getItemId());
+		UserItem itemToDelete = entityManager.find(UserItem.class, pk);
 		entityManager.remove(itemToDelete);
+		
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		emfactory.close();
+		return true;
+	}
+	
+	public boolean deleteUserItemByItemId(int itemId) {
+		// if the item doesn't exist in the database, deletion fails.
+		if (findByItemId(itemId) == null) {
+			return false;
+		}
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManager entityManager = emfactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		
+		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
+		query.setParameter("id", itemId);		
+		UserItem itemToDelete = query.getResultList().get(0);
+//		UserItem itemToDelete = findByItemId(itemId);
+		entityManager.remove(itemToDelete);
+		
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		emfactory.close();
+		return true;
+	}
+	public boolean deleteUserItemByUserId(String userId) {
+		// if the item doesn't exist in the database, deletion fails.
+		if (findItemsByUser(userId) == null) {
+			return false;
+		}
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManager entityManager = emfactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		
+		TypedQuery<UserItem> query = entityManager.createNamedQuery("findItemsByUser", UserItem.class);
+		query.setParameter("id", userId);		
+		List<UserItem> userItems = query.getResultList();
+		for (UserItem itemToDelete : userItems) {
+			entityManager.remove(itemToDelete);
+		}
 		
 		entityManager.getTransaction().commit();
 		entityManager.close();

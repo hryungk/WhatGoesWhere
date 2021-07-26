@@ -68,14 +68,20 @@ class ItemServiceIT {
 		String itemName = "Aerosole cans";
 		item1 = new Item(itemName, "Empty", "Recycling", "Must be empty.", "", now);
 		item2 = new Item(itemName, "full or partially full", "Drop-off - Hazardous Waste", "", "This item is considered hazardous waste and must be disposed of safely.", now);
-		if (itemService.findItemByNameAndState(item1.getName(), item1.getCondition()) == null)
-			itemService.addItem(item1);
-		else
+		
+		if(!itemService.addItem(item1))
 			item1 = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
-		if (itemService.findItemByNameAndState(item2.getName(), item2.getCondition()) == null)
-			itemService.addItem(item2);
-		else
+		
+		if(!itemService.addItem(item2))
 			item2 = itemService.findItemByNameAndState(item2.getName(), item2.getCondition());
+		
+		// For testing addition, remove the item if it already exists
+//		Item toRemove = new Item("Banana", "", "Food & Yard Waste",
+//				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
+		Item toRemove = itemService.findItemByNameAndState("Banana", "");
+		if (toRemove != null) { // exists in the db
+			itemService.deleteItem(toRemove);
+		}
 	}
 	
 	@Test
@@ -90,48 +96,55 @@ class ItemServiceIT {
 		actual.forEach(System.out::println);
 		assertNotNull(actual);
 	}
-//	
-//	@Test
-//	void testFindItemByNameAndState() {		
-//		Item expected = item1; 				
-//		Item actual = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
-//		
-//		assertEquals(expected, actual);
-//	}
-//	
-//	@Test
-//	void testFindItemByName() {
-//		Item[] expected = {item1, item2};		
-//		
-//		List<Item> actualList = itemService.findItemByName(item1.getName());
+	
+	@Test
+	void testFindItemByNameAndState() {		
+		Item expected = item1; 				
+		Item actual = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
+		
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void testFindItemByName() {
+		Item[] expected = {item1, item2};		
+		
+		List<Item> actualList = itemService.findItemByName(item1.getName());
 //		Item[] actual = new Item[actualList.size()];
 //		actual = actualList.toArray(actual);
-//		
-//		assertArrayEquals(expected, actual);
-//	}
-//	
-//	@Test
-//	void testAddItem() {
-//		LocalDateTime now = LocalDateTime.now();
-//		String name = "Banana";		
-//		Item expected = new Item(name, "", "Food & Yard Waste",
-//				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
-//		assertTrue(itemService.addItem(expected));		
-//	}
-
-//	@Test
-//	void testUpdateItem() {		
-//		System.out.println("\n\nStarting testUpdateItem()\n\n");
-//		Item expected = itemService.findItemById(item2.getId());
-//		System.out.println(expected);
-//		expected.setNotes("Contact Waste Management for information on drop-off locations.");
-//		assertTrue(itemService.updateItem(expected));
-//	}
+//		assertArrayEquals(expected,actual);
+		
+		boolean result = true;
+		int ii = 0;
+		while (result && ii < expected.length) {
+			result = actualList.remove(expected[ii]);
+			ii++;
+		}
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	void testAddItem() {
+		LocalDateTime now = LocalDateTime.now();
+		Item expected = new Item("Banana", "", "Food & Yard Waste",
+				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
+		assertTrue(itemService.addItem(expected));		
+	}
 
 	@Test
-	void testDeleteItem() {				
-		System.out.println("\n\nStarting testDeleteItem()\n\n");
-		Item expected = itemService.findItemById(item1.getId());
-		assertTrue(itemService.deleteItem(expected));
+	void testUpdateItem() {		
+		System.out.println("\n\nStarting testUpdateItem()\n\n");
+		Item expected = itemService.findItemById(item2.getId());
+		System.out.println(expected);
+		expected.setNotes("Contact Waste Management for information on drop-off locations.");
+		assertTrue(itemService.updateItem(expected));
 	}
+
+//	@Test
+//	void testDeleteItem() {				
+//		System.out.println("\n\nStarting testDeleteItem()\n\n");
+//		Item expected = itemService.findItemById(item1.getId());
+//		assertTrue(itemService.deleteItem(expected));
+//	}
 }

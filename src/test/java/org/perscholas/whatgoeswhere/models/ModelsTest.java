@@ -43,7 +43,7 @@ class ModelsTest {
 		manager.getTransaction().begin();
 		
 		String userId = "HoppyCat";		
-		User expected = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen Kim", null);
+		User expected = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen", "Kim", null);
 		manager.persist(expected);		
 		manager.getTransaction().commit();
 		
@@ -68,7 +68,7 @@ class ModelsTest {
 		manager.persist(item2);
 		
 		List<Item> items = List.of(item1, item2);
-		User user1 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David Chi", items);
+		User user1 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David","Chi", items);
 		manager.persist(user1);
 
 		manager.getTransaction().commit();
@@ -78,7 +78,7 @@ class ModelsTest {
 		items.forEach(item -> expected.add(item.getId()));
 		
 		// Query the user1's items from the join table in the database
-		TypedQuery<UserItem> query = manager.createNamedQuery("ItemsByUser", UserItem.class);
+		TypedQuery<UserItem> query = manager.createNamedQuery("findItemsByUser", UserItem.class);
 		query.setParameter("id", user1.getId());		
 		List<UserItem> userItems = query.getResultList();
 
