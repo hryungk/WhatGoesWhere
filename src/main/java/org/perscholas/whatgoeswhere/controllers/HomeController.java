@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.perscholas.whatgoeswhere.models.Employee;
 import org.perscholas.whatgoeswhere.models.Item;
+import org.perscholas.whatgoeswhere.models.User;
 import org.perscholas.whatgoeswhere.services.EmployeeService;
 import org.perscholas.whatgoeswhere.services.ItemService;
+import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +21,13 @@ public class HomeController {
 
 	private EmployeeService employeeService;
 	private ItemService itemService;
+	private UserService userService;
 	
 	@Autowired
-	public HomeController(ItemService itemService, EmployeeService employeeService) {
+	public HomeController(ItemService itemService, UserService userService, EmployeeService employeeService) {
 		this.employeeService = employeeService; 
 		this.itemService = itemService;
+		this.userService = userService;
 	}
 	
 	@GetMapping("/") // This is what you type for URL
@@ -68,8 +72,24 @@ public class HomeController {
 		return "about";
 	}
 	@GetMapping("/login")
-	public String showLogInPage() {
+	public String showLogInPage(Model model) {
+		if (model.getAttribute("message") == null) {
+			String message = "";
+			model.addAttribute("message", message);
+		}
 		return "login";
+	}
+	@PostMapping("/loginInfo")
+	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model) {
+		User user = userService.findUserByEmail(email);
+		if (user != null && user.getPassword().equals(password)) {
+			model.addAttribute("user", user);
+			return showProfilePage(model);
+		} else {
+			String message = "Credentials not correct. Please try again";			
+			model.addAttribute("message", message);
+			return showLogInPage(model);
+		}
 	}
 	@GetMapping("/register")
 	public String showRegisterPage() {

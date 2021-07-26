@@ -1,12 +1,15 @@
  <!-- Header -->
 <jsp:include page="header.jsp" />
+<!-- JSTL includes -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     
     <section> 
         <h1>Sign In</h1>
         <div>
-           <form action="#">
+           <form action="loginInfo" method="POST">
                 <fieldset>
-                    <legend>Please enter your credentials below:</legend>
+                    <legend>Please enter your credentials below:</legend>                    
+            		<p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
 						<input type="email" name="eMail" placeholder="Email" required="required" />
 					</div>
@@ -18,8 +21,7 @@
 	            	<a href="register">Don't have an account yet? Register here</a>
 	            </div>                
                 <input class="reg-btn" type="submit" value="Sign In">
-            </form>
-            
+            </form>            
         </div>
     </section>
     
