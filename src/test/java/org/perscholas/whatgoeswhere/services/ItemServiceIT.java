@@ -1,4 +1,4 @@
-package org.perscholas.whatgoeswhere.repositories;
+package org.perscholas.whatgoeswhere.services;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

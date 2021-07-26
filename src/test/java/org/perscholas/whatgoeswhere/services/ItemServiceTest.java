@@ -1,4 +1,4 @@
-package org.perscholas.whatgoeswhere.repositories;
+package org.perscholas.whatgoeswhere.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.perscholas.whatgoeswhere.models.Item;
+import org.perscholas.whatgoeswhere.repositories.ItemRepository;
 import org.perscholas.whatgoeswhere.services.ItemService;
 
 class ItemServiceTest {
