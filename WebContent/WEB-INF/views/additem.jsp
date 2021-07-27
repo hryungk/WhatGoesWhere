@@ -1,5 +1,7 @@
  <!-- Header -->
 <jsp:include page="header.jsp" />
+<!-- JSTL includes -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     
     <section> 
         <h1>Add a New Item</h1>
@@ -7,6 +9,7 @@
            <form action="./addNewItem" method="POST">
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
+                    <p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
 						<input type="text" name="itemName" placeholder="Item Name (required)" required="required" />
 					</div>
@@ -25,7 +28,7 @@
                 </fieldset>
                 <input type="submit" value="Add" class="reg-btn" />
             </form>
-            
+            <a href="list" class="a-btn reg-btn add-btn" id="a-btn">Go Back to List</a>
         </div>
     </section>
     

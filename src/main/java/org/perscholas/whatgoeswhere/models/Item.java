@@ -9,9 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="Items")
+@Table(name="Items", uniqueConstraints = { @UniqueConstraint(name = "UniqueNameAndState", columnNames = { "name", "state" }) })
 @NamedQuery(name="Item.findAll", query="SELECT i FROM Item i")
 @NamedQuery(name="Item.findByName", query="SELECT i FROM Item i WHERE i.name = ?1")
 @NamedQuery(name="Item.findByNameAndState", query="SELECT i FROM Item i WHERE i.name = ?1 AND i.condition = ?2")

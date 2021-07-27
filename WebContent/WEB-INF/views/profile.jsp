@@ -23,9 +23,9 @@
         	</tr>
         </table>
         
-        <div style="height: 4em; position: relative; margin: 1em 0">
+        <!-- <div style="height: 4em; position: relative; margin: 1em 0">
         	<a href="additem" class="reg-btn add-btn a-btn">Add a new Item</a>
-        </div>
+        </div> -->
         <div>
 	        <table class="table table-striped table-hover">
 	        	<thead>

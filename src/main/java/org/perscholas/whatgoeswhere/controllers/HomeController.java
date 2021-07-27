@@ -41,15 +41,29 @@ public class HomeController {
 		return "list";
 	}
 	@GetMapping("/additem")
-	public String showAddItemPage() {
+	public String showAddItemPage(Model model) {
+		if (model.getAttribute("message") == null) {
+			String message = "";
+			model.addAttribute("message", message);
+		}
 		return "additem";
 	}
 	@PostMapping("/addNewItem")
 	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model) {
 		LocalDateTime now = LocalDateTime.now();
 		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
-		itemService.addItem(item);
-		return showListPage(model);
+		boolean isAddSuccessful = itemService.addItem(item);
+		if (isAddSuccessful) {
+			return showListPage(model);
+		} else {
+			String message = name;
+			if (condition.length() != 0) {
+				message += " ("+ condition +")";
+			}
+			message += " already exists in the list.";
+			model.addAttribute("message", message);
+			return showAddItemPage(model);
+		}
 	}
 	@GetMapping("/edititem")
 	public String showEditItemPage(@RequestParam("id") int itemId, @RequestParam("username") String username, Model model) {		
