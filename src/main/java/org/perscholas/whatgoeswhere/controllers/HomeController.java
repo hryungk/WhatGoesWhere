@@ -99,9 +99,34 @@ public class HomeController {
 		}
 	}
 	@GetMapping("/register")
-	public String showRegisterPage() {
+	public String showRegisterPage(Model model) {
+		if (model.getAttribute("message") == null) {
+			String message = "";
+			model.addAttribute("message", message);
+		}
+		if (model.getAttribute("user") == null) {
+			User newUser = new User("", "", "", "", "", null);
+			model.addAttribute("user", newUser);
+		}
 		return "register";
 	}
+	@PostMapping("/addNewUser")
+	public String addUser(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model) {
+		User user = userService.findUserById(username);
+		User newUser = new User(username, password, email, firstName, lastName, null);
+		if (user == null) {	// Username doesn't exist
+			userService.addUser(newUser);
+			model.addAttribute("user", newUser);
+			return showProfilePage(model);
+		} else { // Username already exists
+			String message = "Username already exists. Choose a different one.";
+			model.addAttribute("message", message);
+			newUser = new User("", password, email, firstName, lastName, null);
+			model.addAttribute("user", newUser); // to populate the form
+			return showRegisterPage(model);
+		}
+	}
+	
 	@GetMapping("/profile")
 	public String showProfilePage(Model model) {
 		User user = (User) model.getAttribute("user");
