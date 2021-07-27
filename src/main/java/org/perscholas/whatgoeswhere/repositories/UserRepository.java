@@ -67,7 +67,7 @@ public class UserRepository {
 	
 	public boolean addUser(User user) {
 		// If there already exists the same user in the system, addition fails.
-		if (findUserById(user.getId()) == null) {		
+		if (findUserById(user.getUsername()) == null) {		
 			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
@@ -86,7 +86,7 @@ public class UserRepository {
 
 	public boolean deleteUser(User user) {
 		// if the user doesn't exist in the database, deletion fails.
-		if (findUserById(user.getId()) == null) {
+		if (findUserById(user.getUsername()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
@@ -94,9 +94,9 @@ public class UserRepository {
 		entityManager.getTransaction().begin();
 		
 		// Delete the join table entities first
-		boolean isUIDeleteSuccessful = uiRepository.deleteUserItemByUserId(user.getId());
+		boolean isUIDeleteSuccessful = uiRepository.deleteUserItemByUserId(user.getUsername());
 		if (isUIDeleteSuccessful) {
-			User userToDelete = entityManager.find(User.class, user.getId());
+			User userToDelete = entityManager.find(User.class, user.getUsername());
 			entityManager.remove(userToDelete);
 		}
 		entityManager.getTransaction().commit();
@@ -107,14 +107,14 @@ public class UserRepository {
 
 	public boolean updateUser(User user) {
 		// if the user doesn't exist in the database, update fails.
-		if (findUserById(user.getId()) == null) {
+		if (findUserById(user.getUsername()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		User userToUpdate = entityManager.find(User.class, user.getId());
+		User userToUpdate = entityManager.find(User.class, user.getUsername());
 		userToUpdate.setPassword(user.getPassword());
 		userToUpdate.setEmail(user.getEmail());
 		userToUpdate.setFirstName(user.getFirstName());

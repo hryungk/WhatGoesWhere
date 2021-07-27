@@ -59,10 +59,10 @@ class UserServiceIT {
 		user2 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David","Chi", null);
 		
 		if(!userService.addUser(user1))
-			user1 = userService.findUserById(user1.getId());
+			user1 = userService.findUserById(user1.getUsername());
 		
 		if(!userService.addUser(user2))
-			user2 = userService.findUserById(user2.getId());		
+			user2 = userService.findUserById(user2.getUsername());		
 	}
 	
 	@Test
@@ -81,7 +81,7 @@ class UserServiceIT {
 	@Test
 	void testFindUserById() {		
 		User expected = user1; 				
-		User actual = userService.findUserById(user1.getId());
+		User actual = userService.findUserById(user1.getUsername());
 		
 		assertEquals(expected, actual);
 	}
@@ -126,7 +126,7 @@ class UserServiceIT {
 		List<Integer> expected = new ArrayList<>();
 		items.forEach(item -> expected.add(item.getId()));
 		
-		List<Item> itemsFromUser= userService.getItems(user1.getId());		
+		List<Item> itemsFromUser= userService.getItems(user1.getUsername());		
 		
 		// A list of item IDs added by user1 queried from the join table in the database
 		List<Integer> actual = new ArrayList<>();
@@ -145,7 +145,7 @@ class UserServiceIT {
 	@Test
 	void testUpdateUser() {		
 		System.out.println("\n\nStarting testUpdateUser()\n\n");
-		User expected = userService.findUserById(user2.getId());
+		User expected = userService.findUserById(user2.getUsername());
 		System.out.println(expected);
 		expected.setPassword("newpassword");
 		assertTrue(userService.updateUser(expected));
@@ -155,7 +155,7 @@ class UserServiceIT {
 	void testDeleteUser() {	
 		
 		System.out.println("\n\nStarting testDeleteUser()\n\n");
-		User expected = userService.findUserById(user1.getId());
+		User expected = userService.findUserById(user1.getUsername());
 		assertTrue(userService.deleteUser(expected));
 	}
 }

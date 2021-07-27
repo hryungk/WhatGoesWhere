@@ -79,7 +79,7 @@ class ModelsTest {
 		
 		// Query the user1's items from the join table in the database
 		TypedQuery<UserItem> query = manager.createNamedQuery("findItemsByUser", UserItem.class);
-		query.setParameter("id", user1.getId());		
+		query.setParameter("id", user1.getUsername());		
 		List<UserItem> userItems = query.getResultList();
 
 		manager.close();

@@ -59,10 +59,10 @@ public class User {
 		this.items = items;
 	}
 	
-	public String getId() {
+	public String getUsername() {
 		return username;
 	}
-//	public void setId(String username) { // Can't change the ID.
+//	public void setUsername(String username) { // Can't change the ID.
 //		this.username = username;
 //	}	
 	public String getPassword() {

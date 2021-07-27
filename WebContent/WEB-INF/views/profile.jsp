@@ -1,16 +1,22 @@
  <!-- Footer -->
-	<jsp:include page="header.jsp" />
+	<jsp:include page="header.jsp" />	
+<!-- JSTL includes -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     
     <section> 
         <h1>My Profile</h1>
         <table id="table-profile">
         	<tr>
         		<th>Name:</th>
-        		<td>FirstName LastName</td>
+        		<td>${user.firstName } ${user.lastName }</td>
+        	</tr>
+        	<tr>
+        		<th>Username:</th>
+        		<td>${user.username }</td>
         	</tr>
         	<tr>
 	        	<th>Email:</th>
-	        	<td>janedoe@email.com</td>        	
+	        	<td>${user.email }</td>        	
         	</tr>
         	<tr>
         		<th>My Contribution:</th>
@@ -34,37 +40,25 @@
 	        			<th>Added On</th>
 	        		</tr>
 	        	</thead>
-	        	<tbody>
-	        		<tr>
-	        			<td><button class="find-btn a-btn">Delete</button></td>
-	        			<td>
-	        				<%-- <form action="edititem?id=${item.id}" method="get">
-								<input type="hidden" name="id" value="${item.id}"> --%>
-								<button class="find-btn a-btn">Edit</button>
-							<!-- </form> -->
-						</td>
-	        			<td>Aerosole Can</td>
-	        			<td>Empty</td>
-	        			<td>Recycle</td>
-	        			<td>Must be empty</td>
-	        			<td>If not empty, it is considered hazardous material. Please either empty it or bring it to local drop-off location.</td>
-	        			<td>07/21/2021</td>
-	        		</tr>
-	        		<tr>
-	        			<td><button class="find-btn a-btn">Delete</button></td>
-	        			<td>
-	        				<form action="./edititem" method="get">
-								<input type="hidden" name="id" value="">
-								<button class="find-btn a-btn">Edit</button>
-							</form> 
-						</td>
-	        			<td>Banana</td>
-	        			<td></td>
-	        			<td>Food & Yard Waste</td>
-	        			<td></td>
-	        			<td></td>
-	        			<td>06/14/2021</td>
-	        		</tr>
+	        	<tbody>	        		
+	        		<c:forEach var="item" items="${items}" varStatus="status">
+			       		<tr>
+			       			<td><button class="find-btn a-btn">Delete</button></td>
+							<td>
+								<form action="./edititem?id=${item.id}" method="get">
+									<input type="hidden" name="id" value="${item.id}">
+									<input type="hidden" name="username" value="${user.username }">
+									<button class="find-btn a-btn">Edit</button>
+								</form>
+							</td>
+			       			<td><c:out value="${item.name }" /></td>
+			       			<td><c:out value="${item.condition }" /></td>
+			       			<td><c:out value="${item.bestOption }" /></td>
+			       			<td><c:out value="${item.specialInstruction }" /></td>
+			       			<td><c:out value="${item.notes }" /></td>
+			       			<td><c:out value="${item.addedDate }" /></td>
+			       		</tr>
+			   		</c:forEach>
 	        	</tbody>        	
 	        </table>   
         </div>     

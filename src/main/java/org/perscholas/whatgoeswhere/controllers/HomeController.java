@@ -52,19 +52,26 @@ public class HomeController {
 		return showListPage(model);
 	}
 	@GetMapping("/edititem")
-	public String showEditItemPage(Model model) {
-		
+	public String showEditItemPage(@RequestParam("id") int itemId, @RequestParam("username") String username, Model model) {		
+		Item item = itemService.findItemById(itemId);
+		model.addAttribute("item", item);
+		User user = userService.findUserById(username);
+		model.addAttribute("user", user);
 		return "edititem";
 	}
 	@PostMapping("/updateItem")
-	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model) {
+	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  @RequestParam("username") String username, Model model) {
 		Item item = itemService.findItemByNameAndState(name, state);
 		item.setName(name);
 		item.setCondition(state);
 		item.setBestOption(bestOption);
 		item.setSpecialInstruction(specialInstruction);
 		item.setNotes(notes);
-		itemService.updateItem(item);		
+		System.out.println("\n\n"+item.getNotes()+"\n\n");
+		itemService.updateItem(item);	
+		
+		User user = userService.findUserById(username);
+		model.addAttribute("user", user);
 		return showProfilePage(model);
 	}
 	@GetMapping("/about")
@@ -97,7 +104,9 @@ public class HomeController {
 	}
 	@GetMapping("/profile")
 	public String showProfilePage(Model model) {
-		
+		User user = (User) model.getAttribute("user");
+		List<Item> items = userService.getItems(user.getUsername());
+		model.addAttribute("items", items);
 		return "profile";
 	}
 	@GetMapping("/contact")

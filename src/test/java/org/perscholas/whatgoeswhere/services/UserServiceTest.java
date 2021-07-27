@@ -60,7 +60,7 @@ class UserServiceTest {
 		
 		User actual = userService.findUserByEmail(input1);
 		String expected = "pusheen";
-		assertEquals(expected, actual.getId());
+		assertEquals(expected, actual.getUsername());
 	}	
 	
 }
