@@ -88,9 +88,9 @@ public class ItemRepository {
 		return false;
 	}
 
-	public boolean deleteItem(Item item) {
+	public boolean deleteItem(int itemId) {
 		// if the item doesn't exist in the database, deletion fails.
-		if (findItemById(item.getId()) == null) {
+		if (findItemById(itemId) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
@@ -98,9 +98,9 @@ public class ItemRepository {
 		entityManager.getTransaction().begin();
 		
 		// Delete the join table entities first
-		uiRepository.deleteUserItemByItemId(item.getId());
+		uiRepository.deleteUserItemByItemId(itemId);
 		
-		Item itemToDelete = entityManager.find(Item.class, item.getId());
+		Item itemToDelete = entityManager.find(Item.class, itemId);
 		entityManager.remove(itemToDelete);
 		
 		entityManager.getTransaction().commit();

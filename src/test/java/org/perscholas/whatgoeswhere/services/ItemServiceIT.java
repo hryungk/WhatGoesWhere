@@ -106,7 +106,7 @@ class ItemServiceIT {
 		// For testing addition, remove the item if it already exists
 		Item toRemove = itemService.findItemByNameAndState("Chip bags", "");
 		if (toRemove != null) { // exists in the db
-			itemService.deleteItem(toRemove);
+			itemService.deleteItem(toRemove.getId());
 		}
 		
 		LocalDateTime now = LocalDateTime.now();
@@ -128,6 +128,6 @@ class ItemServiceIT {
 	void testDeleteItem() {				
 		System.out.println("\n\nStarting testDeleteItem()\n\n");
 		Item expected = itemService.findItemById(item1.getId());
-		assertTrue(itemService.deleteItem(expected));
+		assertTrue(itemService.deleteItem(expected.getId()));
 	}
 }

@@ -36,8 +36,8 @@ public class ItemService {
 		return itemRepository.addItem(item);
 	}
 	
-	public boolean deleteItem(Item item) {
-		return itemRepository.deleteItem(item);
+	public boolean deleteItem(int itemId) {
+		return itemRepository.deleteItem(itemId);
 	}
 	
 	public boolean updateItem(Item item) {

@@ -88,6 +88,15 @@ public class HomeController {
 		model.addAttribute("user", user);
 		return showProfilePage(model);
 	}
+	@PostMapping("/deleteitem")
+	public String deleteItem(@RequestParam("id") int id,  @RequestParam("username") String username, Model model) {
+		itemService.deleteItem(id);
+		
+		User user = userService.findUserById(username);
+		model.addAttribute("user", user);
+		return showProfilePage(model);
+	}
+	
 	@GetMapping("/about")
 	public String showAboutPage() {
 		return "about";

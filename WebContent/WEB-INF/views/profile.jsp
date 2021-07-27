@@ -43,7 +43,13 @@
 	        	<tbody>	        		
 	        		<c:forEach var="item" items="${items}" varStatus="status">
 			       		<tr>
-			       			<td><button class="find-btn a-btn">Delete</button></td>
+			       			<td>
+								<form action="./deleteitem?id=${item.id}" method="POST" onsubmit="return(confirm('Are you sure you want to delete the item?'))" name="myForm">
+									<input type="hidden" name="id" value="${item.id}">
+									<input type="hidden" name="username" value="${user.username }">
+									<button class="find-btn a-btn">Delete</button>
+								</form>
+							</td>
 							<td>
 								<form action="./edititem?id=${item.id}" method="get">
 									<input type="hidden" name="id" value="${item.id}">
