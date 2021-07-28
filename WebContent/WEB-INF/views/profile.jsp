@@ -69,6 +69,13 @@
 	        </table>   
         </div>     
     </section>
+   
     
+	<script>
+		let lastUl = document.getElementById('footer-support-ul');
+		let newLi = document.createElement('li');
+		newLi.innerHTML = '<form action="./deleteuser?email=${user.email }" method="get"><input type="hidden" name="email" value="${user.email }"><input type="submit" value="Delete Account" /></form>';		
+		lastUl.appendChild(newLi);
+	</script>
      <!-- Footer -->
 	<jsp:include page="footer.jsp" />

@@ -157,6 +157,20 @@ public class HomeController {
 		model.addAttribute("items", items);
 		return "profile";
 	}
+	
+	@GetMapping("/deleteuser")
+	public String showDeleteUserPage(@RequestParam("email") String email, Model model) {
+		User user = userService.findUserByEmail(email);		
+		model.addAttribute("user", user);
+		return "deleteuser";
+	}
+	@PostMapping("/deleteUser")
+	public String deleteUser(@RequestParam("email") String email, Model model) {
+		User user = userService.findUserByEmail(email);		
+		userService.deleteUser(user);
+		return showIndexPage();
+	}
+	
 	@GetMapping("/contact")
 	public String showContactPage() {
 		return "contact";

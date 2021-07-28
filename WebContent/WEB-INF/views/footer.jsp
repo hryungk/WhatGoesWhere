@@ -17,10 +17,10 @@
 		<div class="footer-nav">
 			<p class="footer-nav-title">Support</p>
 			<hr>
-			<ul>
+			<ul id="footer-support-ul">
 				<li><a href="contact">Contact Us</a></li>
 			</ul>
 		</div>
-	</footer>
+	</footer>	
 </body>
 </html>
