@@ -27,8 +27,9 @@
 					</div>
                 </fieldset>
                 <input type="submit" value="Add" class="reg-btn" />
+                <a href="list" class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
             </form>
-            <a href="list" class="a-btn reg-btn add-btn" id="a-btn">Go Back to List</a>
+            
         </div>
     </section>
     

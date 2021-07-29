@@ -84,16 +84,18 @@ public class HomeController {
 		System.out.println("\n\n"+item.getNotes()+"\n\n");
 		itemService.updateItem(item);	
 		
-		User user = userService.findUserById(username);
-		model.addAttribute("user", user);
+//		User user = userService.findUserById(username);
+//		model.addAttribute("user", user);
+		model.addAttribute("username", username);
 		return showProfilePage(model);
 	}
 	@PostMapping("/deleteitem")
 	public String deleteItem(@RequestParam("id") int id,  @RequestParam("username") String username, Model model) {
 		itemService.deleteItem(id);
 		
-		User user = userService.findUserById(username);
-		model.addAttribute("user", user);
+//		User user = userService.findUserById(username);
+//		model.addAttribute("user", user);
+		model.addAttribute("username", username);
 		return showProfilePage(model);
 	}
 	
@@ -112,15 +114,30 @@ public class HomeController {
 	@PostMapping("/loginInfo")
 	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model) {
 		User user = userService.findUserByEmail(email);
-		if (user == null) {
-			String message = "You haven't registered yet. Please click the link below the form to create a new account.";			
-			model.addAttribute("message", message);
-			return showLogInPage(model);
-		} else if (user.getPassword().equals(password)) {
-			model.addAttribute("user", user);
+//		if (user == null) {
+//			String message = "You haven't registered yet. Please click the link below the form to create a new account.";			
+//			model.addAttribute("message", message);
+//			return showLogInPage(model);
+//		} else if (user.getPassword().equals(password)) {
+//			model.addAttribute("user", user);
+//			return showProfilePage(model);
+//		} else {
+//			String message = "Credentials not correct. Please try again";			
+//			model.addAttribute("message", message);
+//			return showLogInPage(model);
+//		}
+		
+		String message = "";
+		if (user != null && user.getPassword().equals(password)) {
+//			model.addAttribute("user", user);
+			model.addAttribute("username", user.getUsername());
 			return showProfilePage(model);
 		} else {
-			String message = "Credentials not correct. Please try again";			
+			if (user == null) {
+				message = "You haven't registered yet. Please click the link below the form to create a new account.";	
+			} else {
+				message = "Credentials not correct. Please try again";
+			}
 			model.addAttribute("message", message);
 			return showLogInPage(model);
 		}
@@ -143,7 +160,8 @@ public class HomeController {
 		User newUser = new User(username, password, email, firstName, lastName, null);
 		if (user == null) {	// Username doesn't exist
 			userService.addUser(newUser);
-			model.addAttribute("user", newUser);
+//			model.addAttribute("user", newUser);
+			model.addAttribute("username", username);
 			return showProfilePage(model);
 		} else { // Username already exists
 			String message = "Username already exists. Choose a different one.";
@@ -156,10 +174,18 @@ public class HomeController {
 	
 	@GetMapping("/profile")
 	public String showProfilePage(Model model) {
-		User user = (User) model.getAttribute("user");
+		String username = (String) model.getAttribute("username");
+		User user = userService.findUserById(username);
+//		User user = (User) model.getAttribute("user");
+		model.addAttribute("user",user);
 		List<Item> items = userService.getItems(user.getUsername());
 		model.addAttribute("items", items);
 		return "profile";
+	}
+	@PostMapping("/backToProfile")
+	public String goBackToProfile(@RequestParam("username") String username, Model model) {
+		model.addAttribute("username", username);
+		return showProfilePage(model);
 	}
 	
 	@GetMapping("/deleteuser")

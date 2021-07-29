@@ -27,8 +27,14 @@
 					</div>
                 </fieldset>
                 <input type="hidden" name="username" value="${user.username }">
-                <input class="reg-btn" type="submit" value="Update">
+                <input class="reg-btn" type="submit" value="Update">                
             </form>
+            
+            <form action="./backToProfile" method="post">
+				<input type="hidden" name="username" value="${user.username }">
+				<input type="submit" class="reg-btn" value="Go Back">                
+			</form>           
+       		
         </div>
     </section>
     
