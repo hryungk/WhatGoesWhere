@@ -112,7 +112,11 @@ public class HomeController {
 	@PostMapping("/loginInfo")
 	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model) {
 		User user = userService.findUserByEmail(email);
-		if (user != null && user.getPassword().equals(password)) {
+		if (user == null) {
+			String message = "You haven't registered yet. Please click the link below the form to create a new account.";			
+			model.addAttribute("message", message);
+			return showLogInPage(model);
+		} else if (user.getPassword().equals(password)) {
 			model.addAttribute("user", user);
 			return showProfilePage(model);
 		} else {
@@ -179,6 +183,11 @@ public class HomeController {
 	/*
 	 * Connecting the JSP and model.
 	 */
+
+	@GetMapping("/home")
+	public String showHomePage() {
+		return "home";
+	}
 	@PostMapping("/search") // Match the form's action name
 	public String searchEmployeeByNumber(@RequestParam("employeeNumber") Integer employeeNumber, 
 			Model model) {
@@ -197,8 +206,4 @@ public class HomeController {
 		return "index";
 	}
 	
-	@GetMapping("/home")
-	public String showHomePage() {
-		return "home";
-	}
 }

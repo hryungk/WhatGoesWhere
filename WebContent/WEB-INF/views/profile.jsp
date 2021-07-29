@@ -19,9 +19,19 @@
 	        	<td>${user.email }</td>        	
         	</tr>
         	<tr>
+        		<th></th>
+        		<td>
+	        		 <form action="./deleteuser?email=${user.email }" method="get">
+			        	<input type="hidden" name="email" value="${user.email }" />
+			        	<button type="submit" class="find-btn a-btn">Delete Account</button> 
+			        </form>
+		        </td>
+        	</tr>
+        	<tr>
         		<th>My Contribution:</th>
         	</tr>
         </table>
+       
         
         <!-- <div style="height: 4em; position: relative; margin: 1em 0">
         	<a href="additem" class="reg-btn add-btn a-btn">Add a new Item</a>
@@ -69,13 +79,9 @@
 	        </table>   
         </div>     
     </section>
-   
-    
-	<script>
-		let lastUl = document.getElementById('footer-support-ul');
-		let newLi = document.createElement('li');
-		newLi.innerHTML = '<form action="./deleteuser?email=${user.email }" method="get"><input type="hidden" name="email" value="${user.email }"><input type="submit" value="Delete Account" /></form>';		
-		lastUl.appendChild(newLi);
-	</script>
+	
+	<!-- <script src="scripts/profile.js" type="text/javascript"></script> -->
+	
      <!-- Footer -->
 	<jsp:include page="footer.jsp" />
+	

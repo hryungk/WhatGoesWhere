@@ -2,7 +2,7 @@
 <jsp:include page="header.jsp" />
     
     <section> 
-        <h1>Contact Us</h1>
+        <h1>Delete account</h1>
         <div>
            <form action="./deleteUser" method="post">
                 <fieldset>                	
@@ -11,7 +11,7 @@
 						<input type="email" name="eMail" placeholder="Email (required)" required="required" value="${user.email}" />
 					</div>
 					<div class="r-input">	 			
-						<textarea rows="10" name="message" placeholder="Enter your message (required)" ></textarea>						
+						<textarea rows="10" name="message" placeholder="Enter your message" ></textarea>						
 					</div>					
                 </fieldset>            
                 <input type="hidden" name="email" value="${user.email }">

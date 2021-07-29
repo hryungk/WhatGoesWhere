@@ -5,7 +5,8 @@
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  --%>	
-    <section> 
+ 	
+ 	<section> 
         <h2>Search any item to learn how to dispose of it properly</h2>
         <div>
         	<form action="./find" method="POST">
@@ -17,18 +18,8 @@
     </section>
     
     <section>
-    	<table class="table table-striped table-hover">
-        	<thead>
-        		<tr>
-        			<th>Name</th>
-        			<th>Condition</th>
-        			<th>Best Option</th>
-        			<th>Special Instruction</th>
-        			<th>Notes</th>
-        			<th>Added On</th>
-        		</tr>
-        	</thead>
-        	<tbody>
+    	<table class="table table-striped table-hover" id="find-result-table">
+        	<tbody id="tbody">
 		       	<c:forEach var="item" items="${items}" varStatus="status">
 		       		<tr>
 		       			<td><c:out value="${item.name }" /></td>
@@ -40,8 +31,8 @@
 		       		</tr>
 		   		</c:forEach>
         	</tbody>        	
-        </table>  
-    	
+        </table>      	
     </section>
+    <script src="scripts/profile.js"></script>
    <!-- Footer -->
 	<jsp:include page="footer.jsp" />
