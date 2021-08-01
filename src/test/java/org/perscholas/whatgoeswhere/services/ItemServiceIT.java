@@ -57,10 +57,10 @@ class ItemServiceIT {
 		item1 = new Item(itemName, "Empty", "Recycling", "Must be empty.", "", now);
 		item2 = new Item(itemName, "full or partially full", "Drop-off - Hazardous Waste", "", "This item is considered hazardous waste and must be disposed of safely.", now);
 		
-		if(!itemService.addItem(item1))
+		if(!itemService.addItem(item1, null))
 			item1 = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
 		
-		if(!itemService.addItem(item2))
+		if(!itemService.addItem(item2, null))
 			item2 = itemService.findItemByNameAndState(item2.getName(), item2.getCondition());		
 	}
 	
@@ -112,7 +112,7 @@ class ItemServiceIT {
 		LocalDateTime now = LocalDateTime.now();
 		Item expected = new Item("Chip bags", "", "Trash",
 				"", "", now);
-		assertTrue(itemService.addItem(expected));		
+		assertTrue(itemService.addItem(expected, null));		
 	}
 
 	@Test

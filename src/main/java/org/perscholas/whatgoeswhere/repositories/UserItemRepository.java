@@ -50,6 +50,26 @@ public class UserItemRepository {
 		return userItems;
 	}
 	
+	public boolean addUserItem(String userId, int itemId) {
+		// If there already exists the same user in the system, addition fails.
+		if (findByItemId(itemId) == null) {		
+			UserItem ui = new UserItem(userId, itemId);
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+			EntityManager entityManager = emfactory.createEntityManager();
+			entityManager.getTransaction().begin();
+			
+			entityManager.persist(ui);			
+			
+			entityManager.getTransaction().commit();
+//			entityManager.refresh(user);
+			
+			entityManager.close();
+			emfactory.close();
+			return true;
+		} 
+		return false;
+	}
+	
 	public boolean deleteUserItem(UserItem item) {
 		// if the item doesn't exist in the database, deletion fails.
 		if (findByItemId(item.getItemId()) == null) {

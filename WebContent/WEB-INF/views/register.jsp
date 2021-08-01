@@ -6,18 +6,19 @@
     <section> 
         <h1>Register</h1>
         <div>
-           <form action="./addNewUser" method="post"> <!-- name="myForm" onsubmit="return(validate())"> -->
+           <form action="./register" method="post"> <!-- name="myForm" onsubmit="return(validate())"> -->
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <h6>(all fields are required)</h6>
-                    <p style="color: red;" id="msg"><c:out value="${message }" /></p>
-                    <div class="r-input">
+                    <h6 style="color: red;" ><c:out value="${usernameMessage }" /></h6>
+                    <h6 style="color: red;"><c:out value="${emailMessage }" /></h6>
+                    <div class="r-input">                    	
 						<input type="text" name="username" placeholder="Username" required="required" value="${user.username }" />
 					</div>
 					<div class="r-input">				
-						<input type="password" name="password" placeholder="Password" required="required" value="${user.password }" />
+						<input type="password" name="password" placeholder="Password" required="required" />
 					</div>
-					<div class="r-input">
+					<div class="r-input">						
 						<input type="email" name="eMail" placeholder="Email" required="required"  value="${user.email }"/>
 					</div>
 					<div class="r-input">
@@ -28,6 +29,7 @@
 					</div>
                 </fieldset>
                 <input class="reg-btn" type="submit" value="Register">
+                 <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
             </form>
         </div>
     </section>
@@ -41,6 +43,13 @@
 	        } 
         	return true;
     	}
+    	
+    	var element = document.getElementById('a-btn');
+		element.setAttribute('href', document.referrer);		
+		element.onclick = function() {
+			history.back();
+			return false;
+		}
     </script>
     
    <!-- Footer -->

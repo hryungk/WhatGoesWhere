@@ -3,6 +3,8 @@ package org.perscholas.whatgoeswhere.controllers;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.perscholas.whatgoeswhere.models.Employee;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
@@ -34,25 +36,40 @@ public class HomeController {
 	public String showIndexPage() {
 		return "index"; // return this to WebAppconfig
 	}
+	@PostMapping("/find") // Match the form's action name
+	public String searchItemName(@RequestParam("itemName") String itemName,			
+			Model model) {	
+		List<Item> items = itemService.findItemByName(itemName);
+		model.addAttribute("items", items);
+		return "index";
+	}
+	
 	@GetMapping("/list")
 	public String showListPage(Model model) {
 		List<Item> items = itemService.getAllItems();
 		model.addAttribute("items", items);
 		return "list";
 	}
+		
 	@GetMapping("/additem")
-	public String showAddItemPage(Model model) {
+	public String showAddItemPage(Model model, HttpSession session) {
+		String username = getUserName(session);
+		if (username == null) { // If not logged in, redirect to login page
+			return showLogInPage(model);
+		}
 		if (model.getAttribute("message") == null) {
 			String message = "";
 			model.addAttribute("message", message);
 		}
+		
 		return "additem";
 	}
-	@PostMapping("/addNewItem")
-	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model) {
+	@PostMapping("/additem")
+	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model, HttpSession session) {
 		LocalDateTime now = LocalDateTime.now();
 		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
-		boolean isAddSuccessful = itemService.addItem(item);
+		String username = getUserName(session);
+		boolean isAddSuccessful = itemService.addItem(item, username);
 		if (isAddSuccessful) {
 			return showListPage(model);
 		} else {
@@ -62,47 +79,11 @@ public class HomeController {
 			}
 			message += " already exists in the list.";
 			model.addAttribute("message", message);
-			return showAddItemPage(model);
+			return showAddItemPage(model, session);
 		}
 	}
-	@GetMapping("/edititem")
-	public String showEditItemPage(@RequestParam("id") int itemId, @RequestParam("username") String username, Model model) {		
-		Item item = itemService.findItemById(itemId);
-		model.addAttribute("item", item);
-		User user = userService.findUserById(username);
-		model.addAttribute("user", user);
-		return "edititem";
-	}
-	@PostMapping("/updateItem")
-	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  @RequestParam("username") String username, Model model) {
-		Item item = itemService.findItemByNameAndState(name, state);
-		item.setName(name);
-		item.setCondition(state);
-		item.setBestOption(bestOption);
-		item.setSpecialInstruction(specialInstruction);
-		item.setNotes(notes);
-		System.out.println("\n\n"+item.getNotes()+"\n\n");
-		itemService.updateItem(item);	
-		
-//		User user = userService.findUserById(username);
-//		model.addAttribute("user", user);
-		model.addAttribute("username", username);
-		return showProfilePage(model);
-	}
-	@PostMapping("/deleteitem")
-	public String deleteItem(@RequestParam("id") int id,  @RequestParam("username") String username, Model model) {
-		itemService.deleteItem(id);
-		
-//		User user = userService.findUserById(username);
-//		model.addAttribute("user", user);
-		model.addAttribute("username", username);
-		return showProfilePage(model);
-	}
 	
-	@GetMapping("/about")
-	public String showAboutPage() {
-		return "about";
-	}
+	
 	@GetMapping("/login")
 	public String showLogInPage(Model model) {
 		if (model.getAttribute("message") == null) {
@@ -111,37 +92,26 @@ public class HomeController {
 		}
 		return "login";
 	}
-	@PostMapping("/loginInfo")
-	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model) {
-		User user = userService.findUserByEmail(email);
-//		if (user == null) {
-//			String message = "You haven't registered yet. Please click the link below the form to create a new account.";			
-//			model.addAttribute("message", message);
-//			return showLogInPage(model);
-//		} else if (user.getPassword().equals(password)) {
-//			model.addAttribute("user", user);
-//			return showProfilePage(model);
-//		} else {
-//			String message = "Credentials not correct. Please try again";			
-//			model.addAttribute("message", message);
-//			return showLogInPage(model);
-//		}
-		
+	@PostMapping("/login")
+	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model, HttpSession session) {
+		User user = userService.findUserByEmail(email);		
 		String message = "";
-		if (user != null && user.getPassword().equals(password)) {
-//			model.addAttribute("user", user);
-			model.addAttribute("username", user.getUsername());
-			return showProfilePage(model);
+		if (user != null && user.getPassword().equals(password)) { // user is found and password matches.
+			session.setAttribute("userName", user.getUsername());
+			session.setAttribute("eMail", email);
+			return showProfilePage(model, session);
 		} else {
-			if (user == null) {
+			if (user == null) { // User is not found
 				message = "You haven't registered yet. Please click the link below the form to create a new account.";	
-			} else {
+			} else { // User is found but password doesn't match.
 				message = "Credentials not correct. Please try again";
 			}
 			model.addAttribute("message", message);
+			model.addAttribute("email", email);
 			return showLogInPage(model);
 		}
 	}
+	
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
 		if (model.getAttribute("message") == null) {
@@ -154,56 +124,120 @@ public class HomeController {
 		}
 		return "register";
 	}
-	@PostMapping("/addNewUser")
-	public String addUser(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model) {
-		User user = userService.findUserById(username);
-		User newUser = new User(username, password, email, firstName, lastName, null);
-		if (user == null) {	// Username doesn't exist
+	@PostMapping("/register")
+	public String addUser(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpSession session) {
+		User userById = userService.findUserById(username);
+		User userByEmail = userService.findUserByEmail(email);
+		User newUser = new User(username, "", email, firstName, lastName, null);
+		if (userById == null && userByEmail == null) {	// Both username and email don't exist
 			userService.addUser(newUser);
-//			model.addAttribute("user", newUser);
-			model.addAttribute("username", username);
-			return showProfilePage(model);
-		} else { // Username already exists
-			String message = "Username already exists. Choose a different one.";
-			model.addAttribute("message", message);
-			newUser = new User("", password, email, firstName, lastName, null);
+			model.addAttribute("user", newUser);
+			session.setAttribute("userName", username);
+			return showProfilePage(model, session);
+		} else { 
+			String invalidEmailMessage = "";
+			String invalidIdMessage = "";
+			if (userByEmail != null) { // user email already exists in the system
+				invalidEmailMessage = "Email address " + email + " already exists. Choose a different one.";
+				newUser.setEmail("");
+			}
+			
+			if (userById != null) { // username already exists in the system
+				invalidIdMessage += "Username " + username + " already exists. Choose a different one.";
+				newUser.setUsername("");
+			}
+			model.addAttribute("emailMessage", invalidEmailMessage);
+			model.addAttribute("usernameMessage", invalidIdMessage);
 			model.addAttribute("user", newUser); // to populate the form
 			return showRegisterPage(model);
 		}
 	}
 	
 	@GetMapping("/profile")
-	public String showProfilePage(Model model) {
-		String username = (String) model.getAttribute("username");
+	public String showProfilePage(Model model, HttpSession session) {
+		String username = getUserName(session);
 		User user = userService.findUserById(username);
-//		User user = (User) model.getAttribute("user");
 		model.addAttribute("user",user);
 		List<Item> items = userService.getItems(user.getUsername());
 		model.addAttribute("items", items);
 		return "profile";
 	}
-	@PostMapping("/backToProfile")
-	public String goBackToProfile(@RequestParam("username") String username, Model model) {
-		model.addAttribute("username", username);
-		return showProfilePage(model);
+
+	@GetMapping("/edititem")
+	public String showEditItemPage(@RequestParam("itemId") int itemId, Model model) {		
+		Item item = itemService.findItemById(itemId);
+		model.addAttribute("item", item);
+		return "edititem";
+	}
+	@PostMapping("/edititem")
+	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  Model model, HttpSession session) {
+		Item item = itemService.findItemByNameAndState(name, state);
+		item.setName(name);
+		item.setCondition(state);
+		item.setBestOption(bestOption);
+		item.setSpecialInstruction(specialInstruction);
+		item.setNotes(notes);
+		itemService.updateItem(item);			
+		return showProfilePage(model, session);
 	}
 	
+	@PostMapping("/deleteitem")
+	public String deleteItem(@RequestParam("itemId") int id, Model model, HttpSession session) {
+		itemService.deleteItem(id);		
+		return showProfilePage(model, session);
+	}
+		
 	@GetMapping("/deleteuser")
-	public String showDeleteUserPage(@RequestParam("email") String email, Model model) {
-		User user = userService.findUserByEmail(email);		
+	public String showDeleteUserPage(Model model, HttpSession session) {
+		String username = getUserName(session);
+		User user = userService.findUserById(username);		
 		model.addAttribute("user", user);
 		return "deleteuser";
 	}
-	@PostMapping("/deleteUser")
-	public String deleteUser(@RequestParam("email") String email, Model model) {
-		User user = userService.findUserByEmail(email);		
+	@PostMapping("/deleteuser")
+	public String deleteUser(@RequestParam("message") String message, Model model, HttpSession session) {
+		String username = getUserName(session);
+		User user = userService.findUserById(username);					
 		userService.deleteUser(user);
+		session.invalidate();
+		
+		// Send email to admin
+		System.out.println(message);
+		
+		
 		return showIndexPage();
 	}
 	
+	@GetMapping("/logout") 
+	public String logout(HttpSession session) {
+		session.invalidate(); // On clicking logout links, the session is to be invalidated.
+		return showIndexPage();
+	}
+
+	@GetMapping("/about")
+	public String showAboutPage() {
+		return "about";
+	}
+	
 	@GetMapping("/contact")
-	public String showContactPage() {
+	public String showContactPage(HttpSession session, Model model) {
+		String email = (String) session.getAttribute("eMail");
+		model.addAttribute("email", email);
 		return "contact";
+	}
+	@PostMapping("/contact")
+	public String contact(@RequestParam("message") String message, @RequestParam("eMail") String email, Model model, HttpSession session) {
+		System.out.println("email: " + email);
+		System.out.println("message: " + message);
+		
+		// Send email to admin
+		
+		
+		return showIndexPage();
+	}
+
+	private String getUserName(HttpSession session) {
+		return (String) session.getAttribute("userName");
 	}
 	
 	/*
@@ -218,17 +252,7 @@ public class HomeController {
 	public String searchEmployeeByNumber(@RequestParam("employeeNumber") Integer employeeNumber, 
 			Model model) {
 		Employee employee = employeeService.findEmployeeById(employeeNumber);
-		System.out.println(employee);
 		model.addAttribute("employee", employee);
-		return "index";
-	}
-	@PostMapping("/find") // Match the form's action name
-	public String searchItemName(@RequestParam("itemName") String itemName,			
-			Model model) {	
-		System.out.println(itemName);
-		List<Item> items = itemService.findItemByName(itemName);
-		System.out.println(items);
-		model.addAttribute("items", items);
 		return "index";
 	}
 	

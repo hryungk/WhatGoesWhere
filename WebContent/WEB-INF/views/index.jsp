@@ -5,7 +5,14 @@
 <%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  --%>	
- 	
+<%	
+	String userName = (String) session.getAttribute("userName");
+	if (userName != null) {
+		userName  = session.getAttribute("userName").toString();
+	}
+%>	
+	<h1>Welcome <a href="profile"><%= userName %>!</a> <a href="logout" class="a-reg-btn">Log out</a></h1>
+	
  	<section> 
         <h2>Search any item to learn how to dispose of it properly</h2>
         <div>

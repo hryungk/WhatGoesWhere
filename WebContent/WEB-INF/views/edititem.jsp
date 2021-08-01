@@ -4,7 +4,7 @@
     <section> 
         <h1>Edit an Existing Item</h1>
         <div>
-           <form action="./updateItem" method="POST">
+           <form action="./edititem" method="POST">
                 <fieldset>
                     <legend>Please modify the data below:</legend>
                     <div class="r-input">
@@ -26,17 +26,18 @@
 						<input type="text" name="date" placeholder="Added on MM-DD-YYYY" disabled="disabled" value="${item.addedDate }"/>
 					</div>
                 </fieldset>
-                <input type="hidden" name="username" value="${user.username }">
-                <input class="reg-btn" type="submit" value="Update">                
-            </form>
-            
-            <form action="./backToProfile" method="post">
-				<input type="hidden" name="username" value="${user.username }">
-				<input type="submit" class="reg-btn" value="Go Back">                
-			</form>           
-       		
+                <input class="reg-btn" type="submit" value="Update">  
+                <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>              
+            </form>       		
         </div>
     </section>
-    
+    <script>
+    	var element = document.getElementById('a-btn');
+		element.setAttribute('href', document.referrer);		
+		element.onclick = function() {
+			history.back();
+			return false;
+		}
+    </script>
    <!-- Footer -->
 <jsp:include page="footer.jsp" />

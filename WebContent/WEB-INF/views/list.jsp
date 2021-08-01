@@ -2,6 +2,15 @@
 <jsp:include page="header.jsp" />
 <!-- JSTL includes -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%	
+	String userName = (String) session.getAttribute("userName");
+	if (userName != null) {
+		userName  = session.getAttribute("userName").toString();
+	}
+%>	
+	<h1>Welcome <a href="profile"><%= userName %>!</a> <a href="logout" class="a-reg-btn">Log out</a></h1>
+
     <section> 
         <h1>Item List</h1>
         <div style="height: 4em; position: relative; margin: 1em 0">

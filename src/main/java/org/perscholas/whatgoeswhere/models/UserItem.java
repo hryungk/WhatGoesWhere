@@ -34,6 +34,14 @@ public class UserItem {
 		userId = "";
 		itemId = 0;
 	}
+	
+
+	public UserItem(String userId, int itemId) {
+		super();
+		this.userId = userId;
+		this.itemId = itemId;
+	}
+
 
 	public String getUserId() {
 		return userId;

@@ -2,7 +2,15 @@
 	<jsp:include page="header.jsp" />	
 <!-- JSTL includes -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-    
+<%
+	String userName = null;
+	if (session.getAttribute("userName") == null) {
+		response.sendRedirect("login");
+	} else {
+		userName = session.getAttribute("userName").toString();
+	}
+%>	
+	<h1>Welcome <%= userName %>! <a href="logout" class="a-reg-btn">Log out</a></h1>
     <section> 
         <h1>My Profile</h1>
         <table id="table-profile">
@@ -19,12 +27,15 @@
 	        	<td>${user.email }</td>        	
         	</tr>
         	<tr>
+        		<th></th>        		
+		        <td>        		 	
+			        <a href="logout" class="a-reg-btn">Log out</a>
+		        </td>		        
+        	</tr>
+        	<tr>
         		<th></th>
-        		<td>
-	        		 <form action="./deleteuser?email=${user.email }" method="get">
-			        	<input type="hidden" name="email" value="${user.email }" />
-			        	<button type="submit" class="find-btn a-btn">Delete Account</button> 
-			        </form>
+        		<td>        		 	
+			        <a href="deleteuser">Delete Account</a>
 		        </td>
         	</tr>
         	<tr>
@@ -33,9 +44,9 @@
         </table>
        
         
-        <!-- <div style="height: 4em; position: relative; margin: 1em 0">
+        <div style="height: 4em; position: relative; margin: 1em 0">
         	<a href="additem" class="reg-btn add-btn a-btn">Add a new Item</a>
-        </div> -->
+        </div>
         <div>
 	        <table class="table table-striped table-hover">
 	        	<thead>
@@ -54,16 +65,14 @@
 	        		<c:forEach var="item" items="${items}" varStatus="status">
 			       		<tr>
 			       			<td>
-								<form action="./deleteitem?id=${item.id}" method="POST" onsubmit="return(confirm('Are you sure you want to delete the item?'))" name="myForm">
-									<input type="hidden" name="id" value="${item.id}">
-									<input type="hidden" name="username" value="${user.username }">
+								<form action="./deleteitem" method="POST" onsubmit="return(confirm('Are you sure you want to delete the item?'))" name="myForm">
+									<input type="hidden" name="itemId" value="${item.id}">
 									<button class="find-btn a-btn">Delete</button>
 								</form>
 							</td>
 							<td>
-								<form action="./edititem?id=${item.id}" method="get">
-									<input type="hidden" name="id" value="${item.id}">
-									<input type="hidden" name="username" value="${user.username }">
+								<form action="./edititem" method="get">
+									<input type="hidden" name="itemId" value="${item.id}">
 									<button class="find-btn a-btn">Edit</button>
 								</form>
 							</td>

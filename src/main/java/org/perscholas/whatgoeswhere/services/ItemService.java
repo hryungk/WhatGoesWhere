@@ -32,8 +32,8 @@ public class ItemService {
 		return itemRepository.findItemById(id);
 	}
 	
-	public boolean addItem(Item item) {
-		return itemRepository.addItem(item);
+	public boolean addItem(Item item, String userId) {
+		return itemRepository.addItem(item, userId);
 	}
 	
 	public boolean deleteItem(int itemId) {

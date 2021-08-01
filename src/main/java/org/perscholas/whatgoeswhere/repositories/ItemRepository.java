@@ -69,7 +69,7 @@ public class ItemRepository {
 		return item;
 	}
 	
-	public boolean addItem(Item item) {
+	public boolean addItem(Item item, String userId) {
 		// If there already exists the same item in the system, addition fails.
 		if (findItemByNameAndState(item.getName(),item.getCondition()) == null) {		
 			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
@@ -80,6 +80,10 @@ public class ItemRepository {
 			
 			entityManager.getTransaction().commit();
 			entityManager.refresh(item);
+			
+			if (userId != null) {
+				uiRepository.addUserItem(userId, item.getId());
+			}
 			
 			entityManager.close();
 			emfactory.close();
