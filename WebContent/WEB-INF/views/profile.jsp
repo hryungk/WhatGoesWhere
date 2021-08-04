@@ -10,7 +10,7 @@
 		userName = session.getAttribute("userName").toString();
 	}
 %>	
-	<h1>Welcome <%= userName %>! <a href="logout" class="a-reg-btn">Log out</a></h1>
+
     <section> 
         <h1>My Profile</h1>
         <table id="table-profile">

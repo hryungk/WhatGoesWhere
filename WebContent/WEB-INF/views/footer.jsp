@@ -1,3 +1,9 @@
+<%	
+	String userName = (String) session.getAttribute("userName");
+	if (userName != null) {
+		userName  = session.getAttribute("userName").toString();
+	}
+%>	
     <footer>
 		<div class="footer-nav">
 			<p class="footer-nav-title">Site Map</p>
@@ -22,5 +28,17 @@
 			</ul>
 		</div>
 	</footer>	
+	<script>
+	    let footer_ul = document.getElementById('footer-support-ul');
+		<%-- let username = '<%= userName%>'; --%>
+    	if (username != 'null') {
+    		let li_deleteuser = document.createElement('li');
+    		let a_deleteuser = document.createElement('a');
+    		a_deleteuser.innerHTML = 'Delete account';
+    		a_deleteuser.href = 'deleleuser';
+    		li_deleteuser.appendChild(a_deleteuser);
+    		footer_ul.appendChild(li_deleteuser);
+    	}
+    </script>
 </body>
 </html>

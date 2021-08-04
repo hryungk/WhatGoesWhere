@@ -11,7 +11,6 @@
 		userName  = session.getAttribute("userName").toString();
 	}
 %>	
-	<h1>Welcome <a href="profile"><%= userName %>!</a> <a href="logout" class="a-reg-btn">Log out</a></h1>
 	
  	<section> 
         <h2>Search any item to learn how to dispose of it properly</h2>
