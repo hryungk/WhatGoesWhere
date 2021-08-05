@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="Items", uniqueConstraints = { @UniqueConstraint(name = "UniqueNameAndState", columnNames = { "name", "state" }) })
@@ -23,14 +24,14 @@ public class Item {
 	@Column(name="id")
 	private int id; // Unique Item identifier
 	@Column(name="name", length=50, nullable=false)
+	@NotEmpty(message="Item name is required.")
 	private String name; // Item name
 	@Column(name="state", length=50) // "condition" is a reserved keyword in MariaDB
 	private String condition; // Item's condition
 	
-
 	@Column(length=50, nullable=false)
+	@NotEmpty(message="Best Option is required.")
 	private BestOption bestOption;
-//	private String bestOption;
 	
 	@Column(name="special_instruction", length=100)
 	private String specialInstruction; // Any special instruction to use the best option

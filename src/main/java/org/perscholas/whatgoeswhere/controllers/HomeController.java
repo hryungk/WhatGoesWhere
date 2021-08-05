@@ -1,11 +1,7 @@
 package org.perscholas.whatgoeswhere.controllers;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,6 +15,7 @@ import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,17 +68,17 @@ public class HomeController {
 		model.addAttribute("item", new Item());
 		
 		// Pass the bestoption enum values
-//		model.addAttribute("bestOption", BestOption.Garbage);
 		model.addAttribute("bestOptions", BestOption.values());
 		
 		return "additem";
 	}
 	@PostMapping("/additem")
-	public String addItem(@ModelAttribute("item") Item item, Model model, HttpSession session) {
-		
+	public String addItem(@ModelAttribute("item") Item item, Model model, HttpSession session, BindingResult errors) {
+		if (errors.hasErrors()) {
+			return "additem";			
+		}
 		LocalDateTime now = LocalDateTime.now();
 		item.setAddedDate(now);
-//		Item item = new Item(item.getName(), item.getCondition(), item.getBestOption(), item.getSpecialInstruction(), item.getNotes(), now);
 		String username = getUserName(session);
 		boolean isAddSuccessful = itemService.addItem(item, username);
 		if (isAddSuccessful) {
@@ -96,26 +93,6 @@ public class HomeController {
 			return showAddItemPage(model, session);
 		}
 	}
-//	@PostMapping("/additem")
-//	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") BestOption bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model, HttpSession session) {
-//		System.out.println(bestOption);
-//		LocalDateTime now = LocalDateTime.now();
-//		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
-//		String username = getUserName(session);
-//		boolean isAddSuccessful = itemService.addItem(item, username);
-//		if (isAddSuccessful) {
-//			return showListPage(model);
-//		} else {
-//			String message = name;
-//			if (condition.length() != 0) {
-//				message += " ("+ condition +")";
-//			}
-//			message += " already exists in the list.";
-//			model.addAttribute("message", message);
-//			return showAddItemPage(model, session);
-//		}
-//	}
-	
 	
 	@GetMapping("/login")
 	public String showLogInPage(Model model) {
@@ -200,16 +177,22 @@ public class HomeController {
 	public String showEditItemPage(@RequestParam("itemId") int itemId, Model model) {		
 		Item item = itemService.findItemById(itemId);
 		model.addAttribute("item", item);
+
+		// Pass the bestoption enum values
+		model.addAttribute("bestOptions", BestOption.values());
 		return "edititem";
 	}
 	@PostMapping("/edititem")
-	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") BestOption bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  Model model, HttpSession session) {
-		Item item = itemService.findItemByNameAndState(name, state);
-		item.setName(name);
-		item.setCondition(state);
-		item.setBestOption(bestOption);
-		item.setSpecialInstruction(specialInstruction);
-		item.setNotes(notes);
+	public String editItem(@ModelAttribute("item") Item uitem,  Model model, HttpSession session, BindingResult errors) {
+		if (errors.hasErrors()) {
+			return "edititem";
+		}
+		Item item = itemService.findItemByNameAndState(uitem.getName(), uitem.getCondition());
+		item.setName(uitem.getName());
+		item.setCondition(uitem.getCondition());
+		item.setBestOption(uitem.getBestOption());
+		item.setSpecialInstruction(uitem.getSpecialInstruction());
+		item.setNotes(uitem.getNotes());
 		itemService.updateItem(item);			
 		return showProfilePage(model, session);
 	}

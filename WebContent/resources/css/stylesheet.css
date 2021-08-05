@@ -234,3 +234,7 @@ hr {
 #table-profile td {
 	text-align: left;
 }
+
+.form-error {
+	color: red;
+}

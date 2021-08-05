@@ -7,51 +7,32 @@
     <section> 
         <h1>Add a New Item</h1>
         <div>
-           <%-- <form action="./additem" method="POST">
-                <fieldset>
-                    <legend>Please fill out the form below:</legend>
-                    <p style="color: red;" id="msg"><c:out value="${message }" /></p>
-                    <div class="r-input">
-						<input type="text" name="itemName" placeholder="Item Name (required)" required="required" />
-					</div>
-					<div class="r-input">				
-						<input type="text" name="condition" placeholder="Item Condition" />
-					</div>
-					<div class="r-input">
-						<input type="text" name="bestOption" placeholder="Best Option (required)" required="required" />
-					</div>
-					<div class="r-input">
-						<input type="text" name="specialInstruction" placeholder="Special Instruction" />
-					</div>
-					<div class="r-input">
-						<input type="text" name="notes" placeholder="Notes" />
-					</div>
-                </fieldset>
-                <input type="submit" value="Add" class="reg-btn" />
-                <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
-            </form>  --%>   
-            
-            <form:form action="./additem" method="POST" modelAttribute="item">
+            <form:form action="./additem" method="POST" modelAttribute="item" >
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
 						<form:input type="text" path="name" placeholder="Item Name (required)" required="required" />
+						<form:errors path="name" class="form-error" />
 					</div>
 					<div class="r-input">				
 						<form:input type="text" path="condition" placeholder="Item Condition" />
+						<form:errors path="condition" class="form-error" />
 					</div>
 					<div class="r-input">
 						<form:select path="bestOption" required="required">
 							<form:option value="" label="--- Best Option (required) ---" disabled="true"/>
 							<form:options items="${bestOptions }" itemLabel="value" />							
 						</form:select>
+						<form:errors path="bestOption" class="form-error" />
 					</div>
 					<div class="r-input">
 						<form:input type="text" path="specialInstruction" placeholder="Special Instruction" />
+						<form:errors path="specialInstruction" class="form-error" />
 					</div>
 					<div class="r-input">
 						<form:input type="text" path="notes" placeholder="Notes" />
+						<form:errors path="notes" class="form-error" />
 					</div>
                 </fieldset>
                 <input type="submit" value="Add" class="reg-btn" />
