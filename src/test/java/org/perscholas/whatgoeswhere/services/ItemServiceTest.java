@@ -14,6 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.repositories.ItemRepository;
 
@@ -31,9 +32,9 @@ class ItemServiceTest {
 	void testGetAllItems() {
 		String input1 = "Apple";
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item(input1, "", "Food & Yard Waste", "No plastic should go in your compost cart.", "", now);
-		Item item2 = new Item(input1, "", "Compost", "No glass should go in your compost cart.", "", now);
-		Item item3 = new Item("Aluminum tray", "Clean", "Garbage", "", "", now);
+		Item item1 = new Item(input1, "", BestOption.Composting, "No plastic should go in your compost cart.", "", now);
+		Item item2 = new Item(input1, "", BestOption.Composting, "No glass should go in your compost cart.", "", now);
+		Item item3 = new Item("Aluminum tray", "Clean", BestOption.Garbage, "", "", now);
 		Mockito.when(itemRepository.getAllItems()).thenReturn(List.of(item1, item2, item3));
 		
 		List<Item> actualList = itemService.getAllItems();
@@ -47,8 +48,8 @@ class ItemServiceTest {
 	void testFindItemByName() {
 		String input1 = "Apple";
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item(input1, "", "Food & Yard Waste", "No plastic should go in your compost cart.", "", now);
-		Item item2 = new Item(input1, "", "Compost", "No glass should go in your compost cart.", "", now);
+		Item item1 = new Item(input1, "", BestOption.Composting, "No plastic should go in your compost cart.", "", now);
+		Item item2 = new Item(input1, "", BestOption.Composting, "No glass should go in your compost cart.", "", now);
 		Mockito.when(itemRepository.findItemByName(anyString())).thenReturn(List.of(item1, item2));
 		Item[] expected = {item1, item2};
 		
@@ -65,7 +66,7 @@ class ItemServiceTest {
 		String input2 = "Core";
 		LocalDateTime now = LocalDateTime.now();
 		Mockito.when(itemRepository.findItemByNameAndState(anyString(),anyString())).thenReturn(
-				new Item(input1, input2, "Food & Yard Waste",
+				new Item(input1, input2, BestOption.Composting,
 						"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now));
 		
 		Item actual = itemService.findItemByNameAndState(input1, input2);

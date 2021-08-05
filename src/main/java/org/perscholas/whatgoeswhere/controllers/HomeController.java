@@ -1,10 +1,15 @@
 package org.perscholas.whatgoeswhere.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Employee;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
@@ -15,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,27 +67,54 @@ public class HomeController {
 			String message = "";
 			model.addAttribute("message", message);
 		}
+		// Pass an Item object
+		model.addAttribute("item", new Item());
+		
+		// Pass the bestoption enum values
+//		model.addAttribute("bestOption", BestOption.Garbage);
+		model.addAttribute("bestOptions", BestOption.values());
 		
 		return "additem";
 	}
 	@PostMapping("/additem")
-	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model, HttpSession session) {
+	public String addItem(@ModelAttribute("item") Item item, Model model, HttpSession session) {
+		
 		LocalDateTime now = LocalDateTime.now();
-		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
+		item.setAddedDate(now);
+//		Item item = new Item(item.getName(), item.getCondition(), item.getBestOption(), item.getSpecialInstruction(), item.getNotes(), now);
 		String username = getUserName(session);
 		boolean isAddSuccessful = itemService.addItem(item, username);
 		if (isAddSuccessful) {
 			return showListPage(model);
 		} else {
-			String message = name;
-			if (condition.length() != 0) {
-				message += " ("+ condition +")";
+			String message = item.getName();
+			if (item.getCondition().length() != 0) {
+				message += " ("+ item.getCondition() +")";
 			}
 			message += " already exists in the list.";
 			model.addAttribute("message", message);
 			return showAddItemPage(model, session);
 		}
 	}
+//	@PostMapping("/additem")
+//	public String addItem(@RequestParam("itemName") String name, @RequestParam("condition") String condition,@RequestParam("bestOption") BestOption bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes, Model model, HttpSession session) {
+//		System.out.println(bestOption);
+//		LocalDateTime now = LocalDateTime.now();
+//		Item item = new Item(name, condition, bestOption, specialInstruction, notes, now);
+//		String username = getUserName(session);
+//		boolean isAddSuccessful = itemService.addItem(item, username);
+//		if (isAddSuccessful) {
+//			return showListPage(model);
+//		} else {
+//			String message = name;
+//			if (condition.length() != 0) {
+//				message += " ("+ condition +")";
+//			}
+//			message += " already exists in the list.";
+//			model.addAttribute("message", message);
+//			return showAddItemPage(model, session);
+//		}
+//	}
 	
 	
 	@GetMapping("/login")
@@ -170,7 +203,7 @@ public class HomeController {
 		return "edititem";
 	}
 	@PostMapping("/edititem")
-	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") String bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  Model model, HttpSession session) {
+	public String editItem(@RequestParam("itemName") String name, @RequestParam("condition") String state,@RequestParam("bestOption") BestOption bestOption,@RequestParam("specialInstruction") String specialInstruction,@RequestParam("notes") String notes,  Model model, HttpSession session) {
 		Item item = itemService.findItemByNameAndState(name, state);
 		item.setName(name);
 		item.setCondition(state);

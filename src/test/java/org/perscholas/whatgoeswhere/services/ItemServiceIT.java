@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.perscholas.whatgoeswhere.config.WebAppConfig;
 import org.perscholas.whatgoeswhere.controllers.HomeController;
+import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -54,8 +55,8 @@ class ItemServiceIT {
 		// Add items to the database to use for testing if they don't already exist.
 		LocalDateTime now = LocalDateTime.now();
 		String itemName = "Aerosole cans";
-		item1 = new Item(itemName, "Empty", "Recycling", "Must be empty.", "", now);
-		item2 = new Item(itemName, "full or partially full", "Drop-off - Hazardous Waste", "", "This item is considered hazardous waste and must be disposed of safely.", now);
+		item1 = new Item(itemName, "Empty", BestOption.Recycling, "Must be empty.", "", now);
+		item2 = new Item(itemName, "full or partially full", BestOption.DropOff, "Hazardous waste", "This item is considered hazardous waste and must be disposed of safely.", now);
 		
 		if(!itemService.addItem(item1, null))
 			item1 = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
@@ -110,7 +111,7 @@ class ItemServiceIT {
 		}
 		
 		LocalDateTime now = LocalDateTime.now();
-		Item expected = new Item("Chip bags", "", "Trash",
+		Item expected = new Item("Chip bags", "", BestOption.Garbage,
 				"", "", now);
 		assertTrue(itemService.addItem(expected, null));		
 	}

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 
@@ -20,10 +21,10 @@ public static void main(String[] args) {
 		manager.getTransaction().begin();
 		
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item("Apple", "Any", "Composting","NA", "NA", now);
+		Item item1 = new Item("Apple", "Any", BestOption.Composting,"NA", "NA", now);
 		manager.persist(item1);
 		
-		Item item2 = new Item("Aerosole Cans", "Empty", "Recycling","Must Be Empty", "NA", now);
+		Item item2 = new Item("Aerosole Cans", "Empty", BestOption.Recycling,"Must Be Empty", "NA", now);
 		manager.persist(item2);
 		
 		List<Item> itemList = new ArrayList<>();

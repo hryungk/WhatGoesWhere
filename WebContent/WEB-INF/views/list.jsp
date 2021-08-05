@@ -32,7 +32,7 @@
 			       		<tr>
 			       			<td><c:out value="${item.name }" /></td>
 			       			<td><c:out value="${item.condition }" /></td>
-			       			<td><c:out value="${item.bestOption }" /></td>
+			       			<td><c:out value="${item.bestOption.value }" /></td>
 			       			<td><c:out value="${item.specialInstruction }" /></td>
 			       			<td><c:out value="${item.notes }" /></td>
 			       			<td><c:out value="${item.addedDate }" /></td>

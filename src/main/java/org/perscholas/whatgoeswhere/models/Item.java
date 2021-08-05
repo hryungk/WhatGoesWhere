@@ -26,8 +26,12 @@ public class Item {
 	private String name; // Item name
 	@Column(name="state", length=50) // "condition" is a reserved keyword in MariaDB
 	private String condition; // Item's condition
-	@Column(name="best_option", length=50, nullable=false)
-	private String bestOption;
+	
+
+	@Column(length=50, nullable=false)
+	private BestOption bestOption;
+//	private String bestOption;
+	
 	@Column(name="special_instruction", length=100)
 	private String specialInstruction; // Any special instruction to use the best option
 	@Column(name="notes", length=200)
@@ -38,7 +42,7 @@ public class Item {
 	public Item() {
 		super();
 	}
-	public Item(String name, String condition, String bestOption,
+	public Item(String name, String condition, BestOption bestOption,
 			String specialInstruction, String notes, LocalDateTime addedDate) {
 		super();
 		this.name = name;
@@ -73,11 +77,11 @@ public class Item {
 		this.condition = condition;
 	}
 
-	public String getBestOption() {
+	public BestOption getBestOption() {
 		return bestOption;
 	}
 
-	public void setBestOption(String bestOption) {
+	public void setBestOption(BestOption bestOption) {
 		this.bestOption = bestOption;
 	}
 
@@ -101,17 +105,10 @@ public class Item {
 		return addedDate;
 	}
 
-//	public void setAddedDate(LocalDateTime addedDate) {
-//		this.addedDate = addedDate;
-//	}
+	public void setAddedDate(LocalDateTime addedDate) {
+		this.addedDate = addedDate;
+	}
 	
-//	public User getUser() {
-//		return user;
-//	}
-//	
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
 	
 	@Override
 	public int hashCode() {

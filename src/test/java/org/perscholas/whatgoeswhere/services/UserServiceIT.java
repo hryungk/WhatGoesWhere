@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.perscholas.whatgoeswhere.config.WebAppConfig;
 import org.perscholas.whatgoeswhere.controllers.HomeController;
+import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,8 +117,8 @@ class UserServiceIT {
 			userService.deleteUser(toRemove);
 		}
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item("Banana", "", "Composting","", "", now);		
-		Item item2 = new Item("Aerosole cans", "Empty", "Recycling","Must be empty.", "", now);	
+		Item item1 = new Item("Banana", "", BestOption.Composting,"", "", now);		
+		Item item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now);	
 		List<Item> items = List.of(item1, item2);
 		User user1 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David","Chi", items);		
 		userService.addUser(user1);

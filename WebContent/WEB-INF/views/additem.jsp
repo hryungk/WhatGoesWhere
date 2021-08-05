@@ -2,11 +2,12 @@
 <jsp:include page="header.jsp" />
 <!-- JSTL includes -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
     
     <section> 
         <h1>Add a New Item</h1>
         <div>
-           <form action="./additem" method="POST">
+           <%-- <form action="./additem" method="POST">
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <p style="color: red;" id="msg"><c:out value="${message }" /></p>
@@ -28,7 +29,34 @@
                 </fieldset>
                 <input type="submit" value="Add" class="reg-btn" />
                 <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
-            </form>            
+            </form>  --%>   
+            
+            <form:form action="./additem" method="POST" modelAttribute="item">
+                <fieldset>
+                    <legend>Please fill out the form below:</legend>
+                    <p style="color: red;" id="msg"><c:out value="${message }" /></p>
+                    <div class="r-input">
+						<form:input type="text" path="name" placeholder="Item Name (required)" required="required" />
+					</div>
+					<div class="r-input">				
+						<form:input type="text" path="condition" placeholder="Item Condition" />
+					</div>
+					<div class="r-input">
+						<form:select path="bestOption" required="required">
+							<form:option value="" label="--- Best Option (required) ---" disabled="true"/>
+							<form:options items="${bestOptions }" itemLabel="value" />							
+						</form:select>
+					</div>
+					<div class="r-input">
+						<form:input type="text" path="specialInstruction" placeholder="Special Instruction" />
+					</div>
+					<div class="r-input">
+						<form:input type="text" path="notes" placeholder="Notes" />
+					</div>
+                </fieldset>
+                <input type="submit" value="Add" class="reg-btn" />
+                <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
+            </form:form>         
         </div>
     </section>
     <script>
