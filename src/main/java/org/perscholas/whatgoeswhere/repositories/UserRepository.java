@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -125,5 +126,8 @@ public class UserRepository {
 		return true;
 	}
 	
-	
+	public List<Item> getItems(String userId) {
+		User user = findUserById(userId);
+		return user.getItems();
+	}
 }

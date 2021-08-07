@@ -11,8 +11,7 @@
         	<c:set scope="page" var="sel1">${item.bestOption }</c:set>
         	<form:form action="./edititem" method="POST" modelAttribute="item">
                 <fieldset>
-                    <legend>Please modify the item below:</legend>
-                    <form:input type="hidden" path="id" value="${item.id }"/>
+                    <legend>Please modify the data below:</legend>
                     <div class="r-input">
 						<form:input type="text" path="name" placeholder="Item Name (required)" required="required" value="${item.name }"/>
 						<form:errors path="name" class="form-error" />
