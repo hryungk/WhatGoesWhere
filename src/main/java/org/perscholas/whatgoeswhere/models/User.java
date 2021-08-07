@@ -31,7 +31,7 @@ public class User {
 	private String firstName; // User's first name	
 	@Column(name="lname", length=50)
 	private String lastName; // User's last name	
-	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL)
+	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL, orphanRemoval = false)
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 
@@ -95,6 +95,7 @@ public class User {
 	public void setItems(List<Item> items) {
 		this.items = items;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -117,6 +118,17 @@ public class User {
 		} else if (!username.equals(other.username))
 			return false;
 		return true;
+	}
+	@Override
+	public String toString() {
+		String itemsStr = "";
+		for (Item item : items) {
+			itemsStr += item.getName() + "(" +item.getCondition() + "), ";
+		}
+		itemsStr = itemsStr.substring(0,itemsStr.length()-3);
+		
+		return "User [username=" + username + ", password=" + password + ", email=" + email + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", items=" + itemsStr + "]";
 	}	
 	
 }
