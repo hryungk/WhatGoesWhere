@@ -23,20 +23,24 @@ public class Item {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id; // Unique Item identifier
+	
 	@Column(name="name", length=50, nullable=false)
 	@NotEmpty(message="Item name is required.")
 	private String name; // Item name
+	
 	@Column(name="state", length=50) // "condition" is a reserved keyword in MariaDB
 	private String condition; // Item's condition
 	
 	@Column(length=50, nullable=false)
-	@NotEmpty(message="Best Option is required.")
+//	@NotEmpty(message="Best Option is required.")
 	private BestOption bestOption;
 	
 	@Column(name="special_instruction", length=100)
 	private String specialInstruction; // Any special instruction to use the best option
+	
 	@Column(name="notes", length=200)
 	private String notes; // Additional comments or notes
+	
 	@Column(name="added_date", nullable=false)
 	private LocalDateTime addedDate; // The date the entry is added	
 	
@@ -58,9 +62,9 @@ public class Item {
 		return id;
 	}
 
-//	public void setId(int itemId) {
-//		this.id = itemId;
-//	}
+	public void setId(int itemId) {
+		this.id = itemId;
+	}
 
 	public String getName() {
 		return name;
@@ -122,12 +126,6 @@ public class Item {
 	}
 	
 	@Override
-	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", bestOption=" + bestOption
-				+ ", specialInstruction=" + specialInstruction + ", notes=" + notes + ", addedDate=" + addedDate + "]";
-	}
-	
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -149,6 +147,12 @@ public class Item {
 		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", bestOption=" + bestOption
+				+ ", specialInstruction=" + specialInstruction + ", notes=" + notes + ", addedDate=" + addedDate + "]";
 	}
 	
 }

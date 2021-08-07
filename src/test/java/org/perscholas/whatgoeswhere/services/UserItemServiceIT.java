@@ -3,14 +3,14 @@ package org.perscholas.whatgoeswhere.services;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,20 +42,20 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = { WebAppConfig.class })
 @WebAppConfiguration("WebContent") // Letting it know where web content is (folder name)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserServiceIT {
+class UserItemServiceIT {
 	private WebApplicationContext webApplicationContext;
 	private HomeController homeController;
 	private MockMvc mockMvc;
 	private UserService userService;
-	private UserItemService uiService;
 	private ItemService itemService;
-	private User user1, user2, toAdd, toDelete;
-	private Item item1, item2, item3, itemToDelete;
-	private List<Item> items;
+	private UserItemService uiService;
+	private User user1, user2, user3;
+	private Item item1, item2, toDelete1, toDelete2, toDelete3;
+	private List<Item> items, items2delete;
 	
 
 	@Autowired
-	public UserServiceIT(WebApplicationContext webApplicationContext, 
+	public UserItemServiceIT(WebApplicationContext webApplicationContext, 
 			HomeController homeController, UserService userService,UserItemService uiService,ItemService itemService) {
 		this.webApplicationContext = webApplicationContext;
 		this.homeController = homeController;
@@ -75,21 +75,30 @@ class UserServiceIT {
 		LocalDateTime now = LocalDateTime.now();
 		item1 = new Item("Banana", "", BestOption.Composting,"", "", now);		
 		item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now);	
+		toDelete1 = new Item("Aerosole cans", "full or partially full", BestOption.DropOff,"If not empty, bring to facility", "Hazardous", now);
+		toDelete2 = new Item("Bread bags", "Empty", BestOption.DropOff,"Must be clean", "Drop off at a local grocery", now);
+		toDelete3 = new Item("Chip bags", "", BestOption.Garbage,"", "", now);
 		items = List.of(item1, item2);
-		item3 = new Item("Muffin liner", "Food soiled", BestOption.Composting,"", "", now);	
-		itemToDelete = new Item("Parchment paper", "Food soiled", BestOption.Composting,"", "", now);	
-		
+		items2delete = List.of(toDelete2, toDelete3);
+	    
 		// Add users to the database to use for testing if they don't already exist.
-		user1 = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen", "Kim", new ArrayList<Item>());
-		user2 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David","Chi", new ArrayList<Item>());
+		user1 = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen", "Kim", items);
+		User temp = userService.add(user1);
+		items = temp.getItems();
+		item1 = items.get(0);
+		item2 = items.get(1);
 		
-		userService.add(user1);				
-		userService.add(user2);
-				
-	    toAdd = new User("Pusheen", "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", new ArrayList<Item>());
-	    toDelete = new User("Stormy", "stormythesister", "stormy@email.com", "Stormy","Sister",List.of(itemToDelete));
-		userService.add(toDelete);
-	}	
+		user2 = new User("doomgeek", "1234dpc", "davidchi@email.com", "David","Chi", List.of(toDelete1));
+		temp = userService.add(user2);
+		toDelete1 = temp.getItems().get(0);
+		
+		user3 = new User("Pusheen", "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", items2delete);
+		temp = userService.add(user3);
+		items2delete = temp.getItems();
+		toDelete2 = items2delete.get(0);
+		toDelete3 = items2delete.get(1);
+	}
+	
 	
 	@Test
 	void testAplicationContext() {
@@ -98,97 +107,54 @@ class UserServiceIT {
 	}
 
 	@Test
-	void testGetAllUsers() {
-		List<User> actual = userService.getAllUsers();
+	void testFindAll() {
+		List<UserItem> actual = uiService.findAll();
 		assertNotNull(actual);
-		assertEquals(4, actual.size());
-		
+		assertEquals(items.size(), actual.size());
+		assertEquals(item1.getId(), actual.get(0).getItemId());
+		assertEquals(item2.getId(), actual.get(1).getItemId());
 	}
 	
 	@Test
-	void testFindUserById() {		
-		User expected = user1; 				
-		User actual = userService.findUserById(user1.getUsername());
-		
-		assertEquals(expected, actual);
+	void testFindByItemId() {
+		UserItem actual = uiService.findByItemId(item1.getId());
+		assertEquals(item1.getId(), actual.getItemId());
 	}
 	
 	@Test
-	void testFindUserByEmail() {
-		User expected = user2;
-		User actual = userService.findUserByEmail(user2.getEmail());
-		assertEquals(expected.getUsername(), actual.getUsername());
-	}
-	
-	@Test
-	void testAddUser() {
-		// For testing addition, remove the user if it already exists
-		User toRemove = userService.findUserById(toAdd.getUsername());
-		if (toRemove != null) { // exists in the db
-			userService.delete(toRemove);
-		}
-		
-		User expected = toAdd;
-		User actual = userService.add(toAdd);
-		assertEquals(expected.getUsername(), actual.getUsername());		
-	}
-	
-	@Test
-	void testAddUserWithItems() {			
-		// Delete the user before adding again.
-		userService.delete(user1);
-		assertNull(userService.findUserById(user1.getUsername()));
-		
-		user1.setItems(items);
-		User temp = userService.add(user1);
-		items = temp.getItems();
-		item1 = items.get(0);
-		item2 = items.get(1);
-				
+	void testFindByUserId() {
 		List<UserItem> actual = uiService.findByUserId(user1.getUsername());
 		assertEquals(items.size(), actual.size());
 		assertEquals(item1.getId(), actual.get(0).getItemId());
 		assertEquals(item2.getId(), actual.get(1).getItemId());
-		
-		// For some reason, I can't delete user1 in clean up so I delete here
-		uiService.deleteByUserId(user1.getUsername());
-		List<UserItem> userItem = uiService.findByUserId(user1.getUsername());
-		assertEquals(0, userItem.size());
-		
-		userService.deleteById(user1.getUsername());
-		
-	}
-
-	@Test
-	void testUpdateUser() {		
-		String newPassword = "newpassword";
-		user2.setPassword(newPassword);
-		user2 = userService.update(user2);
-		User actual = userService.findUserById(user2.getUsername());
-		assertEquals(newPassword, actual.getPassword());
-	}
-
-	@Test
-	void testUpdateUserWithNewItem() {		
-		user2.getItems().add(item3);
-		user2 = userService.update(user2);
-		assertTrue(user2.getItems().contains(item3));
 	}
 	
 	@Test
-	void testDeleteUser() {	
-		userService.delete(toDelete);
-		User actual = userService.findUserById(toDelete.getUsername());
-		assertNull(actual); 
+	void testDeleteByItemId() {
+		uiService.deleteByItemId(toDelete1.getId());
+		UserItem actual = uiService.findByItemId(toDelete1.getId());
+		assertNull(actual);
+		
+		userService.deleteById(user2.getUsername());
+		assertNull(userService.findUserById(user2.getUsername()));
+	}
+	
+	@Test
+//	@Disabled("Testing single delete first")
+	void testDeleteByUserId() {
+		uiService.deleteByUserId(user3.getUsername());
+		List<UserItem> actual = uiService.findByUserId(user3.getUsername());
+		assertEquals(0, actual.size());
+		
+		userService.deleteById(user3.getUsername());
+		assertNull(userService.findUserById(user3.getUsername()));
 	}
 
 	@AfterAll
 	void clearSetup() {
-		userService.delete(user2);
-		userService.delete(toAdd);
-		
-		for (Item item : items) {			
-			itemService.delete(item);
-		}
+		userService.deleteById(user1.getUsername());
+		itemService.delete(toDelete1);
+		itemService.delete(toDelete2);
+		itemService.delete(toDelete3);
 	}
 }
