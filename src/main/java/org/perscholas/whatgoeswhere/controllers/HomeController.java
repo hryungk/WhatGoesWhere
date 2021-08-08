@@ -1,15 +1,14 @@
 package org.perscholas.whatgoeswhere.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.perscholas.whatgoeswhere.models.BestOption;
-import org.perscholas.whatgoeswhere.models.Employee;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
-import org.perscholas.whatgoeswhere.services.EmployeeService;
 import org.perscholas.whatgoeswhere.services.ItemService;
 import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +20,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/*
+ * Connecting the JSP and model.
+ */
+
 @Controller
 public class HomeController {
 
-	private EmployeeService employeeService;
 	private ItemService itemService;
 	private UserService userService;
 	
 	@Autowired
-	public HomeController(ItemService itemService, UserService userService, EmployeeService employeeService) {
-		this.employeeService = employeeService; 
+	public HomeController(ItemService itemService, UserService userService) {
 		this.itemService = itemService;
 		this.userService = userService;
 	}
@@ -138,7 +139,7 @@ public class HomeController {
 	public String addUser(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpSession session) {
 		User userById = userService.findUserById(username);
 		User userByEmail = userService.findUserByEmail(email);
-		User newUser = new User(username, "", email, firstName, lastName, null);
+		User newUser = new User(username, "", email, firstName, lastName, new ArrayList<Item>());
 		if (userById == null && userByEmail == null) {	// Both username and email don't exist
 			userService.addUser(newUser);
 			model.addAttribute("user", newUser);
@@ -254,22 +255,6 @@ public class HomeController {
 
 	private String getUserName(HttpSession session) {
 		return (String) session.getAttribute("userName");
-	}
-	
-	/*
-	 * Connecting the JSP and model.
-	 */
-
-	@GetMapping("/home")
-	public String showHomePage() {
-		return "home";
-	}
-	@PostMapping("/search") // Match the form's action name
-	public String searchEmployeeByNumber(@RequestParam("employeeNumber") Integer employeeNumber, 
-			Model model) {
-		Employee employee = employeeService.findEmployeeById(employeeNumber);
-		model.addAttribute("employee", employee);
-		return "index";
 	}
 	
 }
