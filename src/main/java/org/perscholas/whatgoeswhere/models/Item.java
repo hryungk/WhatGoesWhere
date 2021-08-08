@@ -58,9 +58,9 @@ public class Item {
 		return id;
 	}
 
-//	public void setId(int itemId) {
-//		this.id = itemId;
-//	}
+	public void setId(int itemId) {
+		this.id = itemId;
+	}
 
 	public String getName() {
 		return name;

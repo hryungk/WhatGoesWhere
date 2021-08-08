@@ -2,7 +2,6 @@ package org.perscholas.whatgoeswhere.services;
 
 import java.util.List;
 
-import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.perscholas.whatgoeswhere.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +38,5 @@ public class UserService {
 
 	public boolean updateUser(User user) {
 		return userRepository.updateUser(user);
-	}
-	public List<Item> getItems(String userId) {		
-		return userRepository.getItems(userId);
 	}
 }

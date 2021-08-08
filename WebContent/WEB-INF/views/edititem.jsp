@@ -11,8 +11,11 @@
         	<c:set scope="page" var="sel1">${item.bestOption }</c:set>
         	<form:form action="./edititem" method="POST" modelAttribute="item">
                 <fieldset>
-                    <legend>Please modify the data below:</legend>
+                    <legend>Please modify the item below:</legend>
+                    <%-- <p>(Item id:  <span>${item.id }</span>)</p> --%>
+                    <p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
+                    	<form:input type="hidden" path="id" value="${item.id }"/>
 						<form:input type="text" path="name" placeholder="Item Name (required)" required="required" value="${item.name }"/>
 						<form:errors path="name" class="form-error" />
 					</div>
@@ -42,17 +45,17 @@
 					</div>
                 </fieldset>
                 <input class="reg-btn" type="submit" value="Update">  
-                <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>              
+                <a class="reg-btn a-reg-btn" id="a-btn" href="profile">Go Back</a>              
             </form:form>
         </div>
     </section>
     <script>
-    	var element = document.getElementById('a-btn');
+    	/* var element = document.getElementById('a-btn');
 		element.setAttribute('href', document.referrer);		
 		element.onclick = function() {
 			history.back();
 			return false;
-		}
+		} */
     </script>
    <!-- Footer -->
 <jsp:include page="footer.jsp" />

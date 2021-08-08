@@ -36,12 +36,12 @@
 					</div>
                 </fieldset>
                 <input type="submit" value="Add" class="reg-btn" />
-                <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
+                <a class="reg-btn a-reg-btn" id="a-btn" href="list">Go Back</a>
             </form:form>         
         </div>
     </section>
     <script>
-    	var element = document.getElementById('a-btn');
+    	/* var element = document.getElementById('a-btn');
 
 		 // Provide a standard href to facilitate standard browser features such as 
 		 //  - Hover to see link
@@ -57,7 +57,7 @@
 		 element.onclick = function() {
 		   history.back();
 		   return false;
-		 }
+		 } */
     </script>
     
    <!-- Footer -->

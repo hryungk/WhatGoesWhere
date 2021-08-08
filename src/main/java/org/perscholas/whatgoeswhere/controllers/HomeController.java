@@ -81,7 +81,10 @@ public class HomeController {
 		LocalDateTime now = LocalDateTime.now();
 		item.setAddedDate(now);
 		String username = getUserName(session);
-		boolean isAddSuccessful = itemService.addItem(item, username);
+		User user = userService.findUserById(username);
+		user.getItems().add(item);
+		boolean isAddSuccessful = userService.updateUser(user);
+//		boolean isAddSuccessful = itemService.addItem(item, username);
 		if (isAddSuccessful) {
 			return showListPage(model);
 		} else {
@@ -169,7 +172,7 @@ public class HomeController {
 		String username = getUserName(session);
 		User user = userService.findUserById(username);
 		model.addAttribute("user",user);
-		List<Item> items = userService.getItems(user.getUsername());
+		List<Item> items = user.getItems();
 		model.addAttribute("items", items);
 		return "profile";
 	}
@@ -188,14 +191,24 @@ public class HomeController {
 		if (errors.hasErrors()) {
 			return "edititem";
 		}
-		Item item = itemService.findItemByNameAndState(uitem.getName(), uitem.getCondition());
-		item.setName(uitem.getName());
-		item.setCondition(uitem.getCondition());
-		item.setBestOption(uitem.getBestOption());
-		item.setSpecialInstruction(uitem.getSpecialInstruction());
-		item.setNotes(uitem.getNotes());
-		itemService.updateItem(item);			
-		return showProfilePage(model, session);
+		Item itemById = itemService.findItemById(uitem.getId());
+		assert(itemById != null); // can't be null because we're editing an existing id
+		Item itemByNS = itemService.findItemByNameAndState(uitem.getName(), uitem.getCondition());
+		// If user changed neither name nor condition OR user changed it but an matching item doesn't exist in the db
+		if (itemById.equals(itemByNS) || !itemById.equals(itemByNS) && itemByNS==null) {
+			itemById.setName(uitem.getName());
+			itemById.setCondition(uitem.getCondition());
+			itemById.setBestOption(uitem.getBestOption());
+			itemById.setSpecialInstruction(uitem.getSpecialInstruction());
+			itemById.setNotes(uitem.getNotes());
+			itemService.updateItem(itemById);			
+			return showProfilePage(model, session);
+		} else { // user changed either name or condition or both such that there is a duplicate
+			String message = "An item " + uitem.getName() + " (" + uitem.getCondition() +") already exists in the list";
+			model.addAttribute("message",message);
+			return "edititem";
+			 
+		}
 	}
 	
 	@PostMapping("/deleteitem")

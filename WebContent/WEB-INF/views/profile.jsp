@@ -27,26 +27,14 @@
 	        	<td>${user.email }</td>        	
         	</tr>
         	<tr>
-        		<th></th>        		
-		        <td>        		 	
-			        <a href="logout" class="a-reg-btn">Log out</a>
-		        </td>		        
-        	</tr>
-        	<tr>
-        		<th></th>
-        		<td>        		 	
-			        <a href="deleteuser">Delete Account</a>
-		        </td>
-        	</tr>
-        	<tr>
         		<th>My Contribution:</th>
         	</tr>
         </table>
        
         
-        <div style="height: 4em; position: relative; margin: 1em 0">
+        <!-- <div style="height: 4em; position: relative; margin: 1em 0">
         	<a href="additem" class="reg-btn add-btn a-btn">Add a new Item</a>
-        </div>
+        </div> -->
         <div>
 	        <table class="table table-striped table-hover">
 	        	<thead>

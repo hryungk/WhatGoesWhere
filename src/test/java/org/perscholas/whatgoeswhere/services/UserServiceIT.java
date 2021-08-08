@@ -127,7 +127,7 @@ class UserServiceIT {
 		List<Integer> expected = new ArrayList<>();
 		items.forEach(item -> expected.add(item.getId()));
 		
-		List<Item> itemsFromUser= userService.getItems(user1.getUsername());		
+		List<Item> itemsFromUser= user1.getItems();		
 		
 		// A list of item IDs added by user1 queried from the join table in the database
 		List<Integer> actual = new ArrayList<>();
