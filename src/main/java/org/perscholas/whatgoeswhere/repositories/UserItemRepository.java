@@ -9,8 +9,12 @@ import javax.persistence.TypedQuery;
 
 import org.perscholas.whatgoeswhere.models.UserItem;
 import org.perscholas.whatgoeswhere.models.UserItemID;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserItemRepository {
+	
+	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
 	
 	public UserItemRepository() {
 		try {
@@ -19,49 +23,63 @@ public class UserItemRepository {
 			e.printStackTrace();
 		}
 	}
-		
+	
+	public List<UserItem> getAll() {
+		return findUserItems("findAll");
+	}
+	
 	public UserItem findByItemId(int itemId) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		List<UserItem> uiList = findUserItems("findByItemId", itemId);
+		if (uiList.isEmpty())
+			return null;
+		return uiList.get(0); 
+		
+//		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+//		EntityManager entityManager = emfactory.createEntityManager();
+//		
+//		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
+//		query.setParameter("id", itemId);
+//		List<UserItem> userItems = query.getResultList();
+//		UserItem userItem = null;
+//		if (!userItems.isEmpty()) {
+//			userItem= query.getResultList().get(0);
+//		}
+//		
+//		entityManager.close();
+//		emfactory.close();
+//		return userItem;
+	}
+	
+	public List<UserItem> findByUserId(int userId) {
+		return findUserItems("findByUserId",userId);
+	}
+	
+	private List<UserItem> findUserItems(String queryName, int ... columns) {
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
-		query.setParameter("id", itemId);
-		List<UserItem> userItems = query.getResultList();
-		UserItem userItem = null;
-		if (userItems.size() != 0) {
-			userItem= query.getResultList().get(0);
+		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem."+queryName, UserItem.class);
+		for (int i = 1; i <= columns.length; i++) {
+			query.setParameter(i, columns[i-1]);
 		}
+		List<UserItem> users = query.getResultList();
 		
 		entityManager.close();
 		emfactory.close();
-		return userItem;
+		return users;
 	}
 	
-	public List<UserItem> findItemsByUser(String userId) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
-		EntityManager entityManager = emfactory.createEntityManager();
-		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("findItemsByUser", UserItem.class);
-		query.setParameter("id", userId);		
-		List<UserItem> userItems = query.getResultList();
-		
-		entityManager.close();
-		emfactory.close();
-		return userItems;
-	}
-	
-	public boolean addUserItem(String userId, int itemId) {
+	public boolean add(int userId, int itemId) {
 		// If there already exists the same user in the system, addition fails.
 		if (findByItemId(itemId) == null) {		
 			UserItem ui = new UserItem(userId, itemId);
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
 			entityManager.persist(ui);			
 			
 			entityManager.getTransaction().commit();
-//			entityManager.refresh(user);
 			
 			entityManager.close();
 			emfactory.close();
@@ -70,16 +88,16 @@ public class UserItemRepository {
 		return false;
 	}
 	
-	public boolean deleteUserItem(UserItem item) {
+	public boolean delete(UserItem userItem) {
 		// if the item doesn't exist in the database, deletion fails.
-		if (findByItemId(item.getItemId()) == null) {
+		if (findByItemId(userItem.getItemId()) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		UserItemID pk = new UserItemID(item.getUserId(),item.getItemId());
+		UserItemID pk = new UserItemID(userItem.getUserId(),userItem.getItemId());
 		UserItem itemToDelete = entityManager.find(UserItem.class, pk);
 		entityManager.remove(itemToDelete);
 		
@@ -89,19 +107,18 @@ public class UserItemRepository {
 		return true;
 	}
 	
-	public boolean deleteUserItemByItemId(int itemId) {
+	public boolean deleteByItemId(int itemId) {
 		// if the item doesn't exist in the database, deletion fails.
 		if (findByItemId(itemId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
-		query.setParameter("id", itemId);		
+		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem.findByItemId", UserItem.class);
+		query.setParameter(1, itemId);		
 		UserItem itemToDelete = query.getResultList().get(0);
-//		UserItem itemToDelete = findByItemId(itemId);
 		entityManager.remove(itemToDelete);
 		
 		entityManager.getTransaction().commit();
@@ -109,17 +126,17 @@ public class UserItemRepository {
 		emfactory.close();
 		return true;
 	}
-	public boolean deleteUserItemByUserId(String userId) {
+	public boolean deleteByUserId(int userId) {
 		// if the item doesn't exist in the database, deletion fails.
-		if (findItemsByUser(userId) == null) {
+		if (findByUserId(userId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("findItemsByUser", UserItem.class);
-		query.setParameter("id", userId);		
+		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem.findByUserId", UserItem.class);
+		query.setParameter(1, userId);		
 		List<UserItem> userItems = query.getResultList();
 		for (UserItem itemToDelete : userItems) {
 			entityManager.remove(itemToDelete);

@@ -3,7 +3,10 @@ package org.perscholas.whatgoeswhere.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyInt;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 //import javax.persistence.EntityManager;
@@ -13,6 +16,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.perscholas.whatgoeswhere.repositories.UserRepository;
 
@@ -28,9 +32,10 @@ class UserServiceTest {
 
 	@Test
 	void testGetAllUsers() {
-		User user1 = new User("pusheen", "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", null);
-		User user2 = new User("stormy", "stormythesister", "stormy@email.com", "Stormy","Cat", null);
-		User user3 = new User("pip", "pipthebrother", "pip@email.com", "Pip","Cat", null);
+		LocalDate now = LocalDate.now();
+		User user1 = new User("pusheen@email.com", "Pusheen","Cat", now, new ArrayList<Item>());
+		User user2 = new User("stormy@email.com", "Stormy","Cat", now, new ArrayList<Item>());
+		User user3 = new User("pip@email.com", "Pip","Cat", now, new ArrayList<Item>());
 		Mockito.when(userRepository.getAllUsers()).thenReturn(List.of(user1, user2, user3));
 		
 		List<User> actualList = userService.getAllUsers();
@@ -42,25 +47,24 @@ class UserServiceTest {
 	
 	@Test
 	void testFindUserById() {
-		String input1 = "pusheen";
-		User user1 = new User(input1, "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", null);
-		Mockito.when(userRepository.findUserById(anyString())).thenReturn(user1);
+		User user1 = new User("pusheen@email.com", "Pusheen","Cat", LocalDate.now(), new ArrayList<Item>());
+		Mockito.when(userRepository.findUserById(anyInt())).thenReturn(user1);
 		String expected = "pusheen@email.com";
 		
-		User actual = userService.findUserById(input1);		
+		User actual = userService.findUserById(user1.getId());		
 		
 		assertEquals(expected, actual.getEmail());		
 	}
 	
 	@Test
 	void testFindUserByEmail() {
-		String input1 = "pusheen@email.com";
-		User user1 = new User("pusheen", "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", null);
+		String expected = "pusheen@email.com";
+		User user1 = new User("pusheen@email.com", "Pusheen","Cat", LocalDate.now(), new ArrayList<Item>());
 		Mockito.when(userRepository.findUserByEmail(anyString())).thenReturn(user1);
 		
-		User actual = userService.findUserByEmail(input1);
-		String expected = "pusheen";
-		assertEquals(expected, actual.getUsername());
+		User actual = userService.findUserByEmail(expected);
+		
+		assertEquals(expected, actual.getEmail());
 	}	
 	
 }

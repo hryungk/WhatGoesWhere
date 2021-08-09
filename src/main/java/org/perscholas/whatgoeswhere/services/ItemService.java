@@ -32,8 +32,11 @@ public class ItemService {
 		return itemRepository.findItemById(id);
 	}
 	
-	public boolean addItem(Item item, String userId) {
+	public boolean addItem(Item item, int userId) {
 		return itemRepository.addItem(item, userId);
+	}
+	public Item add(Item item, int userId) {
+		return itemRepository.add(item, userId);
 	}
 	
 	public boolean deleteItem(int itemId) {
@@ -42,5 +45,8 @@ public class ItemService {
 	
 	public boolean updateItem(Item item) {
 		return itemRepository.updateItem(item);
+	}
+	public Item update(Item item) {
+		return itemRepository.update(item);
 	}
 }

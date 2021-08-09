@@ -16,22 +16,22 @@ public class UserItemID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userId;
+	private int userId;
 	private int itemId;
 
 	public UserItemID() {
 	}
 
-	public UserItemID(String userId, int itemId) {
+	public UserItemID(int userId, int itemId) {
 		this.userId = userId;
 		this.itemId = itemId;
 	}
 
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
@@ -48,7 +48,7 @@ public class UserItemID implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + itemId;
-		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result + userId;
 		return result;
 	}
 
@@ -63,12 +63,11 @@ public class UserItemID implements Serializable {
 		UserItemID other = (UserItemID) obj;
 		if (itemId != other.itemId)
 			return false;
-		if (userId == null) {
-			if (other.userId != null)
-				return false;
-		} else if (!userId.equals(other.userId))
+		if (userId != other.userId)
 			return false;
 		return true;
 	}
+
+	
 
 }

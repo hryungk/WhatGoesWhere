@@ -1,6 +1,7 @@
 package org.perscholas.whatgoeswhere.runner;
 
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public static void main(String[] args) {
 		itemList.add(item1);
 		itemList.add(item2);
 		
-		User user1 = new User("HoppyCat", "1234helen", "hoppycat@email.com", "Helen","Kim", itemList);
+		User user1 = new User("hoppycat@email.com", "Helen","Kim", LocalDate.now(), itemList);
 		manager.persist(user1);
 
 		manager.getTransaction().commit();

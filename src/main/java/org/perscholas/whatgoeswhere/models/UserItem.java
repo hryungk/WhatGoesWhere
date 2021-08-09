@@ -19,35 +19,36 @@ import javax.persistence.Table;
 @Entity // This should be commented out when first creating tables in the database.
 @Table(name="User_Item")
 @IdClass(UserItemID.class)
-@NamedQuery(name="findItemsByUser", query="SELECT ui FROM UserItem ui WHERE ui.userId = :id")
-@NamedQuery(name="findByItemId", query="SELECT ui FROM UserItem ui WHERE ui.itemId = :id")
+@NamedQuery(name="UserItem.findAll", query="SELECT ui FROM UserItem ui")
+@NamedQuery(name="UserItem.findByUserId", query="SELECT ui FROM UserItem ui WHERE ui.userId = ?1")
+@NamedQuery(name="UserItem.findByItemId", query="SELECT ui FROM UserItem ui WHERE ui.itemId = ?1")
 public class UserItem {
 	@Id
 	@Column(name="user_id")
-	private String userId;
+	private int userId;
 
 	@Id
 	@Column(name="item_id")
 	private int itemId;
 
 	public UserItem() {
-		userId = "";
+		userId = 0;
 		itemId = 0;
 	}
 	
 
-	public UserItem(String userId, int itemId) {
+	public UserItem(int userId, int itemId) {
 		super();
 		this.userId = userId;
 		this.itemId = itemId;
 	}
 
 
-	public String getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
@@ -59,14 +60,16 @@ public class UserItem {
 		this.itemId = itemId;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + itemId;
-		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result + userId;
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -79,12 +82,10 @@ public class UserItem {
 		UserItem other = (UserItem) obj;
 		if (itemId != other.itemId)
 			return false;
-		if (userId == null) {
-			if (other.userId != null)
-				return false;
-		} else if (!userId.equals(other.userId))
+		if (userId != other.userId)
 			return false;
 		return true;
-	}	
+	}
+
 
 }

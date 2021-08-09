@@ -7,18 +7,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
-import org.perscholas.whatgoeswhere.models.User;
+import org.perscholas.whatgoeswhere.models.Credential;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRepository {
+public class CredentialRepository {
 	
 	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	private UserItemRepository uiRepository;
 	
-	public UserRepository() {
-		
-		this.uiRepository = new UserItemRepository();
+	public CredentialRepository() {
 		
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
@@ -27,72 +24,54 @@ public class UserRepository {
 		}
 	}
 	
-	public List<User> getAllUsers() {
-		return findUsers("User.findAll");
+	public List<Credential> getAll() {
+		return findCredentials("Credential.findAll");
 	}
 
-	public User findUserById(int id) {
+	public Credential findById(int id) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		User user = entityManager.find(User.class, id);
+		Credential user = entityManager.find(Credential.class, id);
 		
 		entityManager.close();
 		emfactory.close();
 		return user;
 	}
 	
-	public User findUserByEmail(String email) {	
-		List<User> users = findUsers("User.findByEmail",email);	
-		if (users.isEmpty())
+	public Credential findByUsername(String username) {	
+		List<Credential> credentials = findCredentials("Credential.findByUsername",username);	
+		if (credentials.isEmpty())
 			return null;
-		return users.get(0); 
+		return credentials.get(0); 
 	}
 	
-	private List<User> findUsers(String queryName, String ... columns) {
+	private List<Credential> findCredentials(String queryName, String ... columns) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<User> query = entityManager.createNamedQuery(queryName, User.class);
+		TypedQuery<Credential> query = entityManager.createNamedQuery(queryName, Credential.class);
 		for (int i = 1; i <= columns.length; i++) {
 			query.setParameter(i, columns[i-1]);
 		}
-		List<User> users = query.getResultList();
+		List<Credential> users = query.getResultList();
 		
 		entityManager.close();
 		emfactory.close();
 		return users;
 	}
 	
-	public User add(User user) {
+	public boolean addCredential(Credential credential) {
 		// If there already exists the same user in the system, addition fails.
-		if (findUserByEmail(user.getEmail()) == null) {		
+		if (findById(credential.getId()) == null) {		
 			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
-			entityManager.persist(user);			
+			entityManager.persist(credential);			
 			
 			entityManager.getTransaction().commit();
-//			entityManager.refresh(user);
-			
-			entityManager.close();
-			emfactory.close();
-			return user;
-		} 
-		return null;
-	}
-	public boolean addUser(User user) {
-		// If there already exists the same user in the system, addition fails.
-		if (findUserByEmail(user.getEmail()) == null) {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-			EntityManager entityManager = emfactory.createEntityManager();
-			entityManager.getTransaction().begin();
-			
-			entityManager.persist(user);			
-			
-			entityManager.getTransaction().commit();
-//			entityManager.refresh(user);
+			entityManager.refresh(credential);
 			
 			entityManager.close();
 			emfactory.close();
@@ -100,72 +79,78 @@ public class UserRepository {
 		} 
 		return false;
 	}
+	public Credential add(Credential credential) {
+		// If there already exists the same user in the system, addition fails.
+		if (findById(credential.getId()) == null) {		
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManager entityManager = emfactory.createEntityManager();
+			entityManager.getTransaction().begin();
+			
+			entityManager.persist(credential);			
+			
+			entityManager.getTransaction().commit();
+			entityManager.refresh(credential);
+			
+			entityManager.close();
+			emfactory.close();
+			return credential;
+		} 
+		return null;
+	}
 
-	public boolean deleteUser(User user) {
+	public boolean delete(Credential credential) {
 		// if the user doesn't exist in the database, deletion fails.
-		if (findUserById(user.getId()) == null) {
+		if (findById(credential.getId()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		// Delete the join table entities first
-		uiRepository.deleteByUserId(user.getId());
-		User userToDelete = entityManager.find(User.class, user.getId());
+		Credential userToDelete = entityManager.find(Credential.class, credential.getId());
 		entityManager.remove(userToDelete);
-//		boolean isUIDeleteSuccessful = uiRepository.deleteByUserId(user.getId());
-//		if (isUIDeleteSuccessful) {
-//			User userToDelete = entityManager.find(User.class, user.getId());
-//			entityManager.remove(userToDelete);
-//		}
+		
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
 		return true;
 	}
 
-	public boolean updateUser(User user) {
+	public boolean updateCredential(Credential credential) {
 		// if the user doesn't exist in the database, update fails.
-		if (findUserById(user.getId()) == null) {
+		if (findById(credential.getId()) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		User userToUpdate = entityManager.find(User.class, user.getId());
-		userToUpdate.setEmail(user.getEmail());
-		userToUpdate.setFirstName(user.getFirstName());
-		userToUpdate.setLastName(user.getLastName());
-		userToUpdate.setItems(user.getItems());
+		Credential credentialToUpdate = entityManager.find(Credential.class, credential.getId());
+		credentialToUpdate.setUsername(credential.getUsername());
+		credentialToUpdate.setPassword(credential.getPassword());
 		
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
 		return true;
 	}
-	
-	public User update(User user) {
+	public Credential update(Credential credential) {
 		// if the user doesn't exist in the database, update fails.
-		if (findUserById(user.getId()) == null) {
-			return null;
+		if (findById(credential.getId()) == null) {
+			return credential;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		User userToUpdate = entityManager.find(User.class, user.getId());
-		userToUpdate.setEmail(user.getEmail());
-		userToUpdate.setFirstName(user.getFirstName());
-		userToUpdate.setLastName(user.getLastName());
-		userToUpdate.setItems(user.getItems());
+		Credential credentialToUpdate = entityManager.find(Credential.class, credential.getId());
+		credentialToUpdate.setUsername(credential.getUsername());
+		credentialToUpdate.setPassword(credential.getPassword());
 		
 		entityManager.getTransaction().commit();
-//		entityManager.refresh(user);
 		entityManager.close();
 		emfactory.close();
-		return user;
+		return credential;
 	}
 	
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ItemRepository {
 	
+	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
 	private UserItemRepository uiRepository;
 	
 	public ItemRepository() {
@@ -27,27 +28,25 @@ public class ItemRepository {
 	}
 	
 	public List<Item> getAllItems() {
-		List<Item> items = findItems("Item.findAll");
-		return items;
+		return findItems("findAll");
 	}
 	
 	public List<Item> findItemByName(String name) {
-		List<Item> items = findItems("Item.findByName", name);
-		return items;
+		return findItems("findByName", name);
 	}
 
 	public Item findItemByNameAndState(String name, String state) {	
-		List<Item> items = findItems("Item.findByNameAndState",name,state);	
-		if (items.size() == 0)
+		List<Item> items = findItems("findByNameAndState",name,state);	
+		if (items.isEmpty())
 			return null;
 		return items.get(0); 
 	}
 	
 	private List<Item> findItems(String queryName, String ... columns) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<Item> query = entityManager.createNamedQuery(queryName, Item.class);
+		TypedQuery<Item> query = entityManager.createNamedQuery("Item."+queryName, Item.class);
 		for (int i = 1; i <= columns.length; i++) {
 			query.setParameter(i, columns[i-1]);
 		}
@@ -59,7 +58,7 @@ public class ItemRepository {
 	}
 	
 	public Item findItemById(int id) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		Item item = entityManager.find(Item.class, id);
@@ -69,10 +68,10 @@ public class ItemRepository {
 		return item;
 	}
 	
-	public boolean addItem(Item item, String userId) {
+	public boolean addItem(Item item, int userId) {
 		// If there already exists the same item in the system, addition fails.
 		if (findItemByNameAndState(item.getName(),item.getCondition()) == null) {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
@@ -81,8 +80,8 @@ public class ItemRepository {
 			entityManager.getTransaction().commit();
 			entityManager.refresh(item);
 			
-			if (userId != null) {
-				uiRepository.addUserItem(userId, item.getId());
+			if (userId != 0) {
+				uiRepository.add(userId, item.getId());
 			}
 			
 			entityManager.close();
@@ -91,18 +90,39 @@ public class ItemRepository {
 		} 
 		return false;
 	}
-
+	public Item add(Item item, int userId) {
+		// If there already exists the same item in the system, addition fails.
+		if (findItemByNameAndState(item.getName(),item.getCondition()) == null) {		
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManager entityManager = emfactory.createEntityManager();
+			entityManager.getTransaction().begin();
+			
+			entityManager.persist(item);			
+			
+			entityManager.getTransaction().commit();
+//			entityManager.refresh(item);
+			
+			if (userId != 0) {
+				uiRepository.add(userId, item.getId());
+			}
+			
+			entityManager.close();
+			emfactory.close();
+			return item;
+		} 
+		return null;
+	}
 	public boolean deleteItem(int itemId) {
 		// if the item doesn't exist in the database, deletion fails.
 		if (findItemById(itemId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
 		// Delete the join table entities first
-		uiRepository.deleteUserItemByItemId(itemId);
+		uiRepository.deleteByItemId(itemId);
 		
 		Item itemToDelete = entityManager.find(Item.class, itemId);
 		entityManager.remove(itemToDelete);
@@ -118,7 +138,7 @@ public class ItemRepository {
 		if (findItemById(item.getId()) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
@@ -133,5 +153,26 @@ public class ItemRepository {
 		entityManager.close();
 		emfactory.close();
 		return true;
+	}
+	public Item update(Item item) {
+		// if the item doesn't exist in the database, update fails.
+		if (findItemById(item.getId()) == null) {
+			return null;
+		}
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManager entityManager = emfactory.createEntityManager();
+		entityManager.getTransaction().begin();
+		
+		Item itemToUpdate = entityManager.find(Item.class, item.getId());
+		itemToUpdate.setName(item.getName());
+		itemToUpdate.setCondition(item.getCondition());
+		itemToUpdate.setBestOption(item.getBestOption());
+		itemToUpdate.setSpecialInstruction(item.getSpecialInstruction());
+		itemToUpdate.setNotes(item.getNotes());		
+			
+		entityManager.getTransaction().commit();
+		entityManager.close();
+		emfactory.close();
+		return item;
 	}
 }
