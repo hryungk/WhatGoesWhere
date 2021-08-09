@@ -150,8 +150,15 @@ class UserServiceIT {
 		
 		List<UserItem> actual = uiService.findByUserId(user1.getId());
 		assertEquals(items.size(), actual.size());
-		assertEquals(item1.getId(), actual.get(0).getItemId());
-		assertEquals(item2.getId(), actual.get(1).getItemId());
+		
+		List<Integer> itemIds = new ArrayList<>();
+		for (UserItem ui : actual) {
+			itemIds.add(ui.getItemId());
+		}
+		for (Item item : items) {
+			assertTrue(itemIds.remove((Integer)item.getId()));
+		}
+		assertEquals(0, itemIds.size());
 		
 	}
 

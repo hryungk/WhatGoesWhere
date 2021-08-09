@@ -7,8 +7,10 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.perscholas.whatgoeswhere.models.BestOption;
+import org.perscholas.whatgoeswhere.models.Credential;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
+import org.perscholas.whatgoeswhere.services.CredentialService;
 import org.perscholas.whatgoeswhere.services.ItemService;
 import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +28,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
-
-	private ItemService itemService;
+	
+	private CredentialService credentialService;
 	private UserService userService;
+	private ItemService itemService;
 	
 	@Autowired
-	public HomeController(ItemService itemService, UserService userService) {
+	public HomeController(ItemService itemService, UserService userService, CredentialService credentialService) {
 		this.itemService = itemService;
 		this.userService = userService;
+		this.credentialService = credentialService;
 	}
 	
 	@GetMapping("/") // This is what you type for URL
@@ -107,12 +111,13 @@ public class HomeController {
 		return "login";
 	}
 	@PostMapping("/login")
-	public String logIn(@RequestParam("eMail") String email, @RequestParam("password") String password, Model model, HttpSession session) {
-		User user = userService.findUserByEmail(email);		
+	public String logIn(@RequestParam("userName") String username, @RequestParam("password") String password, Model model, HttpSession session) {
+		Credential credential = credentialService.findByUsername(username)
+		User user = userService.findUserByEmail(username);		
 		String message = "";
 		if (user != null && user.getPassword().equals(password)) { // user is found and password matches.
 			session.setAttribute("userName", user.getUsername());
-			session.setAttribute("eMail", email);
+			session.setAttribute("eMail", username);
 			return showProfilePage(model, session);
 		} else {
 			if (user == null) { // User is not found
@@ -121,7 +126,7 @@ public class HomeController {
 				message = "Credentials not correct. Please try again";
 			}
 			model.addAttribute("message", message);
-			model.addAttribute("email", email);
+			model.addAttribute("email", username);
 			return showLogInPage(model);
 		}
 	}

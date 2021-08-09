@@ -2,7 +2,6 @@ package org.perscholas.whatgoeswhere.services;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -40,11 +39,12 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = { WebAppConfig.class })
 @WebAppConfiguration("WebContent") // Letting it know where web content is (folder name)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CredentialServiceIT {
+class CredentialServiceIT {
 	private WebApplicationContext webApplicationContext;
 	private HomeController homeController;
 	private MockMvc mockMvc;
 	private CredentialService credentialService;
+	private ItemService itemService;
 	private Credential credential1, credential2, toAdd, toDelete;
 	private User user1, user2, userToAdd, userToDelete;
 	private Item item1, item2;
@@ -52,11 +52,12 @@ public class CredentialServiceIT {
 	
 	@Autowired
 	public CredentialServiceIT(WebApplicationContext webApplicationContext, HomeController homeController,
-			CredentialService credentialService) {
+			CredentialService credentialService, ItemService itemService) {
 		super();
 		this.webApplicationContext = webApplicationContext;
 		this.homeController = homeController;
 		this.credentialService = credentialService;
+		this.itemService = itemService;
 	}
 	
 	/**
@@ -161,6 +162,9 @@ public class CredentialServiceIT {
 		credentialService.delete(credential1);
 		credentialService.delete(credential2);
 		credentialService.delete(toAdd);
+		
+		for (Item item : items)
+			itemService.deleteItem(item.getId());
 	}
 
 }

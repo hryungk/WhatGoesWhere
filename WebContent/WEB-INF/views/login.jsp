@@ -11,7 +11,7 @@
                     <legend>Please enter your credentials below:</legend>                    
             		<p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
-						<input type="email" name="eMail" placeholder="Email" required="required" value="${email }"/>
+						<input type="text" name="userName" placeholder="Username" required="required" value="${username }"/>
 					</div>
 					<div class="r-input">				
 						<input type="password" name="password" placeholder="Password" required="required" />

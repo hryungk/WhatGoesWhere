@@ -34,7 +34,7 @@ public class User {
 	private String lastName; // User's last name	
 	@Column(name="joinedDate", nullable=false)
 	private LocalDate joinedDate; // The date the joining	
-	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL)
+	@OneToMany(targetEntity = Item.class, cascade=CascadeType.PERSIST, orphanRemoval=false)
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 

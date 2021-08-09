@@ -24,7 +24,7 @@ public class Credential {
 	private String username;
 	@Column(name="password", length=50, nullable=false) 
 	private String password;
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL, orphanRemoval=false)
 	private User user;
 	
 	public Credential() {}
