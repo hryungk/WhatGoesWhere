@@ -31,7 +31,7 @@ public class User {
 	private String firstName; // User's first name	
 	@Column(name="lname", length=50)
 	private String lastName; // User's last name	
-	@OneToMany(targetEntity = Item.class, cascade=CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(targetEntity = Item.class, cascade=CascadeType.PERSIST, orphanRemoval = false)
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 

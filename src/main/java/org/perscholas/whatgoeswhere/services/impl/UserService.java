@@ -40,6 +40,7 @@ public class UserService implements UserServiceI {
 
 	@Override
 	public void delete(User user) {
+		userRepositoryI.deleteUI(user.getUsername());
 		userRepositoryI.delete(user);
 	}
 	@Override

@@ -87,8 +87,10 @@ class UserServiceIT {
 		userService.add(user2);
 				
 	    toAdd = new User("Pusheen", "pusheenthecat", "pusheen@email.com", "Pusheen","Cat", new ArrayList<Item>());
-	    toDelete = new User("Stormy", "stormythesister", "stormy@email.com", "Stormy","Sister",List.of(itemToDelete));
-		userService.add(toDelete);
+	    List<Item> itemList = new ArrayList<>();
+	    itemList.add(itemToDelete);
+	    toDelete = new User("Stormy", "stormythesister", "stormy@email.com", "Stormy","Sister",itemList);
+		toDelete = userService.add(toDelete);
 	}	
 	
 	@Test
@@ -177,6 +179,7 @@ class UserServiceIT {
 	
 	@Test
 	void testDeleteUser() {	
+		uiService.deleteByUserId(toDelete.getUsername());
 		userService.delete(toDelete);
 		User actual = userService.findUserById(toDelete.getUsername());
 		assertNull(actual); 

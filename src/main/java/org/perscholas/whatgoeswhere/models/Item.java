@@ -25,7 +25,7 @@ public class Item {
 	private int id; // Unique Item identifier
 	
 	@Column(name="name", length=50, nullable=false)
-	@NotEmpty(message="Item name is required.")
+//	@NotEmpty(message="Item name is required.")
 	private String name; // Item name
 	
 	@Column(name="state", length=50) // "condition" is a reserved keyword in MariaDB
