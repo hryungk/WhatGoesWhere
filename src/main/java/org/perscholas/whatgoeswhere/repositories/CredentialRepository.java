@@ -89,7 +89,6 @@ public class CredentialRepository {
 			entityManager.persist(credential);			
 			
 			entityManager.getTransaction().commit();
-//			entityManager.refresh(credential);
 			
 			entityManager.close();
 			emfactory.close();

@@ -1,10 +1,14 @@
  <!-- Header -->
 <jsp:include page="header.jsp" />
 <%	
-	String userName = (String) session.getAttribute("userName");
+	/* String userName = (String) session.getAttribute("userName");
+	String eMail = (String) session.getAttribute("eMail");
 	if (userName != null) {
 		userName  = session.getAttribute("userName").toString();
 	}
+	if (eMail != null) {
+		eMail  = session.getAttribute("eMail").toString();
+	} */
 %>	
 
     <section> 

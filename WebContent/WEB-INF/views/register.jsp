@@ -13,7 +13,7 @@
                     <h6 style="color: red;" ><c:out value="${usernameMessage }" /></h6>
                     <h6 style="color: red;"><c:out value="${emailMessage }" /></h6>
                     <div class="r-input">                    	
-						<input type="text" name="username" placeholder="Username" required="required" value="${user.username }" />
+						<input type="text" name="userName" placeholder="Username" required="required" value="${username }" />
 					</div>
 					<div class="r-input">				
 						<input type="password" name="password" placeholder="Password" required="required" />
@@ -36,9 +36,9 @@
     <script>
     	function validate() {
         	console.log("validate() method.")
-	        if (document.myForm.username.value == "") {
+	        if (document.myForm.userName.value == "") {
 	            alert("Username already exists. Choose a different one.");
-	            document.myForm.username.focus();
+	            document.myForm.userName.focus();
 	            return false;
 	        } 
         	return true;
