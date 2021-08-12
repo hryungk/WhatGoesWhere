@@ -44,7 +44,7 @@ public class User {
 	private List<Item> items; // A list of items the user has added to the system
 	
 	public User() {
-		super();		
+		super();
 		email = "";
 		firstName = "";
 		lastName = "";

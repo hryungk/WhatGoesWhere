@@ -86,7 +86,7 @@ public class ItemRepository {
 			
 			entityManager.close();
 			emfactory.close();
-			return true;
+			return findItemById(item.getId()) != null;
 		} 
 		return false;
 	}
@@ -100,7 +100,6 @@ public class ItemRepository {
 			entityManager.persist(item);			
 			
 			entityManager.getTransaction().commit();
-//			entityManager.refresh(item);
 			
 			if (userId != 0) {
 				uiRepository.add(userId, item.getId());
@@ -108,7 +107,7 @@ public class ItemRepository {
 			
 			entityManager.close();
 			emfactory.close();
-			return item;
+			return findItemById(item.getId());
 		} 
 		return null;
 	}
@@ -133,27 +132,6 @@ public class ItemRepository {
 		return true;
 	}
 
-	public boolean updateItem(Item item) {
-		// if the item doesn't exist in the database, update fails.
-		if (findItemById(item.getId()) == null) {
-			return false;
-		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-		EntityManager entityManager = emfactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		
-		Item itemToUpdate = entityManager.find(Item.class, item.getId());
-		itemToUpdate.setName(item.getName());
-		itemToUpdate.setCondition(item.getCondition());
-		itemToUpdate.setBestOption(item.getBestOption());
-		itemToUpdate.setSpecialInstruction(item.getSpecialInstruction());
-		itemToUpdate.setNotes(item.getNotes());		
-			
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		emfactory.close();
-		return true;
-	}
 	public Item update(Item item) {
 		// if the item doesn't exist in the database, update fails.
 		if (findItemById(item.getId()) == null) {
@@ -173,6 +151,6 @@ public class ItemRepository {
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
-		return item;
+		return findItemById(item.getId());
 	}
 }

@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.repositories.ItemRepository;
+import org.perscholas.whatgoeswhere.services.impl.ItemServiceImpl;
 
 class ItemServiceTest {
 	private static ItemService itemService;
@@ -25,7 +26,7 @@ class ItemServiceTest {
 	@BeforeAll
 	static void setup() {
 		itemRepository = Mockito.mock(ItemRepository.class);
-		itemService = new ItemService(itemRepository);
+		itemService = new ItemServiceImpl(itemRepository);
 	}
 
 	@Test

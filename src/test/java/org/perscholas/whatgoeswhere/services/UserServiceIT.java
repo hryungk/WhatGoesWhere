@@ -51,6 +51,7 @@ class UserServiceIT {
 	private User user1, user2, toAdd, toDelete;
 	private Item item1, item2, item3, itemToDelete;
 	private List<Item> items;
+	private int existingUserNum;
 
 	@Autowired
 	public UserServiceIT(WebApplicationContext webApplicationContext, 
@@ -69,7 +70,7 @@ class UserServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	    
+	    existingUserNum = userService.getAllUsers().size();
 		LocalDateTime now_ldt = LocalDateTime.now();
 		item1 = new Item("Banana", "", BestOption.Composting,"", "", now_ldt);		
 		item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now_ldt);	
@@ -102,7 +103,7 @@ class UserServiceIT {
 		List<User> actual = userService.getAllUsers();
 		actual.forEach(System.out::println);
 		assertNotNull(actual);
-		assertEquals(4, actual.size());
+		assertEquals(4 + existingUserNum, actual.size());
 	}
 	
 	@Test
@@ -129,7 +130,7 @@ class UserServiceIT {
 		// For testing addition, remove the user if it already exists
 		User toRemove = userService.findUserByEmail(toAdd.getEmail());
 		if (toRemove != null) { // exists in the db
-			userService.deleteUser(toRemove);
+			userService.delete(toRemove);
 		}
 		toAdd = userService.add(toAdd);
 		assertNotNull(toAdd);		
@@ -139,7 +140,7 @@ class UserServiceIT {
 //	@Disabled
 	void testAddUserWithItems() {	
 		// Delete the user before adding again.
-		userService.deleteUser(user1);
+		userService.delete(user1);
 		assertNull(userService.findUserByEmail(user1.getEmail()));
 		
 		user1.setItems(items);
@@ -168,7 +169,7 @@ class UserServiceIT {
 		System.out.println("\n\nStarting testUpdateUser()\n\n");
 		String newFirstName = "NewFirstName";
 		user2.setFirstName(newFirstName);
-		assertTrue(userService.updateUser(user2));
+		userService.update(user2);
 		User actual = userService.findUserById(user2.getId());
 		assertEquals(newFirstName, actual.getFirstName());
 		
@@ -185,7 +186,7 @@ class UserServiceIT {
 	@Test
 //	@Disabled
 	void testDeleteUser() {	
-		userService.deleteUser(toDelete);
+		userService.delete(toDelete);
 		User actual = userService.findUserById(toDelete.getId());
 		assertNull(actual);
 		assertEquals(0, uiService.findByUserId(toDelete.getId()).size());
@@ -193,9 +194,9 @@ class UserServiceIT {
 	
 	@AfterAll
 	void clearSetup() {
-		userService.deleteUser(user1);
-		userService.deleteUser(user2);
-		userService.deleteUser(toAdd);
+		userService.delete(user1);
+		userService.delete(user2);
+		userService.delete(toAdd);
 		
 		for (Item item : items) {			
 			itemService.deleteItem(item.getId());

@@ -42,6 +42,12 @@ public class Item {
 	
 	public Item() {
 		super();
+		this.name = "";
+		this.condition = "";
+		this.bestOption = null;
+		this.specialInstruction = "";
+		this.notes = "";
+		this.addedDate = null;
 	}
 	public Item(String name, String condition, BestOption bestOption,
 			String specialInstruction, String notes, LocalDateTime addedDate) {

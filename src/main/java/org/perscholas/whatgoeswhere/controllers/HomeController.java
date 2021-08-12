@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+//import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -106,6 +107,10 @@ public class HomeController {
 			String message = "";
 			model.addAttribute("message", message);
 		}
+		String username = (String) model.getAttribute("username");
+		if (username != null) {			
+			System.out.println("login get mapping: " + username);
+		}
 		return "login";
 	}
 	@PostMapping("/login")
@@ -129,6 +134,15 @@ public class HomeController {
 		}
 	}
 	
+//	@GetMapping("register/{username}")
+//	public String passToRegister(Model model, @PathVariable("username") String username) {		
+//		if (username != null) {			
+//			System.out.println("passToRegister: " + username);
+//		}
+//		model.addAttribute("username", username);
+//		return "register";
+//	}
+	
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
 		if (model.getAttribute("message") == null) {
@@ -136,8 +150,12 @@ public class HomeController {
 			model.addAttribute("message", message);
 		}
 		if (model.getAttribute("user") == null) {
-			User newUser = new User("", "", "", null, null);
+			User newUser = new User();
 			model.addAttribute("user", newUser);
+		}
+		String username = (String) model.getAttribute("username");
+		if (username != null) {			
+			System.out.println("going to register page: "+username);
 		}
 		return "register";
 	}
@@ -147,7 +165,8 @@ public class HomeController {
 		User userByEmail = userService.findUserByEmail(email);
 		User newUser = new User(email, firstName, lastName, LocalDate.now(), new ArrayList<Item>());
 		if (credential == null && userByEmail == null) {	// Both credential and email don't exist
-			credentialService.add(new Credential(username, password, newUser));
+			credential = credentialService.add(new Credential(username, password, newUser));
+			System.out.println(credential);
 			model.addAttribute("user", newUser);
 			session.setAttribute("userName", username);
 			session.setAttribute("eMail", email);
@@ -205,7 +224,7 @@ public class HomeController {
 			itemById.setBestOption(uitem.getBestOption());
 			itemById.setSpecialInstruction(uitem.getSpecialInstruction());
 			itemById.setNotes(uitem.getNotes());
-			itemService.updateItem(itemById);			
+			itemService.update(itemById);			
 			return showProfilePage(model, session);
 		} else { // user changed either name or condition or both such that there is a duplicate
 			String message = "An item " + uitem.getName() + " (" + uitem.getCondition() +") already exists in the list";

@@ -27,7 +27,12 @@ public class Credential {
 	@OneToOne(cascade=CascadeType.ALL, orphanRemoval=false)
 	private User user;
 	
-	public Credential() {}
+	public Credential() {
+		super();
+		username = "";
+		password = "";
+		user = new User();
+	}
 
 	public Credential(String username, String password, User user) {
 		super();

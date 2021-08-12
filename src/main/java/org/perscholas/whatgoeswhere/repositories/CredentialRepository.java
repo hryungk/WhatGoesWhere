@@ -61,24 +61,6 @@ public class CredentialRepository {
 		return users;
 	}
 	
-	public boolean addCredential(Credential credential) {
-		// If there already exists the same user in the system, addition fails.
-		if (findById(credential.getId()) == null) {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-			EntityManager entityManager = emfactory.createEntityManager();
-			entityManager.getTransaction().begin();
-			
-			entityManager.persist(credential);			
-			
-			entityManager.getTransaction().commit();
-			entityManager.refresh(credential);
-			
-			entityManager.close();
-			emfactory.close();
-			return true;
-		} 
-		return false;
-	}
 	public Credential add(Credential credential) {
 		// If there already exists the same user in the system, addition fails.
 		if (findById(credential.getId()) == null) {		
@@ -92,7 +74,7 @@ public class CredentialRepository {
 			
 			entityManager.close();
 			emfactory.close();
-			return credential;
+			return findById(credential.getId());
 		} 
 		return null;
 	}
@@ -109,30 +91,13 @@ public class CredentialRepository {
 		Credential userToDelete = entityManager.find(Credential.class, credential.getId());
 		entityManager.remove(userToDelete);
 		
-		entityManager.getTransaction().commit();
+		entityManager.getTransaction().commit();		
 		entityManager.close();
 		emfactory.close();
-		return true;
-	}
-
-	public boolean updateCredential(Credential credential) {
-		// if the user doesn't exist in the database, update fails.
-		if (findById(credential.getId()) == null) {
-			return false;
-		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-		EntityManager entityManager = emfactory.createEntityManager();
-		entityManager.getTransaction().begin();
 		
-		Credential credentialToUpdate = entityManager.find(Credential.class, credential.getId());
-		credentialToUpdate.setUsername(credential.getUsername());
-		credentialToUpdate.setPassword(credential.getPassword());
-		
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		emfactory.close();
-		return true;
+		return findById(credential.getId()) == null;
 	}
+	
 	public Credential update(Credential credential) {
 		// if the user doesn't exist in the database, update fails.
 		if (findById(credential.getId()) == null) {
@@ -149,7 +114,7 @@ public class CredentialRepository {
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
-		return credential;
+		return findById(credential.getId());
 	}
 	
 }

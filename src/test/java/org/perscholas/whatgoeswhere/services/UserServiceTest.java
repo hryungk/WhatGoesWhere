@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.models.User;
 import org.perscholas.whatgoeswhere.repositories.UserRepository;
+import org.perscholas.whatgoeswhere.services.impl.UserServiceImpl;
 
 class UserServiceTest {
 	private static UserService userService;
@@ -27,7 +28,7 @@ class UserServiceTest {
 	@BeforeAll
 	static void setup() {
 		userRepository = Mockito.mock(UserRepository.class);
-		userService = new UserService(userRepository);
+		userService = new UserServiceImpl(userRepository);
 	}
 
 	@Test

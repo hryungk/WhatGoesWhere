@@ -32,22 +32,7 @@ public class UserItemRepository {
 		List<UserItem> uiList = findUserItems("findByItemId", itemId);
 		if (uiList.isEmpty())
 			return null;
-		return uiList.get(0); 
-		
-//		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-//		EntityManager entityManager = emfactory.createEntityManager();
-//		
-//		TypedQuery<UserItem> query = entityManager.createNamedQuery("findByItemId", UserItem.class);
-//		query.setParameter("id", itemId);
-//		List<UserItem> userItems = query.getResultList();
-//		UserItem userItem = null;
-//		if (!userItems.isEmpty()) {
-//			userItem= query.getResultList().get(0);
-//		}
-//		
-//		entityManager.close();
-//		emfactory.close();
-//		return userItem;
+		return uiList.get(0); 		
 	}
 	
 	public List<UserItem> findByUserId(int userId) {

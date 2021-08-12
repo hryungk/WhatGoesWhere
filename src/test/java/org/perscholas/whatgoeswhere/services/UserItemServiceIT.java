@@ -134,7 +134,7 @@ class UserItemServiceIT {
 		UserItem actual = uiService.findByItemId(toDelete1.getId());
 		assertNull(actual);
 		
-		userService.deleteUser(user2);
+		userService.delete(user2);
 		assertNull(userService.findUserById(user2.getId()));
 	}
 	
@@ -145,13 +145,13 @@ class UserItemServiceIT {
 		List<UserItem> actual = uiService.findByUserId(user3.getId());
 		assertEquals(0, actual.size());
 		
-		userService.deleteUser(user3);
+		userService.delete(user3);
 		assertNull(userService.findUserById(user3.getId()));
 	}
 
 	@AfterAll
 	void clearSetup() {
-		userService.deleteUser(user1);
+		userService.delete(user1);
 		for (Item item : items) {
 			itemService.deleteItem(item.getId());
 		}

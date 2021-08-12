@@ -78,30 +78,12 @@ public class UserRepository {
 			
 			entityManager.close();
 			emfactory.close();
-			return user;
+			return findUserByEmail(user.getEmail());
 		} 
 		return null;
 	}
-	public boolean addUser(User user) {
-		// If there already exists the same user in the system, addition fails.
-		if (findUserByEmail(user.getEmail()) == null) {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-			EntityManager entityManager = emfactory.createEntityManager();
-			entityManager.getTransaction().begin();
-			
-			entityManager.persist(user);			
-			
-			entityManager.getTransaction().commit();
-//			entityManager.refresh(user);
-			
-			entityManager.close();
-			emfactory.close();
-			return true;
-		} 
-		return false;
-	}
 
-	public boolean deleteUser(User user) {
+	public boolean delete(User user) {
 		// if the user doesn't exist in the database, deletion fails.
 		if (findUserById(user.getId()) == null) {
 			return false;
@@ -114,36 +96,11 @@ public class UserRepository {
 		uiRepository.deleteByUserId(user.getId());
 		User userToDelete = entityManager.find(User.class, user.getId());
 		entityManager.remove(userToDelete);
-//		boolean isUIDeleteSuccessful = uiRepository.deleteByUserId(user.getId());
-//		if (isUIDeleteSuccessful) {
-//			User userToDelete = entityManager.find(User.class, user.getId());
-//			entityManager.remove(userToDelete);
-//		}
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		emfactory.close();
-		return true;
-	}
-
-	public boolean updateUser(User user) {
-		// if the user doesn't exist in the database, update fails.
-		if (findUserById(user.getId()) == null) {
-			return false;
-		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
-		EntityManager entityManager = emfactory.createEntityManager();
-		entityManager.getTransaction().begin();
-		
-		User userToUpdate = entityManager.find(User.class, user.getId());
-		userToUpdate.setEmail(user.getEmail());
-		userToUpdate.setFirstName(user.getFirstName());
-		userToUpdate.setLastName(user.getLastName());
-		userToUpdate.setItems(user.getItems());
 		
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		emfactory.close();
-		return true;
+		return findUserById(user.getId()) == null;
 	}
 	
 	public User update(User user) {
@@ -165,7 +122,7 @@ public class UserRepository {
 //		entityManager.refresh(user);
 		entityManager.close();
 		emfactory.close();
-		return user;
+		return findUserById(user.getId());
 	}
 	
 }
