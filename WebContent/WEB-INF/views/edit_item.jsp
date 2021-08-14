@@ -9,7 +9,7 @@
         <h1>Edit an Existing Item</h1>
         <div>
         	<c:set scope="page" var="sel1">${item.bestOption }</c:set>
-        	<form:form action="./edititem" method="POST" modelAttribute="item">
+        	<form:form action="./editItem" method="POST" modelAttribute="item">
                 <fieldset>
                     <legend>Please modify the item below:</legend>
                     <%-- <p>(Item id:  <span>${item.id }</span>)</p> --%>

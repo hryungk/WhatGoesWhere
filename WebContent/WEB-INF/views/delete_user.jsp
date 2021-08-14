@@ -11,7 +11,7 @@
     <section> 
         <h1>Delete account</h1>
         <div>
-           <form action="./deleteuser" method="post">
+           <form action="./deleteUser" method="post">
                 <fieldset>                	
                     <legend>Please let us know why you want to leave:</legend>
                     <div class="r-input">

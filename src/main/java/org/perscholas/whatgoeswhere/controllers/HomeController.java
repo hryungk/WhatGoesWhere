@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.perscholas.whatgoeswhere.exceptions.CredentialAlreadyExistsException;
+import org.perscholas.whatgoeswhere.exceptions.CredentialNotFoundException;
+import org.perscholas.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Credential;
 import org.perscholas.whatgoeswhere.models.Item;
@@ -61,7 +64,7 @@ public class HomeController {
 		return "list";
 	}
 		
-	@GetMapping("/additem")
+	@GetMapping("/addItem")
 	public String showAddItemPage(Model model, HttpSession session) {
 		String email = getUserEmail(session);
 		if (email == null) { // If not logged in, redirect to login page
@@ -77,28 +80,23 @@ public class HomeController {
 		// Pass the bestoption enum values
 		model.addAttribute("bestOptions", BestOption.values());
 		
-		return "additem";
+		return "add_item";
 	}
-	@PostMapping("/additem")
+	@PostMapping("/addItem")
 	public String addItem(@ModelAttribute("item") Item item, Model model, HttpSession session, BindingResult errors) {
 		if (errors.hasErrors()) {
-			return "additem";			
+			return "add_item";			
 		}
-		LocalDateTime now = LocalDateTime.now();
-		item.setAddedDate(now);
-		User user = getUserByEmail(session);	
-		boolean isAddSuccessful = itemService.addItem(item, user.getId());
-		if (isAddSuccessful) {
+		item.setAddedDate(LocalDateTime.now());
+		User user = getUserByEmail(session);		
+		try {
+			itemService.add(item, user.getId());
 			return showListPage(model);
-		} else {
-			String message = item.getName();
-			if (item.getCondition().length() != 0) {
-				message += " ("+ item.getCondition() +")";
-			}
-			message += " already exists in the list.";
-			model.addAttribute("message", message);
+		} catch(ItemAlreadyExistsException e) {
+			model.addAttribute("message",e.getMessage());
 			return showAddItemPage(model, session);
 		}
+		
 	}
 	
 	@GetMapping("/login")
@@ -115,19 +113,14 @@ public class HomeController {
 	}
 	@PostMapping("/login")
 	public String logIn(@RequestParam("userName") String username, @RequestParam("password") String password, Model model, HttpSession session) {
-		Credential credential = credentialService.findByUsername(username);	
-		String message = "";
-		if (credential != null && credential.getPassword().equals(password)) { // User name is found and password matches.
+		try {
+			Credential credential = credentialService.findByUsernameAndPassword(username, password);
 			User user = credential.getUser();
 			session.setAttribute("userName", username);
 			session.setAttribute("eMail", user.getEmail());
 			return showProfilePage(model, session);
-		} else {
-			if (credential == null) { // User name is not found
-				message = "You haven't registered yet. Please click the link below the form to create a new account.";	
-			} else { // User name is found but password doesn't match.
-				message = "Credentials not correct. Please try again";
-			}
+		} catch (CredentialNotFoundException e) {
+			String message = e.getMessage();
 			model.addAttribute("message", message);
 			model.addAttribute("username", username);
 			return showLogInPage(model);
@@ -161,34 +154,25 @@ public class HomeController {
 	}
 	@PostMapping("/register")
 	public String addUser(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpSession session) {
-		Credential credential = credentialService.findByUsername(username);	
-		User userByEmail = userService.findUserByEmail(email);
 		User newUser = new User(email, firstName, lastName, LocalDate.now(), new ArrayList<Item>());
-		if (credential == null && userByEmail == null) {	// Both credential and email don't exist
-			credential = credentialService.add(new Credential(username, password, newUser));
-			System.out.println(credential);
+		Credential credential = new Credential(username, password, newUser);
+		try {			
+			if (userService.findUserByEmail(email) != null) {
+				String invalidEmailMessage = "The email address " + email + " is already registered. Choose a different one.";
+				model.addAttribute("emailMessage", invalidEmailMessage);	
+			}
+			credential = credentialService.add(credential);
 			model.addAttribute("user", newUser);
 			session.setAttribute("userName", username);
 			session.setAttribute("eMail", email);
 			return showProfilePage(model, session);
-		} else { 
-			String invalidEmailMessage = "";
-			String invalidUsernameMessage = "";
-			if (userByEmail != null) { // user email already exists in the system
-				invalidEmailMessage = "Email address " + email + " already exists. Choose a different one.";
-				newUser.setEmail("");
-			}
-			
-			if (credential != null) { // username already exists in the system
-				invalidUsernameMessage += "Username " + username + " already exists. Choose a different one.";
-				credential.setUsername("");
-			}
-			model.addAttribute("emailMessage", invalidEmailMessage);
-			model.addAttribute("usernameMessage", invalidUsernameMessage);
+		} catch (CredentialAlreadyExistsException e) {
+			username = "";
+			model.addAttribute("usernameMessage", e.getMessage());
 			model.addAttribute("user", newUser); // to populate the form
 			model.addAttribute("username", username);
 			return showRegisterPage(model);
-		}
+		} 		
 	}
 	
 	@GetMapping("/profile")
@@ -200,57 +184,48 @@ public class HomeController {
 		return "profile";
 	}
 
-	@GetMapping("/edititem")
+	@GetMapping("/editItem")
 	public String showEditItemPage(@RequestParam("itemId") int itemId, Model model) {		
 		Item item = itemService.findItemById(itemId);
 		model.addAttribute("item", item);
-
+		System.out.println(item);
 		// Pass the bestoption enum values
 		model.addAttribute("bestOptions", BestOption.values());
-		return "edititem";
+		return "edit_item";
 	}
-	@PostMapping("/edititem")
+	@PostMapping("/editItem")
 	public String editItem(@ModelAttribute("item") Item uitem,  Model model, HttpSession session, BindingResult errors) {
 		if (errors.hasErrors()) {
-			return "edititem";
-		}
-		Item itemById = itemService.findItemById(uitem.getId());
-		assert(itemById != null); // can't be null because we're editing an existing id
-		Item itemByNS = itemService.findItemByNameAndState(uitem.getName(), uitem.getCondition());
-		// If user changed neither name nor condition OR user changed it but an matching item doesn't exist in the db
-		if (itemById.equals(itemByNS) || !itemById.equals(itemByNS) && itemByNS==null) {
-			itemById.setName(uitem.getName());
-			itemById.setCondition(uitem.getCondition());
-			itemById.setBestOption(uitem.getBestOption());
-			itemById.setSpecialInstruction(uitem.getSpecialInstruction());
-			itemById.setNotes(uitem.getNotes());
-			itemService.update(itemById);			
+			return "edit_item";
+		}		
+		try {
+			itemService.update(uitem);
 			return showProfilePage(model, session);
-		} else { // user changed either name or condition or both such that there is a duplicate
-			String message = "An item " + uitem.getName() + " (" + uitem.getCondition() +") already exists in the list";
-			model.addAttribute("message",message);
-			return "edititem";
-			 
+		} catch(ItemAlreadyExistsException e) {
+			model.addAttribute("message",e.getMessage());
+			return showEditItemPage(uitem.getId(), model);
 		}
+		
 	}
 	
 	@PostMapping("/deleteitem")
 	public String deleteItem(@RequestParam("itemId") int id, Model model, HttpSession session) {
-		itemService.deleteItem(id);		
+		itemService.delete(id);		
 		return showProfilePage(model, session);
 	}
 		
-	@GetMapping("/deleteuser")
+	@GetMapping("/deleteUser")
 	public String showDeleteUserPage(Model model, HttpSession session) {		
 		User user = getUserByEmail(session);	
 		model.addAttribute("user", user);
-		return "deleteuser";
+		return "delete_user";
 	}
-	@PostMapping("/deleteuser")
+	@PostMapping("/deleteUser")
 	public String deleteUser(@RequestParam("message") String message, Model model, HttpSession session) {
 		String username =  (String) session.getAttribute("userName");
 		Credential credential = credentialService.findByUsername(username);
 		credentialService.delete(credential);
+		
 		session.invalidate();
 		
 		// Send email to admin

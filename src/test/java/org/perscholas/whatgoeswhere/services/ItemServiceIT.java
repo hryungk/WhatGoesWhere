@@ -1,20 +1,26 @@
 package org.perscholas.whatgoeswhere.services;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.perscholas.whatgoeswhere.config.WebAppConfig;
 import org.perscholas.whatgoeswhere.controllers.HomeController;
+import org.perscholas.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +68,15 @@ class ItemServiceIT {
 	    existingItemNum = itemService.getAllItems().size();
 	    // Add items to the database to use for testing if they don't already exist.
 		LocalDateTime now = LocalDateTime.now();
-		String itemName = "Aerosole cans";
-		item1 = new Item(itemName, "Empty", BestOption.Recycling, "Must be empty.", "", now);
-		item2 = new Item(itemName, "full or partially full", BestOption.DropOff, "Hazardous waste", "This item is considered hazardous waste and must be disposed of safely.", now);
+		String itemName = "testItemName1";
+		item1 = new Item(itemName, "testCondition1", BestOption.Recycling, "testSpecialInstrution1", "", now);
+		item2 = new Item(itemName, "testCondition2", BestOption.DropOff, "testSpecialInstrution2", "testNote2", now);
 		// Add items to the database to use for testing if they don't already exist.
 		item1 = itemService.add(item1, 0);
 		item2 = itemService.add(item2, 0);
 				
-		toAdd = new Item("Chip bags", "", BestOption.Garbage, "", "", now);
-		toDelete = new Item("Bread bags", "Clean", BestOption.DropOff, "Must be clean and dry", "Drop off at local grocery stores", now);
+		toAdd = new Item("testItemToAdd", "", BestOption.Garbage, "", "", now);
+		toDelete = new Item("testItemToDelete", "testConditionToDelete", BestOption.DropOff, "testSpecialInstructionToDelete", "testNoteToDelete", now);
 		itemService.add(toDelete, 0);
 	    		
 	}
@@ -90,14 +96,6 @@ class ItemServiceIT {
 	}
 	
 	@Test
-	void testFindItemByNameAndState() {		
-		Item expected = item1; 				
-		Item actual = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
-		
-		assertEquals(expected, actual);
-	}
-	
-	@Test
 	void testFindItemByName() {
 		Item[] expected = {item1, item2};		
 		List<Item> actualList = itemService.findItemByName(item1.getName());
@@ -111,23 +109,37 @@ class ItemServiceIT {
 		
 		assertTrue(result);
 	}
-	
+
 	@Test
-	void testAddItem() {
-		// For testing addition, remove the item if it already exists
-		Item toRemove = itemService.findItemByNameAndState(toAdd.getName(), toAdd.getCondition());
-		if (toRemove != null) { // exists in the db
-			itemService.deleteItem(toRemove.getId());
-		}
+	void testFindItemByNameAndState() {		
+		Item expected = item1; 				
+		Item actual = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
 		
-		toAdd = itemService.add(toAdd,0);
-		Item expected = toAdd;
-		Item actual = itemService.findItemById(toAdd.getId());
-		assertEquals(expected, actual);		
+		assertEquals(expected, actual);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("provideItemsToTestAddItem")
+	void testAdd(Item item, boolean expected) throws ItemAlreadyExistsException  {
+		if(!expected) {
+	    	assertThrows(ItemAlreadyExistsException.class, () -> {
+				itemService.add(item, 0);
+			});
+	    } else {
+	    	itemService.add(item, 0);
+	    	assertNotNull(itemService.findItemByNameAndState(item.getName(), item.getCondition()));
+	    }
+	}
+	private Stream<Arguments> provideItemsToTestAddItem() {
+		return Stream.of(
+				Arguments.of(toAdd, true),
+				Arguments.of(item1, false),
+				Arguments.of(item2, false)
+				);
 	}
 
 	@Test
-	void testUpdateItem() {		
+	void testUpdateItem() throws ItemAlreadyExistsException {		
 		Item expected = itemService.findItemById(item2.getId());
 		expected.setNotes("Contact Waste Management for information on drop-off locations.");
 		Item actual = itemService.update(expected);
@@ -137,14 +149,14 @@ class ItemServiceIT {
 	@Test
 	void testDeleteItem() {				
 		Item expected = itemService.findItemById(toDelete.getId());
-		itemService.deleteItem(expected.getId());
+		itemService.delete(expected.getId());
 		assertNull(itemService.findItemById(toDelete.getId()));
 	}
 	
 	@AfterAll
 	void clearSetup() {
-		itemService.deleteItem(item1.getId());
-		itemService.deleteItem(item2.getId());
-		itemService.deleteItem(toAdd.getId());
+		itemService.delete(item1.getId());
+		itemService.delete(item2.getId());
+		itemService.delete(toAdd.getId());
 	}
 }

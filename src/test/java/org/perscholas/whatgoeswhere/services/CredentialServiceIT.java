@@ -1,10 +1,12 @@
 package org.perscholas.whatgoeswhere.services;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.stream.Stream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,8 +16,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.perscholas.whatgoeswhere.config.WebAppConfig;
 import org.perscholas.whatgoeswhere.controllers.HomeController;
+import org.perscholas.whatgoeswhere.exceptions.CredentialAlreadyExistsException;
+import org.perscholas.whatgoeswhere.exceptions.CredentialNotFoundException;
 import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Credential;
 import org.perscholas.whatgoeswhere.models.Item;
@@ -69,26 +76,26 @@ class CredentialServiceIT {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 	    // Items for user1
 	    LocalDateTime now_ldt = LocalDateTime.now();
-		item1 = new Item("Banana", "", BestOption.Composting,"", "", now_ldt);		
-		item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now_ldt);	
+		item1 = new Item("TestItem1", "", BestOption.Composting,"", "", now_ldt);		
+		item2 = new Item("TestItem2", "TestCondition2", BestOption.Recycling, "TestSpecialInstruction2", "", now_ldt);	
 		items = List.of(item1, item2);
 	    
 	    // Users for corresponding credential
  		LocalDate now_ld = LocalDate.now();
- 		user1 = new User("hoppycat@email.com", "Helen", "Kim", now_ld, items);
- 		user2 = new User("davidchi@email.com", "David","Chi", now_ld, new ArrayList<Item>());
- 		userToAdd = new User("pusheen@email.com", "Pusheen", "Cat", now_ld, new ArrayList<Item>());
- 		userToDelete = new User("stormy@email.com", "Stormy", "Sister", now_ld, new ArrayList<Item>());
+ 		user1 = new User("testuser1@email.com", "FirstName1", "LastName1", now_ld, items);
+ 		user2 = new User("testuser2@email.com", "FirstName2","LastName2", now_ld, new ArrayList<Item>());
+ 		userToAdd = new User("testusertoadd@email.com", "FirstNameToAdd", "LastNameToAdd", now_ld, new ArrayList<Item>());
+ 		userToDelete = new User("testusertodelete@email.com", "FirstNameToDelete", "LastNameToDelete", now_ld, new ArrayList<Item>());
 	    
  		// Add credentials to the database to use for testing if they don't already exist.
-	    credential1 = new Credential("hoppycat", "hoppycat1234", null); 
-	    credential2 = new Credential("doomgeek", "doomgeek1234", user2);
+	    credential1 = new Credential("testuser1", "testuser11234", null); 
+	    credential2 = new Credential("testuser2", "testuser21234", user2);
 	    
 	    credential1 = credentialService.add(credential1);
 	    credential2 = credentialService.add(credential2);
 	    
-	    toAdd = new Credential("pusheenthecat", "pusheen1234", userToAdd);
-	    toDelete = new Credential("stormythesister", "stormy1234", userToDelete);
+	    toAdd = new Credential("testusertoadd", "testusertoadd1234", userToAdd);
+	    toDelete = new Credential("testusertodelete", "testusertodelete1234", userToDelete);
 	    credentialService.add(toDelete);
 	    
 	}
@@ -100,7 +107,7 @@ class CredentialServiceIT {
 	}
 	
 	@Test
-	void testFindAllCredentials() {
+	void testGetAllCredentials() {
 		List<Credential> credentials = credentialService.getAll();
 		assertNotNull(credentials);
 		assertEquals(4, credentials.size());
@@ -120,19 +127,47 @@ class CredentialServiceIT {
 		assertEquals(expected, actual);
 	}
 	
-	@Test
-	void testAdd() {
-		// For testing addition, remove the user if it already exists
-		Credential toRemove = credentialService.findByUsername(toAdd.getUsername());
-		if (toRemove != null) { // exists in the db
-			credentialService.delete(toRemove);
-		}
-		toAdd = credentialService.add(toAdd);
-		assertNotNull(toAdd);	
+	@ParameterizedTest
+	@MethodSource("provideStringsForTestFindByUsernameAndPassword")
+	void testFindByUsernameAndPassword(String username, String password, boolean expected) throws CredentialNotFoundException {
+	    if(!expected) {
+	    	assertThrows(CredentialNotFoundException.class, () -> {
+				credentialService.findByUsernameAndPassword(username, password);
+			});
+	    } else {
+	    	assertNotNull(credentialService.findByUsernameAndPassword(username, password));
+	    }
+	}
+	private Stream<Arguments> provideStringsForTestFindByUsernameAndPassword() {
+	    return Stream.of(
+	      Arguments.of(credential1.getUsername(), credential1.getPassword(), true),
+	      Arguments.of(credential1.getUsername(), "invalidPassword", false),
+	      Arguments.of("invalidUsername", credential1.getPassword(), false)
+	    );
+	}
+	
+	@ParameterizedTest
+	@MethodSource("provideCredentialsForTestAdd")
+	void testAdd(Credential credential, boolean expected) throws CredentialAlreadyExistsException {
+		if(!expected) {
+	    	assertThrows(CredentialAlreadyExistsException.class, () -> {
+				credentialService.add(credential);
+			});
+	    } else {
+	    	credentialService.add(credential);
+	    	assertNotNull(credentialService.findByUsername(credential.getUsername()));
+	    }
+	}
+	private Stream<Arguments> provideCredentialsForTestAdd() {
+	    return Stream.of(
+	      Arguments.of(toAdd, true),
+	      Arguments.of(credential1, false),
+	      Arguments.of(credential2, false)
+	    );
 	}
 	
 	@Test
-	void testAddWithItem() {
+	void testAddWithUserWithItem() throws CredentialAlreadyExistsException {
 		credentialService.delete(credential1);
 		credential1.setUser(user1);
 		credential1 = credentialService.add(credential1);
@@ -164,7 +199,7 @@ class CredentialServiceIT {
 		credentialService.delete(toAdd);
 		
 		for (Item item : items)
-			itemService.deleteItem(item.getId());
+			itemService.delete(item.getId());
 	}
 
 }

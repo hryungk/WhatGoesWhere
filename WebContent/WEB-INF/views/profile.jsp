@@ -33,7 +33,7 @@
        
         
         <!-- <div style="height: 4em; position: relative; margin: 1em 0">
-        	<a href="additem" class="reg-btn add-btn a-btn">Add a new Item</a>
+        	<a href="addItem" class="reg-btn add-btn a-btn">Add a new Item</a>
         </div> -->
         <div>
 	        <table class="table table-striped table-hover">
@@ -59,7 +59,7 @@
 								</form>
 							</td>
 							<td>
-								<form action="./edititem" method="get">
+								<form action="./editItem" method="get">
 									<input type="hidden" name="itemId" value="${item.id}">
 									<button class="find-btn a-btn">Edit</button>
 								</form>

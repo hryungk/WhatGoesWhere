@@ -35,7 +35,7 @@
     		let li_deleteuser = document.createElement('li');
     		let a_deleteuser = document.createElement('a');
     		a_deleteuser.innerHTML = 'Delete account';
-    		a_deleteuser.href = 'deleteuser';
+    		a_deleteuser.href = 'deleteUser';
     		li_deleteuser.appendChild(a_deleteuser);
     		footer_ul.appendChild(li_deleteuser);
     	}

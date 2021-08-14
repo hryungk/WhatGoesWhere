@@ -2,6 +2,8 @@ package org.perscholas.whatgoeswhere.services.impl;
 
 import java.util.List;
 
+import org.perscholas.whatgoeswhere.exceptions.CredentialAlreadyExistsException;
+import org.perscholas.whatgoeswhere.exceptions.CredentialNotFoundException;
 import org.perscholas.whatgoeswhere.models.Credential;
 import org.perscholas.whatgoeswhere.repositories.CredentialRepository;
 import org.perscholas.whatgoeswhere.services.CredentialService;
@@ -33,7 +35,7 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 	
 	@Override
-	public Credential add(Credential credential) {
+	public Credential add(Credential credential) throws CredentialAlreadyExistsException {
 		return credentialRepository.add(credential);
 	}
 
@@ -41,9 +43,15 @@ public class CredentialServiceImpl implements CredentialService {
 	public boolean delete(Credential credential) {
 		return credentialRepository.delete(credential);
 	}
-
+	
 	@Override
 	public Credential update(Credential credential) {
 		return credentialRepository.update(credential);
 	}
+
+	@Override
+	public Credential findByUsernameAndPassword(String username, String password) throws CredentialNotFoundException {
+		return credentialRepository.findByUsernameAndPassword(username, password);
+	}
+
 }

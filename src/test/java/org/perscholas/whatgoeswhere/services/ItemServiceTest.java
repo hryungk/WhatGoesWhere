@@ -72,7 +72,7 @@ class ItemServiceTest {
 		
 		Item actual = itemService.findItemByNameAndState(input1, input2);
 		String expected = "Food & Yard Waste";
-		assertEquals(expected, actual.getBestOption());
+		assertEquals(expected, actual.getBestOption().getValue());
 	}	
 	
 }

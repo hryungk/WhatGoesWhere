@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Table(name="Credentials")
 @NamedQuery(name="Credential.findAll", query="SELECT c FROM Credential c")
 @NamedQuery(name="Credential.findByUsername", query="SELECT c FROM Credential c WHERE c.username = ?1")
+@NamedQuery(name="Credential.findByUsernameAndPassword", query="SELECT c FROM Credential c WHERE c.username = ?1 AND c.password = ?2")
 public class Credential {
 
 	@Id

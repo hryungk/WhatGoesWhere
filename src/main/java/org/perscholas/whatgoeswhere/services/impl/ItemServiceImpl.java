@@ -2,6 +2,7 @@ package org.perscholas.whatgoeswhere.services.impl;
 
 import java.util.List;
 
+import org.perscholas.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.perscholas.whatgoeswhere.repositories.ItemRepository;
 import org.perscholas.whatgoeswhere.services.ItemService;
@@ -38,21 +39,17 @@ public class ItemServiceImpl implements ItemService {
 	}
 	
 	@Override
-	public boolean addItem(Item item, int userId) {
-		return itemRepository.addItem(item, userId);
-	}
-	@Override
-	public Item add(Item item, int userId) {
+	public Item add(Item item, int userId) throws ItemAlreadyExistsException {
 		return itemRepository.add(item, userId);
 	}
 	
 	@Override
-	public boolean deleteItem(int itemId) {
-		return itemRepository.deleteItem(itemId);
+	public boolean delete(int itemId) {
+		return itemRepository.delete(itemId);
 	}
 	
 	@Override
-	public Item update(Item item) {
+	public Item update(Item item) throws ItemAlreadyExistsException {
 		return itemRepository.update(item);
 	}
 }

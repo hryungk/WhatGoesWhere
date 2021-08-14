@@ -199,9 +199,9 @@ class UserServiceIT {
 		userService.delete(toAdd);
 		
 		for (Item item : items) {			
-			itemService.deleteItem(item.getId());
+			itemService.delete(item.getId());
 		}
-		itemService.deleteItem(item3.getId());
-		itemService.deleteItem(itemToDelete.getId());
+		itemService.delete(item3.getId());
+		itemService.delete(itemToDelete.getId());
 	}
 }

@@ -153,10 +153,10 @@ class UserItemServiceIT {
 	void clearSetup() {
 		userService.delete(user1);
 		for (Item item : items) {
-			itemService.deleteItem(item.getId());
+			itemService.delete(item.getId());
 		}
-		itemService.deleteItem(toDelete1.getId());
-		itemService.deleteItem(toDelete2.getId());
-		itemService.deleteItem(toDelete3.getId());
+		itemService.delete(toDelete1.getId());
+		itemService.delete(toDelete2.getId());
+		itemService.delete(toDelete3.getId());
 	}
 }

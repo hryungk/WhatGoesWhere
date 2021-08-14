@@ -7,7 +7,7 @@
     <section> 
         <h1>Add a New Item</h1>
         <div>
-            <form:form action="./additem" method="POST" modelAttribute="item" >
+            <form:form action="./addItem" method="POST" modelAttribute="item" >
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <p style="color: red;" id="msg"><c:out value="${message }" /></p>
