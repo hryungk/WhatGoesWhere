@@ -66,10 +66,10 @@ public class HomeController {
 		
 	@GetMapping("/addItem")
 	public String showAddItemPage(Model model, HttpSession session) {
-		String email = getUserEmail(session);
-		if (email == null) { // If not logged in, redirect to login page
-			return showLogInPage(model);
-		}
+//		String email = getUserEmail(session);
+//		if (email == null) { // If not logged in, redirect to login page
+//			return showLogInPage(model);
+//		}
 		if (model.getAttribute("message") == null) {
 			String message = "";
 			model.addAttribute("message", message);
@@ -111,21 +111,21 @@ public class HomeController {
 		}
 		return "login";
 	}
-	@PostMapping("/login")
-	public String logIn(@RequestParam("userName") String username, @RequestParam("password") String password, Model model, HttpSession session) {
-		try {
-			Credential credential = credentialService.findByUsernameAndPassword(username, password);
-			User user = credential.getUser();
-			session.setAttribute("userName", username);
-			session.setAttribute("eMail", user.getEmail());
-			return showProfilePage(model, session);
-		} catch (CredentialNotFoundException e) {
-			String message = e.getMessage();
-			model.addAttribute("message", message);
-			model.addAttribute("username", username);
-			return showLogInPage(model);
-		}
-	}
+//	@PostMapping("/login")
+//	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpSession session) {
+//		try {
+//			Credential credential = credentialService.findByUsernameAndPassword(username, password);
+//			User user = credential.getUser();
+//			session.setAttribute("userName", username);
+//			session.setAttribute("eMail", user.getEmail());
+//			return showProfilePage(model, session);
+//		} catch (CredentialNotFoundException e) {
+//			String message = e.getMessage();
+//			model.addAttribute("message", message);
+//			model.addAttribute("username", username);
+//			return showLogInPage(model);
+//		}
+//	}
 	
 //	@GetMapping("register/{username}")
 //	public String passToRegister(Model model, @PathVariable("username") String username) {		
@@ -152,7 +152,7 @@ public class HomeController {
 		}
 		return "register";
 	}
-	@PostMapping("/register")
+	@PostMapping("/registerNewUser")
 	public String addUser(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpSession session) {
 		User newUser = new User(email, firstName, lastName, LocalDate.now(), new ArrayList<Item>());
 		Credential credential = new Credential(username, password, newUser);
@@ -239,6 +239,11 @@ public class HomeController {
 	public String logout(HttpSession session) {
 		session.invalidate(); // On clicking logout links, the session is to be invalidated.
 		return showIndexPage();
+	}
+
+	@GetMapping("/logoutSuccess")
+	public String showLogoutSuccessPage() {
+		return "logout_success";
 	}
 
 	@GetMapping("/about")

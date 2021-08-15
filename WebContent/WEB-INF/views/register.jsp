@@ -6,7 +6,7 @@
     <section> 
         <h1>Register</h1>
         <div>
-           <form action="./register" method="post"> <!-- name="myForm" onsubmit="return(validate())"> -->
+           <form action="./registerNewUser" method="post"> <!-- name="myForm" onsubmit="return(validate())"> -->
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <h6>(all fields are required)</h6>

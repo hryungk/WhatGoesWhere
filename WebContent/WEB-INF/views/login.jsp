@@ -6,12 +6,12 @@
     <section> 
         <h1>Sign In</h1>
         <div>
-           <form action="login" method="POST" name="myForm">
+           <form action="./login" method="POST" name="myForm">
                 <fieldset>
                     <legend>Please enter your credentials below:</legend>                    
             		<p style="color: red;" id="msg"><c:out value="${message }" /></p>
                     <div class="r-input">
-						<input type="text" name="userName" placeholder="Username" required="required" id="input-username" value="${username }"/>
+						<input type="text" name="username" placeholder="Username" required="required" id="input-username" value="${username }"/>
 					</div>
 					<div class="r-input">				
 						<input type="password" name="password" placeholder="Password" required="required" />
