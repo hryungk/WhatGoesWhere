@@ -29,7 +29,8 @@ public class CurrentCredential implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return "{noop}" + credential.getUsername();
+//		return "{noop}" + credential.getUsername();
+		return  credential.getUsername();
 	}
 
 	@Override

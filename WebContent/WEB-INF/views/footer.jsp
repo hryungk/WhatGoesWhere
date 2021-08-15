@@ -1,8 +1,7 @@
+<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 <%	
-	String userName = (String) session.getAttribute("userName");
-	if (userName != null) {
-		userName  = session.getAttribute("userName").toString();
-	}
+	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	boolean isAnonymous = principal.equals("anonymousUser");
 %>	
     <footer>
 		<div class="footer-nav">
@@ -30,8 +29,9 @@
 	</footer>	
 	<script>
 	    let footer_ul = document.getElementById('footer-support-ul');
-		<%-- let username = '<%= userName%>'; --%>
-    	if (username != 'null') {
+		<%-- let isanonymous = <%= isAnonymous%>; /* defined in header */--%>
+		if (isanonymous == false) {
+    	/* if (username != 'null') { */
     		let li_deleteuser = document.createElement('li');
     		let a_deleteuser = document.createElement('a');
     		a_deleteuser.innerHTML = 'Delete account';
@@ -40,5 +40,3 @@
     		footer_ul.appendChild(li_deleteuser);
     	}
     </script>
-</body>
-</html>

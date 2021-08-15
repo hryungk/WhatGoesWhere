@@ -47,6 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		// Specifies that we would like to use a custom form to login
 		.and().formLogin().loginPage("/login").permitAll()
+//		.loginProcessingUrl("/performLogin")
+		.defaultSuccessUrl("/")
+		
 		// Specifies that any authenticated user can access all URLs
 		.and().authorizeRequests().anyRequest().authenticated()
 		.and()

@@ -3,6 +3,7 @@ package org.perscholas.whatgoeswhere.controllers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +19,9 @@ import org.perscholas.whatgoeswhere.services.CredentialService;
 import org.perscholas.whatgoeswhere.services.ItemService;
 import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,7 +50,7 @@ public class HomeController {
 	}
 	
 	@GetMapping("/") // This is what you type for URL
-	public String showIndexPage() {
+	public String showIndexPage(Model model) {
 		return "index"; // return this to WebAppconfig
 	}
 	@PostMapping("/find") // Match the form's action name
@@ -65,11 +69,7 @@ public class HomeController {
 	}
 		
 	@GetMapping("/addItem")
-	public String showAddItemPage(Model model, HttpSession session) {
-//		String email = getUserEmail(session);
-//		if (email == null) { // If not logged in, redirect to login page
-//			return showLogInPage(model);
-//		}
+	public String showAddItemPage(Model model) {
 		if (model.getAttribute("message") == null) {
 			String message = "";
 			model.addAttribute("message", message);
@@ -83,20 +83,19 @@ public class HomeController {
 		return "add_item";
 	}
 	@PostMapping("/addItem")
-	public String addItem(@ModelAttribute("item") Item item, Model model, HttpSession session, BindingResult errors) {
+	public String addItem(@ModelAttribute("item") Item item, Model model, BindingResult errors) {
 		if (errors.hasErrors()) {
 			return "add_item";			
 		}
-		item.setAddedDate(LocalDateTime.now());
-		User user = getUserByEmail(session);		
+		item.setAddedDate(LocalDateTime.now());	
+		User user = getUser();
 		try {
 			itemService.add(item, user.getId());
 			return showListPage(model);
 		} catch(ItemAlreadyExistsException e) {
 			model.addAttribute("message",e.getMessage());
-			return showAddItemPage(model, session);
+			return showAddItemPage(model);
 		}
-		
 	}
 	
 	@GetMapping("/login")
@@ -105,27 +104,23 @@ public class HomeController {
 			String message = "";
 			model.addAttribute("message", message);
 		}
-		String username = (String) model.getAttribute("username");
-		if (username != null) {			
-			System.out.println("login get mapping: " + username);
-		}
 		return "login";
 	}
-//	@PostMapping("/login")
-//	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpSession session) {
-//		try {
-//			Credential credential = credentialService.findByUsernameAndPassword(username, password);
-//			User user = credential.getUser();
-//			session.setAttribute("userName", username);
-//			session.setAttribute("eMail", user.getEmail());
-//			return showProfilePage(model, session);
-//		} catch (CredentialNotFoundException e) {
-//			String message = e.getMessage();
-//			model.addAttribute("message", message);
-//			model.addAttribute("username", username);
-//			return showLogInPage(model);
-//		}
-//	}
+	@PostMapping("/performLogin")
+	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpSession session) {
+		try {
+			Credential credential = credentialService.findByUsernameAndPassword(username, password);
+			User user = credential.getUser();
+			session.setAttribute("userName", username);
+			session.setAttribute("eMail", user.getEmail());
+			return showProfilePage(model, session);
+		} catch (CredentialNotFoundException e) {
+			String message = e.getMessage();
+			model.addAttribute("message", message);
+			model.addAttribute("username", username);
+			return showLogInPage(model);
+		}
+	}
 	
 //	@GetMapping("register/{username}")
 //	public String passToRegister(Model model, @PathVariable("username") String username) {		
@@ -146,10 +141,6 @@ public class HomeController {
 			User newUser = new User();
 			model.addAttribute("user", newUser);
 		}
-		String username = (String) model.getAttribute("username");
-		if (username != null) {			
-			System.out.println("going to register page: "+username);
-		}
 		return "register";
 	}
 	@PostMapping("/registerNewUser")
@@ -161,7 +152,7 @@ public class HomeController {
 				String invalidEmailMessage = "The email address " + email + " is already registered. Choose a different one.";
 				model.addAttribute("emailMessage", invalidEmailMessage);	
 			}
-			credential = credentialService.add(credential);
+			credentialService.add(credential);
 			model.addAttribute("user", newUser);
 			session.setAttribute("userName", username);
 			session.setAttribute("eMail", email);
@@ -177,7 +168,7 @@ public class HomeController {
 	
 	@GetMapping("/profile")
 	public String showProfilePage(Model model, HttpSession session) {		
-		User user = getUserByEmail(session);	
+		User user = getUser();
 		model.addAttribute("user",user);
 		List<Item> items = user.getItems();
 		model.addAttribute("items", items);
@@ -188,8 +179,7 @@ public class HomeController {
 	public String showEditItemPage(@RequestParam("itemId") int itemId, Model model) {		
 		Item item = itemService.findItemById(itemId);
 		model.addAttribute("item", item);
-		System.out.println(item);
-		// Pass the bestoption enum values
+		// Pass the BestOption enum values
 		model.addAttribute("bestOptions", BestOption.values());
 		return "edit_item";
 	}
@@ -205,7 +195,6 @@ public class HomeController {
 			model.addAttribute("message",e.getMessage());
 			return showEditItemPage(uitem.getId(), model);
 		}
-		
 	}
 	
 	@PostMapping("/deleteitem")
@@ -216,8 +205,7 @@ public class HomeController {
 		
 	@GetMapping("/deleteUser")
 	public String showDeleteUserPage(Model model, HttpSession session) {		
-		User user = getUserByEmail(session);	
-		model.addAttribute("user", user);
+		model.addAttribute("email", getUserEmail());
 		return "delete_user";
 	}
 	@PostMapping("/deleteUser")
@@ -232,13 +220,13 @@ public class HomeController {
 		System.out.println(message);
 		
 		
-		return showIndexPage();
+		return showIndexPage(model);
 	}
 	
 	@GetMapping("/logout") 
 	public String logout(HttpSession session) {
 		session.invalidate(); // On clicking logout links, the session is to be invalidated.
-		return showIndexPage();
+		return "index";
 	}
 
 	@GetMapping("/logoutSuccess")
@@ -253,7 +241,7 @@ public class HomeController {
 	
 	@GetMapping("/contact")
 	public String showContactPage(HttpSession session, Model model) {
-		String email = getUserEmail(session);
+		String email = getUserEmail();
 		model.addAttribute("email", email);
 		return "contact";
 	}
@@ -265,14 +253,30 @@ public class HomeController {
 		// Send email to admin
 		
 		
-		return showIndexPage();
+		return "index";
 	}
 	
-	private User getUserByEmail(HttpSession session) {
-		String email = getUserEmail(session);
-		return userService.findUserByEmail(email);
+	private User getUser() {
+		// Get current user
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		boolean isAnonymous = principal.equals("anonymousUser");
+		if (isAnonymous) {
+			return null;
+		} else {
+			// Print current user granted authorities
+			Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+	//		System.out.println(authorities);
+			String username =  ((UserDetails)principal).getUsername();
+			Credential credential = credentialService.findByUsername(username);
+	//		System.out.println(credential);
+			return credential.getUser();
+		}
 	}
-	private String getUserEmail(HttpSession session) {
-		return (String) session.getAttribute("eMail");
+	
+	private String getUserEmail() {
+		User user = getUser();
+		if (user == null)
+			return null;
+		return user.getEmail();
 	}	
 }
