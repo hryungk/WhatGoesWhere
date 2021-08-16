@@ -1,7 +1,12 @@
 <%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ page import="org.springframework.security.core.Authentication"%>	
 <%	
-	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	boolean isAnonymous = principal.equals("anonymousUser");
+	boolean isAnonymous = true;
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	if (authentication != null) {
+		Object principal = authentication.getPrincipal();
+		isAnonymous = principal.equals("anonymousUser");
+	}
 %>	
     <footer>
 		<div class="footer-nav">

@@ -1,6 +1,7 @@
-package org.perscholas.whatgoeswhere.config;
+package org.perscholas.whatgoeswhere.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -23,10 +26,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public WebSecurityConfig(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
+
+	@Bean
+	public PasswordEncoder pswdEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 	
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+		daoAuthenticationProvider.setPasswordEncoder(pswdEncoder());
 		return daoAuthenticationProvider;
 	}
 	
@@ -42,23 +51,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// CSRF is disabled for simplification and demonstration.
 		// Do not use this configuration for production.
 		http.csrf().disable()
-		// Permit all users to access the following pages. All other pages requires authentication.
-		.authorizeRequests().antMatchers("/", "/find", "/about","/list", "/login", "/loginPost", "/register", "/registerNewUser","/contact").permitAll()
 		
+		.authorizeRequests()
+		// Permit all users to access the following pages. All other pages requires authentication.
+		.antMatchers("/", "/find", "/about","/list", "/login", "/loginPost", "/register", "/registerNewUser","/contact").permitAll()
+		// Restrict Admin page to "ADMIN" roles
+		.antMatchers("/admin").hasRole("ADMIN").anyRequest().authenticated()
 		// Specifies that we would like to use a custom form to login
 		.and().formLogin().loginPage("/login").permitAll()
 //		.loginProcessingUrl("/performLogin")
-		.defaultSuccessUrl("/")
-		
-		// Specifies that any authenticated user can access all URLs
-		.and().authorizeRequests().anyRequest().authenticated()
+		.defaultSuccessUrl("/")		
 		.and()
 		// Upon logout, invalidate the session and clear authentication
 		.logout().invalidateHttpSession(true).clearAuthentication(true)
 		// Specifies Logout URL
 		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		// Forward to /logoutsuccess upon logout and allow all requests
-		.logoutSuccessUrl("/logoutSuccess").permitAll();
+		.logoutSuccessUrl("/logoutSuccess").permitAll()
+		// Redirect to access denied page if access not authorize for user
+		.and().exceptionHandling().accessDeniedPage("/accessDenied");
 	}
 
 	

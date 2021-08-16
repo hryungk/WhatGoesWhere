@@ -19,17 +19,16 @@ public class CurrentCredential implements UserDetails {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.singleton(new SimpleGrantedAuthority("USER"));
+		return Collections.singleton(new SimpleGrantedAuthority(credential.getUserRole()));
 	}
 
 	@Override
 	public String getPassword() {
-		return "{noop}" + credential.getPassword();
+		return credential.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-//		return "{noop}" + credential.getUsername();
 		return  credential.getUsername();
 	}
 

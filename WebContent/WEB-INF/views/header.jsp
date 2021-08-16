@@ -1,6 +1,13 @@
-<%@ page
-	import="org.springframework.security.core.context.SecurityContextHolder"%>
-	
+<%@ page import="org.springframework.security.core.context.SecurityContextHolder"%>
+<%@ page import="org.springframework.security.core.Authentication"%>	
+<%
+	boolean isAnonymous = true;
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	if (authentication != null) {
+		Object principal = authentication.getPrincipal();
+		isAnonymous = principal.equals("anonymousUser");
+	}
+%>
 <header class="menu_container">
 	<div class="menu_item" id="menu_item-1">
 		<h1 style="font-weight: bold;">
@@ -26,10 +33,7 @@
 		</nav>
 	</div>
 </header>
-<%
-Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-boolean isAnonymous = principal.equals("anonymousUser");
-%>
+
 <script>	    
 	let isanonymous = <%=isAnonymous%>;
 	if (isanonymous == false) {

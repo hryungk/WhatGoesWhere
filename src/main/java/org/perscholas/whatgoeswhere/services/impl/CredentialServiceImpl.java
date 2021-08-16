@@ -8,15 +8,19 @@ import org.perscholas.whatgoeswhere.models.Credential;
 import org.perscholas.whatgoeswhere.repositories.CredentialRepository;
 import org.perscholas.whatgoeswhere.services.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CredentialServiceImpl implements CredentialService {
+	
 	private CredentialRepository credentialRepository;
+	private PasswordEncoder pswdEncoder;
 	
 	@Autowired // inject into this class from the Spring framework
-	public CredentialServiceImpl(CredentialRepository itemRepository) {
+	public CredentialServiceImpl(CredentialRepository itemRepository, PasswordEncoder pswdEncoder) {
 		this.credentialRepository = itemRepository;
+		this.pswdEncoder = pswdEncoder;
 	}
 	
 	@Override
@@ -36,6 +40,7 @@ public class CredentialServiceImpl implements CredentialService {
 	
 	@Override
 	public Credential add(Credential credential) throws CredentialAlreadyExistsException {
+		credential.setPassword(pswdEncoder.encode(credential.getPassword()));
 		return credentialRepository.add(credential);
 	}
 

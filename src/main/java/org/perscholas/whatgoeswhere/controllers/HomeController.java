@@ -5,11 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.perscholas.whatgoeswhere.exceptions.CredentialAlreadyExistsException;
-import org.perscholas.whatgoeswhere.exceptions.CredentialNotFoundException;
+//import org.perscholas.whatgoeswhere.exceptions.CredentialNotFoundException;
 import org.perscholas.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import org.perscholas.whatgoeswhere.models.BestOption;
 import org.perscholas.whatgoeswhere.models.Credential;
@@ -19,6 +23,7 @@ import org.perscholas.whatgoeswhere.services.CredentialService;
 import org.perscholas.whatgoeswhere.services.ItemService;
 import org.perscholas.whatgoeswhere.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +46,7 @@ public class HomeController {
 	private CredentialService credentialService;
 	private UserService userService;
 	private ItemService itemService;
+	final Logger LOGGER = Logger.getLogger(HomeController.class.getName());
 	
 	@Autowired
 	public HomeController(ItemService itemService, UserService userService, CredentialService credentialService) {
@@ -106,21 +112,20 @@ public class HomeController {
 		}
 		return "login";
 	}
-	@PostMapping("/performLogin")
-	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpSession session) {
-		try {
-			Credential credential = credentialService.findByUsernameAndPassword(username, password);
-			User user = credential.getUser();
-			session.setAttribute("userName", username);
-			session.setAttribute("eMail", user.getEmail());
-			return showProfilePage(model, session);
-		} catch (CredentialNotFoundException e) {
-			String message = e.getMessage();
-			model.addAttribute("message", message);
-			model.addAttribute("username", username);
-			return showLogInPage(model);
-		}
-	}
+//	@PostMapping("/performLogin")
+//	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpServletRequest request) {
+//		try {
+//			Credential credential = credentialService.findByUsernameAndPassword(username, password);
+//			User user = credential.getUser();
+//			authWithHttpServletRequest(request, username, password); // login 	
+//			return showProfilePage(model, session);
+//		} catch (CredentialNotFoundException e) {
+//			String message = e.getMessage();
+//			model.addAttribute("message", message);
+//			model.addAttribute("username", username);
+//			return showLogInPage(model);
+//		}
+//	}
 	
 //	@GetMapping("register/{username}")
 //	public String passToRegister(Model model, @PathVariable("username") String username) {		
@@ -144,7 +149,7 @@ public class HomeController {
 		return "register";
 	}
 	@PostMapping("/registerNewUser")
-	public String addUser(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpSession session) {
+	public String addUser(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpServletRequest request) {
 		User newUser = new User(email, firstName, lastName, LocalDate.now(), new ArrayList<Item>());
 		Credential credential = new Credential(username, password, newUser);
 		try {			
@@ -154,9 +159,8 @@ public class HomeController {
 			}
 			credentialService.add(credential);
 			model.addAttribute("user", newUser);
-			session.setAttribute("userName", username);
-			session.setAttribute("eMail", email);
-			return showProfilePage(model, session);
+			authWithHttpServletRequest(request, username, password); // login automatically
+			return showProfilePage(model);
 		} catch (CredentialAlreadyExistsException e) {
 			username = "";
 			model.addAttribute("usernameMessage", e.getMessage());
@@ -167,9 +171,11 @@ public class HomeController {
 	}
 	
 	@GetMapping("/profile")
-	public String showProfilePage(Model model, HttpSession session) {		
-		User user = getUser();
+	public String showProfilePage(Model model) {		
+		Credential credential = getCredential();
+		User user = credential.getUser();
 		model.addAttribute("user",user);
+		model.addAttribute("userName", credential.getUsername());
 		List<Item> items = user.getItems();
 		model.addAttribute("items", items);
 		return "profile";
@@ -184,13 +190,13 @@ public class HomeController {
 		return "edit_item";
 	}
 	@PostMapping("/editItem")
-	public String editItem(@ModelAttribute("item") Item uitem,  Model model, HttpSession session, BindingResult errors) {
+	public String editItem(@ModelAttribute("item") Item uitem,  Model model, BindingResult errors) {
 		if (errors.hasErrors()) {
 			return "edit_item";
 		}		
 		try {
 			itemService.update(uitem);
-			return showProfilePage(model, session);
+			return showProfilePage(model);
 		} catch(ItemAlreadyExistsException e) {
 			model.addAttribute("message",e.getMessage());
 			return showEditItemPage(uitem.getId(), model);
@@ -198,36 +204,34 @@ public class HomeController {
 	}
 	
 	@PostMapping("/deleteitem")
-	public String deleteItem(@RequestParam("itemId") int id, Model model, HttpSession session) {
+	public String deleteItem(@RequestParam("itemId") int id, Model model) {
 		itemService.delete(id);		
-		return showProfilePage(model, session);
+		return showProfilePage(model);
 	}
 		
 	@GetMapping("/deleteUser")
-	public String showDeleteUserPage(Model model, HttpSession session) {		
+	public String showDeleteUserPage(Model model) {		
 		model.addAttribute("email", getUserEmail());
 		return "delete_user";
 	}
 	@PostMapping("/deleteUser")
-	public String deleteUser(@RequestParam("message") String message, Model model, HttpSession session) {
-		String username =  (String) session.getAttribute("userName");
-		Credential credential = credentialService.findByUsername(username);
+	public String deleteUser(@RequestParam("message") String message, Model model, HttpServletRequest request) {
+		Credential credential = getCredential();
 		credentialService.delete(credential);
-		
-		session.invalidate();
+
+		logoutWithHttpServletRequest(request);
 		
 		// Send email to admin
 		System.out.println(message);
 		
-		
 		return showIndexPage(model);
 	}
 	
-	@GetMapping("/logout") 
-	public String logout(HttpSession session) {
-		session.invalidate(); // On clicking logout links, the session is to be invalidated.
-		return "index";
-	}
+//	@GetMapping("/logout") 
+//	public String logout(HttpSession session) {
+//		session.invalidate(); // On clicking logout links, the session is to be invalidated.
+//		return "index";
+//	}
 
 	@GetMapping("/logoutSuccess")
 	public String showLogoutSuccessPage() {
@@ -240,13 +244,13 @@ public class HomeController {
 	}
 	
 	@GetMapping("/contact")
-	public String showContactPage(HttpSession session, Model model) {
+	public String showContactPage(Model model) {
 		String email = getUserEmail();
 		model.addAttribute("email", email);
 		return "contact";
 	}
 	@PostMapping("/contact")
-	public String contact(@RequestParam("message") String message, @RequestParam("eMail") String email, Model model, HttpSession session) {
+	public String contact(@RequestParam("message") String message, @RequestParam("eMail") String email, Model model) {
 		System.out.println("email: " + email);
 		System.out.println("message: " + message);
 		
@@ -255,22 +259,56 @@ public class HomeController {
 		
 		return "index";
 	}
+
+	@GetMapping("/admin")
+	public String showAdminPage() {
+		return "admin";
+	}
 	
-	private User getUser() {
+	@GetMapping("/accessDenied")
+	public String showAccessDeniedPage() {
+		return "access_denied";
+	}
+	
+	private void logoutWithHttpServletRequest(HttpServletRequest request) {
+		try {
+			request.logout();
+		} catch (ServletException e) {
+			LOGGER.log(Level.WARNING, "Error while logout ", e);
+		}
+		
+	}
+	private void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
+	    try {
+	        request.login(username, password);
+	    } catch (ServletException e) {
+	        LOGGER.log(Level.WARNING, "Error while login ", e);
+	    }
+	}
+	
+	private Credential getCredential() {		
 		// Get current user
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAnonymous = principal.equals("anonymousUser");
-		if (isAnonymous) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) {
 			return null;
 		} else {
-			// Print current user granted authorities
-			Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-	//		System.out.println(authorities);
-			String username =  ((UserDetails)principal).getUsername();
-			Credential credential = credentialService.findByUsername(username);
-	//		System.out.println(credential);
-			return credential.getUser();
+			Object principal = authentication.getPrincipal();
+			boolean isAnonymous = principal.equals("anonymousUser");
+			if (isAnonymous) {
+				return null;
+			} else {
+				// Print current user granted authorities
+//				Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//				System.out.println(authorities);
+				String username =  ((UserDetails)principal).getUsername();
+				return credentialService.findByUsername(username);
+			}
 		}
+	}
+	
+	private User getUser() {
+		Credential credential = getCredential();
+		return credential.getUser();
 	}
 	
 	private String getUserEmail() {

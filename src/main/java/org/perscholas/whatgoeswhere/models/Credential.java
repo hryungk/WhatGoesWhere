@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="Credentials")
@@ -22,9 +24,14 @@ public class Credential {
 	@Column(name="id")
 	private int id;
 	@Column(name="username", length=50, nullable=false, unique=true)
+	@Size(min=2, max=25, message="Username must be between 2 and 25 characters.")
+	@NotNull
 	private String username;
-	@Column(name="password", length=50, nullable=false) 
+	@Column(name="password", length=100, nullable=false)
+	@Size(min=4, max=100, message="Password must be between 4 and 100 characters.")
 	private String password;
+	@Column(name="userRole")
+	private String userRole;
 	@OneToOne(cascade=CascadeType.ALL, orphanRemoval=false)
 	private User user;
 	
@@ -32,6 +39,7 @@ public class Credential {
 		super();
 		username = "";
 		password = "";
+		userRole = "ROLE_USER";
 		user = new User();
 	}
 
@@ -39,6 +47,7 @@ public class Credential {
 		super();
 		this.username = username;
 		this.password = password;
+		userRole = "ROLE_USER";
 		this.user = user;
 	}
 
@@ -66,6 +75,14 @@ public class Credential {
 		this.password = password;
 	}
 
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+	
 	public User getUser() {
 		return user;
 	}
@@ -104,7 +121,7 @@ public class Credential {
 
 	@Override
 	public String toString() {
-		return "Credential [id=" + id + ", username=" + username + ", password=" + password + "]";
+		return "Credential [id=" + id + ", username=" + username + ", password=" + password + ", " + userRole +"]";
 	}
 	
 }
