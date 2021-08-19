@@ -2,6 +2,8 @@
 **Deliver a Java web application created using Spring MVC or Spring Boot**  
 Below is the description of the project.
 
+---
+
 # What Goes Where in Redmond
 - To search how to dispose of anything in Redmond, WA, USA
 - Users can also participate in growing the knowledge by adding more items!
@@ -20,94 +22,89 @@ A Java web application built using Spring MVC framework
 - JUnit v1.6.2
 - Jupiter v5.7.2
 
-## Model (@Entity)
-- Credential: username, password
-- User: email, first name, last name, items, joined date
-- Item: name, condition, best option, special instruction, notes, added date
-- UserItem (Join Table): User to Item is mapped with @OneToMany relationship
+## Model (`@Entity`)
+- `Credential`: username, password
+- `User`: email, first name, last name, items, joined date
+- `Item`: name, condition, best option, special instruction, notes, added date
+- `UserItem` (Join Table): User to Item is mapped with @OneToMany relationship
 
-## View (@Service)
-Implemented via @Autowired repositories (@Repository)
-- CredentialService
-- UserService
-- ItemService
-- UserItemService (Join Table)
+## View (`@Service`)
+Implemented via `@Autowired` repositories (`@Repository`)
+- `CredentialService`
+- `UserService`
+- `ItemService`
+- `UserItemService` (Join Table)
 
-## Controller (@Controller)
-- HomeController
+## Controller (`@Controller`)
+- `HomeController`
     - Handles exceptions caused by services.
 
 ## JPA
-- persistence.xml includes model classes, JDBC connection information, and Eclipse Link configurations
+- `persistence.xml` includes model classes, JDBC connection information, and Eclipse Link configurations
 - Custom queries: 
-    - CredentialRepsotiroy
-       - findByUsername
-       - findByUsernameAndPassword
-    - ItemRepository
-       - findByName
-       - findByNameAndState
-    - UserRepository
-       - findByEmail
-    - UserItemRepository
-       - findByUserId
-       - findByItemId
-       - deleteByUserId
-       - deleteByItemId
+    - `CredentialRepsotiroy`
+       - `findByUsername`
+       - `findByUsernameAndPassword`
+    - `ItemRepository`
+       - `findByName`
+       - `findByNameAndState`
+    - `UserRepository`
+       - `findByEmail`
+    - `UserItemRepository`
+       - `findByUserId`
+       - `findByItemId`
+       - `deleteByUserId`
+       - `deleteByItemId`
 
 ## Custom Exceptions
-- CredentialAlreadyExistsException: Credential's add() method
-- CredentialNotFoundException: findByNameAndPassword() and update() methods
-- ItemAlreadyExistsException: add() and update() methods
+- `CredentialAlreadyExistsException`: thrown at `Credential`'s `add()` method
+- `CredentialNotFoundException`: thrown at `findByNameAndPassword()` and `update()` methods
+- `ItemAlreadyExistsException`: thrown at `add()` and `update()` methods
 
 ## JUnit Testing
 Tests all methods in each Service class.
-- Credential
-    - Integrated Test for CredentialService class
-       - CredentialAlreadyExistsException is tested with add() method
-       - CredentialNotFoundException is tested with findByUsernameAndPassword() method
-- User
-    - Integrated Test for UserService class
-    - Mockito Test for UserService class
-- UserItem
-    - Integrated Test for UserItemService class
-- Item 
-    - Parameterized Test for Item class
-    - Mockito Test for ItemService class
+- `Credential`
+    - Integrated Test for `CredentialService` class
+       - `CredentialAlreadyExistsException` is tested with `add()` method
+       - `CredentialNotFoundException` is tested with `findByUsernameAndPassword()` method
+- `User`
+    - Integrated Test for `UserService` class
+    - `Mockito` Test for `UserService` class
+- `UserItem`
+    - Integrated Test for `UserItemService` class
+- `Item` 
+    - Parameterized Test for `Item` class
+    - `Mockito` Test for `ItemService` class
     - Test Suite for the two above
-    - Integrated Test for ItemService class
-       - ItemAlreadyExistsException is tested for add() method 
+    - Integrated Test for `ItemService` class
+       - `ItemAlreadyExistsException` is tested for `add()` method 
 
 ## Views (Front-end)
 - JSP (12 pages): index, find, about, list, login, register, profile, delete_user, add_item, edit_item, contact, and admin
 - CSS
-    - custom external file: stylesheet.css
+    - custom external file: `stylesheet.css`
     - Bootstrap
     - internal styling
 - Javascript
-    - add_table_head: adds table head when showing search results in the main page
-    - go_back: links the previous page to a button
+    - `add_table_head.js`: adds table head when showing search results in the main page
+    - `go_back.js`: links the previous page to a button
     - internal scripts to change headers and footers depending on roles
 - Navigation
-    - header and footer are included in every JSP
+    - `header.jsp` and `footer.jsp` are included in every JSP
     
 ## Spring Security
-- Credential class holds username, password, and user's role.
-- CurrentCredential class holds Credential in the current session.
+- `Credential` class holds username, password, and user's role.
+- `CurrentCredential` class holds Credential in the current session.
 - Anonymous user can access index, find, about, list, login, register, and contact page.
-- ROLE_USER can additionally access profile, add_item, edit_item, and delete_user page.
-- ROLE_ADMIN can additionally access admin page.
+- `ROLE_USER` can additionally access profile, add_item, edit_item, and delete_user page.
+- `ROLE_ADMIN` can additionally access admin page.
 
 ## Utility classes
-- BestOption (enum): 4 different disposal options for Users to choose from
+- `BestOption` (enum): 4 different disposal options for Users to choose from
 - [ ] Queries
 - [ ] Named queries
 - [ ] HTML pages
 - [ ] URL patterns
-
-
-## Functional Specifications (What does it do?)
-- To search how to dispose of anything in Redmond, WA, USA
-- Users can also participate in growing the knowledge by adding more items!
 
 ## User Stories
 - As a user, I want to search for an item so that I can get information on how to dispose of it. (R)
