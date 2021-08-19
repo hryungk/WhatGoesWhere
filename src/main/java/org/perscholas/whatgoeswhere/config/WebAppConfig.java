@@ -8,10 +8,23 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+/**
+ * Web Application Configuration class
+ * Contains view resolver and resource handler methods.
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 @Configuration
 @EnableWebMvc
 @ComponentScan("org.perscholas.whatgoeswhere")
 public class WebAppConfig implements WebMvcConfigurer{
+	/**
+	 * Attaches prefix and suffix for the controller mapping
+	 * 
+	 * @return an Internal Resource View Resolver
+	 * @see org.springframework.web.servlet.view.InternalResourceViewResolver
+	 */
 	@Bean
 	InternalResourceViewResolver viewResolver() {
 		return new InternalResourceViewResolver("/WEB-INF/views/",".jsp");

@@ -9,11 +9,25 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Service class for Spring Security's UserDetails class
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-		
+	/**
+	 * Repository class for Credential class
+	 * Used to implement UserDetailsService's DAO methods
+	 */		
 	private CredentialRepository credentialRepository;
 	
+	/**
+	 * Class constructor accepting fields
+	 * 
+	 * @param credentialRepository a CredentialRepository object for DAO methods
+	 */
 	@Autowired
 	public UserDetailsServiceImpl(CredentialRepository credentialRepository) {
 		this.credentialRepository = credentialRepository;

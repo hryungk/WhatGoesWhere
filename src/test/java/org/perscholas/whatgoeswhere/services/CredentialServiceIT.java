@@ -52,7 +52,7 @@ class CredentialServiceIT {
 	private MockMvc mockMvc;
 	private CredentialService credentialService;
 	private ItemService itemService;
-	private Credential credential1, credential2, toAdd, toDelete;
+	private Credential credential1, credential2, toAdd, toDelete, invalidUpdate;
 	private User user1, user2, userToAdd, userToDelete;
 	private Item item1, item2;
 	private List<Item> items;
@@ -76,8 +76,8 @@ class CredentialServiceIT {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 	    // Items for user1
 	    LocalDateTime now_ldt = LocalDateTime.now();
-		item1 = new Item("TestItem1", "", BestOption.Composting,"", "", now_ldt);		
-		item2 = new Item("TestItem2", "TestCondition2", BestOption.Recycling, "TestSpecialInstruction2", "", now_ldt);	
+		item1 = new Item("TestItem1", "", BestOption.COMPOSTING,"", "", now_ldt);		
+		item2 = new Item("TestItem2", "TestCondition2", BestOption.RECYCLING, "TestSpecialInstruction2", "", now_ldt);	
 		items = List.of(item1, item2);
 	    
 	    // Users for corresponding credential
@@ -90,6 +90,7 @@ class CredentialServiceIT {
  		// Add credentials to the database to use for testing if they don't already exist.
 	    credential1 = new Credential("testuser1", "testuser11234", null); 
 	    credential2 = new Credential("testuser2", "testuser21234", user2);
+	    invalidUpdate = new Credential("testUserNotExists", "pass", null);
 	    
 	    credential1 = credentialService.add(credential1);
 	    credential2 = credentialService.add(credential2);
@@ -177,13 +178,33 @@ class CredentialServiceIT {
 	}
 	
 	@Test
-	void testUpdate() {
+	void testUpdate() throws CredentialNotFoundException {
 		String expected = "newPassword";
 		credential1.setPassword(expected);
 		credential1 = credentialService.update(credential1);
 		String actual = credential1.getPassword();
 		assertEquals(expected, actual); 
 	}
+//	@ParameterizedTest
+//	@MethodSource("provideCredentialsForTestUpdate")
+//	void testUpdate(Credential credential, String expected, boolean tf) throws CredentialNotFoundException {
+//		if (!tf) {
+//			assertThrows(CredentialNotFoundException.class, () -> {
+//				Credential updatedcredential = credentialService.update(credential);
+//			});
+//		} else {
+//			credential.setPassword(expected);
+//			credential = credentialService.update(credential);
+//			String actual = credential.getPassword();
+//			assertEquals(expected, actual);
+//		}		
+//	}
+//	private Stream<Arguments> provideCredentialsForTestUpdate() {		
+//	    return Stream.of(
+//	      Arguments.of(credential1, "newPassword", true),
+//	      Arguments.of(invalidUpdate, "newPass", false)
+//	    );
+//	}
 	
 	@Test
 	void testDelete() {

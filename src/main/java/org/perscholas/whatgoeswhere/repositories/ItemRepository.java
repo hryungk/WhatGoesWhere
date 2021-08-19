@@ -11,38 +11,79 @@ import org.perscholas.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import org.perscholas.whatgoeswhere.models.Item;
 import org.springframework.stereotype.Repository;
 
+/**
+ * A DAO Repository class for Item model
+ * 
+ * @author Hyunryung Kim
+ * @see org.perscholas.whatgoeswhere.models.Item
+ * 
+ */
 @Repository
 public class ItemRepository {
-	
+	/**
+	 * A string of persistence-unit name for JPA to inject into entity manager factory
+	 */
 	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
+	/**
+	 * UserItem repository object is necessary for add and delete methods
+	 */
 	private UserItemRepository uiRepository;
 	
-	public ItemRepository() {
-		
-		this.uiRepository = new UserItemRepository();
-		
+	/**
+	 * Class constructor registering a database driver and instantiating 
+	 * the UserItem Repository object
+	 */
+	public ItemRepository() {			
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		this.uiRepository = new UserItemRepository();
 	}
 	
-	public List<Item> getAllItems() {
+	/**
+	 * Returns all Item objects in the database
+	 * 
+	 * @return a list of Item objects in the database
+	 */
+	public List<Item> getAll() {
 		return findItems("findAll");
 	}
 	
-	public List<Item> findItemByName(String name) {
+	/**
+	 * Returns an Item associated with the given name
+	 * 
+	 * @param name a string of Item's name
+	 * @return an Item that has the given name, null if not found
+	 */
+	public List<Item> findByName(String name) {
 		return findItems("findByName", name);
 	}
 
-	public Item findItemByNameAndState(String name, String state) {	
+	/**
+	 * Returns an Item associated with the given name and state
+	 * 
+	 * @param name  a string of Item's name
+	 * @param state a string of Item's condition
+	 * @return an Item that has the given name and state, null if not found
+	 */
+	public Item findByNameAndState(String name, String state) {	
 		List<Item> items = findItems("findByNameAndState",name,state);	
 		if (items.isEmpty())
 			return null;
 		return items.get(0); 
 	}
 	
+	/**
+	 * Returns a list of Item objects according to the queryName and variable columns
+	 * Used by other find methods for querying named queries
+	 * 
+	 * @param queryName a string of named query defined in the model class
+	 * @param columns an array of strings of column variables to go into the query
+	 * @return a List of Item objects returned by the query
+	 */
 	private List<Item> findItems(String queryName, String ... columns) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
@@ -58,7 +99,13 @@ public class ItemRepository {
 		return items;
 	}
 	
-	public Item findItemById(int id) {
+	/**
+	 * Returns an Item associated with the given Item's id
+	 * 
+	 * @param id an integer of Item's id
+	 * @return an Item that has the given id, null if not found
+	 */
+	public Item findById(int id) {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
@@ -69,9 +116,18 @@ public class ItemRepository {
 		return item;
 	}
 	
+	/**
+	 * Returns a newly added Item object
+	 * Create method of CRUD
+	 * 
+	 * @param item an Item to be added to the database
+	 * @param userId an integer of the associated User's id
+	 * @return an Item object added to the database
+	 * @throws ItemAlreadyExistsException If there already exists the same Item in the database
+	 */
 	public Item add(Item item, int userId) throws ItemAlreadyExistsException {
 		// If there already exists the same item in the system, addition fails.
-		if (findItemByNameAndState(item.getName(),item.getCondition()) != null) {
+		if (findByNameAndState(item.getName(),item.getCondition()) != null) {
 			throw new ItemAlreadyExistsException(item.getName(),item.getCondition());
 		} else {		
 			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
@@ -88,13 +144,20 @@ public class ItemRepository {
 			
 			entityManager.close();
 			emfactory.close();
-			return findItemById(item.getId());
+			return findById(item.getId());
 		} 
-//		return null;
 	}
+	
+	/**
+	 * Removes an Item with the given itemId and returns a boolean of the result
+	 * Delete method of CRUD
+	 * 
+	 * @param itemId an integer of the Item's id to be removed from the database
+	 * @return true if the removal was successful, false otherwise
+	 */
 	public boolean delete(int itemId) {
 		// if the item doesn't exist in the database, deletion fails.
-		if (findItemById(itemId) == null) {
+		if (findById(itemId) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
@@ -113,13 +176,21 @@ public class ItemRepository {
 		return true;
 	}
 
+	/**
+	 * Updates the given Item and returns the updated Item
+	 * Update method of CRUD
+	 * 
+	 * @param item  an Item to be updated from the database
+	 * @return an updated Item object from the database
+	 * @throws ItemAlreadyExistsException If there already exists the same Item in the database
+	 */
 	public Item update(Item item) throws ItemAlreadyExistsException {
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
 		Item itemById = entityManager.find(Item.class, item.getId());
-		Item itemByNS = findItemByNameAndState(item.getName(), item.getCondition());
+		Item itemByNS = findByNameAndState(item.getName(), item.getCondition());
 		// If user changed neither name nor condition OR user changed it but an matching item doesn't exist in the db
 		if (itemById.equals(itemByNS) || !itemById.equals(itemByNS) && itemByNS==null) {
 			itemById.setName(item.getName());
@@ -131,7 +202,7 @@ public class ItemRepository {
 			entityManager.getTransaction().commit();
 			entityManager.close();
 			emfactory.close();
-			return findItemById(item.getId());
+			return findById(item.getId());
 		} else { // user changed either name or condition or both such that there is a duplicate
 			throw new ItemAlreadyExistsException(item.getName(),item.getCondition());		
 		}		

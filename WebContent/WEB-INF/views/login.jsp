@@ -23,6 +23,8 @@
 
     <section> 
         <h1>Sign In</h1>
+        <p style="color: red;">${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+        <c:remove var = "SPRING_SECURITY_LAST_EXCEPTION" scope = "session" />
         <div>
            <form action="./login" method="POST" name="myForm">
                 <fieldset>

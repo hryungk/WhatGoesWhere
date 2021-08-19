@@ -2,11 +2,18 @@ package org.perscholas.whatgoeswhere.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+/**
+ * DispatcherServlet for using Spring MVC Framework
+ * Contains methods mapping different configuration classes
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return null;
+		return new Class<?>[] {RootAppConfig.class};
 	}
 
 	@Override

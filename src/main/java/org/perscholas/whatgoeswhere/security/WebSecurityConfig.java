@@ -15,23 +15,50 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * Web Security Configuration class
+ * Needed for Spring Security
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @ComponentScan("org.perscholas.whatgoeswhere")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	/**
+	 * A class that implements UserDetailService interface
+	 */
 	private UserDetailsService userDetailsService;
 	
+	/**
+	 * Autowires the UserDetailsService implementation class
+	 * 
+	 * @param userDetailsService a UserDetailService instance
+	 * @see org.perscholas.whatgoeswhere.services.impl.UserDetailsServiceImpl
+	 */
 	@Autowired
 	public WebSecurityConfig(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
+	/**
+	 * Returns a BCrypt password encoder
+	 * 
+	 * @return a BCryptPasswordEncoder object used to encode user password
+	 */
 	@Bean
 	public PasswordEncoder pswdEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
+	/**
+	 * Returns a DaoAutehnticationProvider object 
+	 * UserDetailsService and PasswordEncoder are injected here.
+	 * 
+	 * @return a DaoAutehnticationProvider object 
+	 */
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 		daoAuthenticationProvider.setUserDetailsService(userDetailsService);

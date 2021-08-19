@@ -37,9 +37,9 @@ class UserServiceTest {
 		User user1 = new User("pusheen@email.com", "Pusheen","Cat", now, new ArrayList<Item>());
 		User user2 = new User("stormy@email.com", "Stormy","Cat", now, new ArrayList<Item>());
 		User user3 = new User("pip@email.com", "Pip","Cat", now, new ArrayList<Item>());
-		Mockito.when(userRepository.getAllUsers()).thenReturn(List.of(user1, user2, user3));
+		Mockito.when(userRepository.getAll()).thenReturn(List.of(user1, user2, user3));
 		
-		List<User> actualList = userService.getAllUsers();
+		List<User> actualList = userService.getAll();
 		User[] expected = {user1, user2, user3};
 		User[] actual = new User[actualList.size()];
 		actual = actualList.toArray(actual);
@@ -49,10 +49,10 @@ class UserServiceTest {
 	@Test
 	void testFindUserById() {
 		User user1 = new User("pusheen@email.com", "Pusheen","Cat", LocalDate.now(), new ArrayList<Item>());
-		Mockito.when(userRepository.findUserById(anyInt())).thenReturn(user1);
+		Mockito.when(userRepository.findById(anyInt())).thenReturn(user1);
 		String expected = "pusheen@email.com";
 		
-		User actual = userService.findUserById(user1.getId());		
+		User actual = userService.findById(user1.getId());		
 		
 		assertEquals(expected, actual.getEmail());		
 	}
@@ -61,9 +61,9 @@ class UserServiceTest {
 	void testFindUserByEmail() {
 		String expected = "pusheen@email.com";
 		User user1 = new User("pusheen@email.com", "Pusheen","Cat", LocalDate.now(), new ArrayList<Item>());
-		Mockito.when(userRepository.findUserByEmail(anyString())).thenReturn(user1);
+		Mockito.when(userRepository.findByEmail(anyString())).thenReturn(user1);
 		
-		User actual = userService.findUserByEmail(expected);
+		User actual = userService.findByEmail(expected);
 		
 		assertEquals(expected, actual.getEmail());
 	}	

@@ -8,20 +8,33 @@ package org.perscholas.whatgoeswhere.models;
 import java.io.Serializable;
 
 /**
-* Key class for composite key in User_Item table
- * @author Helen Kim
+ * Key class for composite key in User_Item table
+ * 
+ * @author Hyunryung Kim
  *
  */
 public class UserItemID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * An integer representing the User id
+	 */
 	private int userId;
+	/**
+	 * An integer representing the Item id
+	 */
 	private int itemId;
-
+	
+	/**
+	 * Default class constructor
+	 */
 	public UserItemID() {
 	}
-
+	/**
+	 * Class constructor accepting fields
+	 * @param userId an integer of User's id
+	 * @param itemId an integer of Item's id
+	 */
 	public UserItemID(int userId, int itemId) {
 		this.userId = userId;
 		this.itemId = itemId;

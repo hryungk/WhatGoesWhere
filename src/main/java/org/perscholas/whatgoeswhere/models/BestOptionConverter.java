@@ -5,6 +5,9 @@ import java.util.stream.Stream;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+/**
+ * Converter from BestOption enum to String for JPA persisting
+ */
 @Converter(autoApply=true)
 public class BestOptionConverter implements AttributeConverter<BestOption, String> {
 

@@ -24,7 +24,7 @@
     <section> 
         <h1>Item List</h1>
         <div style="height: 4em; position: relative; margin: 1em 0">
-        	<a href="addItem" class="a-btn reg-btn add-btn" id="a-btn">Add a new Item</a>
+        	<a href="addItem" class="a-btn reg-btn a-reg-btn add-btn" id="a-btn">Add a new Item</a>
         </div>
         <div>
 	        <table class="table table-striped table-hover">

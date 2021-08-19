@@ -9,33 +9,47 @@ import org.perscholas.whatgoeswhere.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Service class for Item class
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 @Service
 public class ItemServiceImpl implements ItemService {
+	/**
+	 * Repository class for Item class
+	 */
 	private ItemRepository itemRepository;
 	
+	/**
+	 * Class constructor accepting fields
+	 * 
+	 * @param itemRepository an ItemRepository object for DAO methods
+	 */
 	@Autowired // inject into this class from the Spring framework
 	public ItemServiceImpl(ItemRepository itemRepository) {
 		this.itemRepository = itemRepository;
 	}
 	
 	@Override
-	public List<Item> getAllItems() {
-		return itemRepository.getAllItems();
+	public List<Item> getAll() {
+		return itemRepository.getAll();
 	}
 	
 	@Override
-	public List<Item> findItemByName(String name) {
-		return itemRepository.findItemByName(name);
+	public List<Item> findByName(String name) {
+		return itemRepository.findByName(name);
 	}
 	
 	@Override
-	public Item findItemByNameAndState(String name, String state) {
-		return itemRepository.findItemByNameAndState(name, state);
+	public Item findByNameAndState(String name, String state) {
+		return itemRepository.findByNameAndState(name, state);
 	}
 	
 	@Override
-	public Item findItemById(int id) {
-		return itemRepository.findItemById(id);
+	public Item findById(int id) {
+		return itemRepository.findById(id);
 	}
 	
 	@Override

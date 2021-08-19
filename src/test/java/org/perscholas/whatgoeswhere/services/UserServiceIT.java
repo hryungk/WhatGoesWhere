@@ -70,13 +70,13 @@ class UserServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	    existingUserNum = userService.getAllUsers().size();
+	    existingUserNum = userService.getAll().size();
 		LocalDateTime now_ldt = LocalDateTime.now();
-		item1 = new Item("Banana", "", BestOption.Composting,"", "", now_ldt);		
-		item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now_ldt);	
+		item1 = new Item("Banana", "", BestOption.COMPOSTING,"", "", now_ldt);		
+		item2 = new Item("Aerosole cans", "Empty", BestOption.RECYCLING,"Must be empty.", "", now_ldt);	
 		items = List.of(item1, item2);
-		item3 = new Item("Muffin liner", "Food soiled", BestOption.Composting,"", "", now_ldt);	
-		itemToDelete = new Item("Parchment paper", "Food soiled", BestOption.Composting,"", "", now_ldt);	
+		item3 = new Item("Muffin liner", "Food soiled", BestOption.COMPOSTING,"", "", now_ldt);	
+		itemToDelete = new Item("Parchment paper", "Food soiled", BestOption.COMPOSTING,"", "", now_ldt);	
 		
 		// Add users to the database to use for testing if they don't already exist.
 		LocalDate now_ld = LocalDate.now();
@@ -100,7 +100,7 @@ class UserServiceIT {
 	@Test
 //	@Disabled
 	void testGetAllUsers() {
-		List<User> actual = userService.getAllUsers();
+		List<User> actual = userService.getAll();
 		actual.forEach(System.out::println);
 		assertNotNull(actual);
 		assertEquals(4 + existingUserNum, actual.size());
@@ -110,7 +110,7 @@ class UserServiceIT {
 //	@Disabled
 	void testFindUserById() {		
 		User expected = user1; 				
-		User actual = userService.findUserById(user1.getId());
+		User actual = userService.findById(user1.getId());
 		
 		assertEquals(expected, actual);
 	}
@@ -119,7 +119,7 @@ class UserServiceIT {
 //	@Disabled
 	void testFindUserByEmail() {
 		User expected = user2;
-		User actual = userService.findUserByEmail(user2.getEmail());
+		User actual = userService.findByEmail(user2.getEmail());
 
 		assertEquals(expected, actual);
 	}
@@ -128,7 +128,7 @@ class UserServiceIT {
 //	@Disabled
 	void testAddUser() {
 		// For testing addition, remove the user if it already exists
-		User toRemove = userService.findUserByEmail(toAdd.getEmail());
+		User toRemove = userService.findByEmail(toAdd.getEmail());
 		if (toRemove != null) { // exists in the db
 			userService.delete(toRemove);
 		}
@@ -141,7 +141,7 @@ class UserServiceIT {
 	void testAddUserWithItems() {	
 		// Delete the user before adding again.
 		userService.delete(user1);
-		assertNull(userService.findUserByEmail(user1.getEmail()));
+		assertNull(userService.findByEmail(user1.getEmail()));
 		
 		user1.setItems(items);
 		user1 = userService.add(user1);
@@ -170,7 +170,7 @@ class UserServiceIT {
 		String newFirstName = "NewFirstName";
 		user2.setFirstName(newFirstName);
 		userService.update(user2);
-		User actual = userService.findUserById(user2.getId());
+		User actual = userService.findById(user2.getId());
 		assertEquals(newFirstName, actual.getFirstName());
 		
 	}
@@ -187,7 +187,7 @@ class UserServiceIT {
 //	@Disabled
 	void testDeleteUser() {	
 		userService.delete(toDelete);
-		User actual = userService.findUserById(toDelete.getId());
+		User actual = userService.findById(toDelete.getId());
 		assertNull(actual);
 		assertEquals(0, uiService.findByUserId(toDelete.getId()).size());
 	}

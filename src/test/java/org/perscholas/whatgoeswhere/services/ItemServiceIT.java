@@ -65,18 +65,18 @@ class ItemServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	    existingItemNum = itemService.getAllItems().size();
+	    existingItemNum = itemService.getAll().size();
 	    // Add items to the database to use for testing if they don't already exist.
 		LocalDateTime now = LocalDateTime.now();
 		String itemName = "testItemName1";
-		item1 = new Item(itemName, "testCondition1", BestOption.Recycling, "testSpecialInstrution1", "", now);
-		item2 = new Item(itemName, "testCondition2", BestOption.DropOff, "testSpecialInstrution2", "testNote2", now);
+		item1 = new Item(itemName, "testCondition1", BestOption.RECYCLING, "testSpecialInstrution1", "", now);
+		item2 = new Item(itemName, "testCondition2", BestOption.DROPOFF, "testSpecialInstrution2", "testNote2", now);
 		// Add items to the database to use for testing if they don't already exist.
 		item1 = itemService.add(item1, 0);
 		item2 = itemService.add(item2, 0);
 				
-		toAdd = new Item("testItemToAdd", "", BestOption.Garbage, "", "", now);
-		toDelete = new Item("testItemToDelete", "testConditionToDelete", BestOption.DropOff, "testSpecialInstructionToDelete", "testNoteToDelete", now);
+		toAdd = new Item("testItemToAdd", "", BestOption.GARBAGE, "", "", now);
+		toDelete = new Item("testItemToDelete", "testConditionToDelete", BestOption.DROPOFF, "testSpecialInstructionToDelete", "testNoteToDelete", now);
 		itemService.add(toDelete, 0);
 	    		
 	}
@@ -89,7 +89,7 @@ class ItemServiceIT {
 	
 	@Test
 	void testGetAllItems() {
-		List<Item> actual = itemService.getAllItems();
+		List<Item> actual = itemService.getAll();
 //		actual.forEach(System.out::println);
 		assertNotNull(actual);
 		assertEquals(4 + existingItemNum, actual.size());
@@ -98,7 +98,7 @@ class ItemServiceIT {
 	@Test
 	void testFindItemByName() {
 		Item[] expected = {item1, item2};		
-		List<Item> actualList = itemService.findItemByName(item1.getName());
+		List<Item> actualList = itemService.findByName(item1.getName());
 		
 		boolean result = true;
 		int ii = 0;
@@ -113,7 +113,7 @@ class ItemServiceIT {
 	@Test
 	void testFindItemByNameAndState() {		
 		Item expected = item1; 				
-		Item actual = itemService.findItemByNameAndState(item1.getName(), item1.getCondition());
+		Item actual = itemService.findByNameAndState(item1.getName(), item1.getCondition());
 		
 		assertEquals(expected, actual);
 	}
@@ -127,7 +127,7 @@ class ItemServiceIT {
 			});
 	    } else {
 	    	itemService.add(item, 0);
-	    	assertNotNull(itemService.findItemByNameAndState(item.getName(), item.getCondition()));
+	    	assertNotNull(itemService.findByNameAndState(item.getName(), item.getCondition()));
 	    }
 	}
 	private Stream<Arguments> provideItemsToTestAddItem() {
@@ -140,7 +140,7 @@ class ItemServiceIT {
 
 	@Test
 	void testUpdateItem() throws ItemAlreadyExistsException {		
-		Item expected = itemService.findItemById(item2.getId());
+		Item expected = itemService.findById(item2.getId());
 		expected.setNotes("Contact Waste Management for information on drop-off locations.");
 		Item actual = itemService.update(expected);
 		assertEquals(expected.getNotes(), actual.getNotes());
@@ -148,9 +148,9 @@ class ItemServiceIT {
 
 	@Test
 	void testDeleteItem() {				
-		Item expected = itemService.findItemById(toDelete.getId());
+		Item expected = itemService.findById(toDelete.getId());
 		itemService.delete(expected.getId());
-		assertNull(itemService.findItemById(toDelete.getId()));
+		assertNull(itemService.findById(toDelete.getId()));
 	}
 	
 	@AfterAll

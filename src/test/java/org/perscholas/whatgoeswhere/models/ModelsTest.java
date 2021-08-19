@@ -25,7 +25,7 @@ class ModelsTest {
 		
 		LocalDateTime now = LocalDateTime.now();
 		String name = "Apple";		
-		Item expected = new Item(name, "", BestOption.Composting,
+		Item expected = new Item(name, "", BestOption.COMPOSTING,
 				"No plastic, glass, metal, liquids, cooking oil, or pet waste should go in your compost cart.", "", now);
 		manager.persist(expected);		
 		manager.getTransaction().commit();
@@ -62,10 +62,10 @@ class ModelsTest {
 		manager.getTransaction().begin();
 		
 		LocalDateTime now = LocalDateTime.now();
-		Item item1 = new Item("Banana", "", BestOption.Composting,"", "", now);
+		Item item1 = new Item("Banana", "", BestOption.COMPOSTING,"", "", now);
 		manager.persist(item1);
 		
-		Item item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now);
+		Item item2 = new Item("Aerosole cans", "Empty", BestOption.RECYCLING,"Must be empty.", "", now);
 		manager.persist(item2);
 		
 		List<Item> items = List.of(item1, item2);

@@ -71,11 +71,11 @@ class UserItemServiceIT {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
 		LocalDateTime now = LocalDateTime.now();
-		item1 = new Item("Banana", "", BestOption.Composting,"", "", now);		
-		item2 = new Item("Aerosole cans", "Empty", BestOption.Recycling,"Must be empty.", "", now);	
-		toDelete1 = new Item("Aerosole cans", "full or partially full", BestOption.DropOff,"If not empty, bring to facility", "Hazardous", now);
-		toDelete2 = new Item("Bread bags", "Empty", BestOption.DropOff,"Must be clean", "Drop off at a local grocery", now);
-		toDelete3 = new Item("Chip bags", "", BestOption.Garbage,"", "", now);
+		item1 = new Item("Banana", "", BestOption.COMPOSTING,"", "", now);		
+		item2 = new Item("Aerosole cans", "Empty", BestOption.RECYCLING,"Must be empty.", "", now);	
+		toDelete1 = new Item("Aerosole cans", "full or partially full", BestOption.DROPOFF,"If not empty, bring to facility", "Hazardous", now);
+		toDelete2 = new Item("Bread bags", "Empty", BestOption.DROPOFF,"Must be clean", "Drop off at a local grocery", now);
+		toDelete3 = new Item("Chip bags", "", BestOption.GARBAGE,"", "", now);
 		items = List.of(item1, item2);
 		items2delete = List.of(toDelete2, toDelete3);
 	    		
@@ -135,7 +135,7 @@ class UserItemServiceIT {
 		assertNull(actual);
 		
 		userService.delete(user2);
-		assertNull(userService.findUserById(user2.getId()));
+		assertNull(userService.findById(user2.getId()));
 	}
 	
 	@Test
@@ -146,7 +146,7 @@ class UserItemServiceIT {
 		assertEquals(0, actual.size());
 		
 		userService.delete(user3);
-		assertNull(userService.findUserById(user3.getId()));
+		assertNull(userService.findById(user3.getId()));
 	}
 
 	@AfterAll

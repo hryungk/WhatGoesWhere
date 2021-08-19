@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.perscholas.whatgoeswhere.config"},{"l":"org.perscholas.whatgoeswhere.controllers"},{"l":"org.perscholas.whatgoeswhere.exceptions"},{"l":"org.perscholas.whatgoeswhere.repositories"},{"l":"org.perscholas.whatgoeswhere.security"},{"l":"org.perscholas.whatgoeswhere.services.impl"}]

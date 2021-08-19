@@ -46,6 +46,7 @@ header a {
 }
 header a:hover, .footer-nav a:hover {
     color: orange;
+    text-decoration: none;
 }
 .menu_container {
     display: flex;
@@ -91,7 +92,7 @@ fieldset div {
 }
 .r-input select {
     height: 57px;
-    width: 70px;
+    /* width: 70px; */
     margin-top: 2px;
     margin-bottom: 2px;
 }
@@ -114,10 +115,11 @@ fieldset div {
 	background: #be3600;
 	color: white;
 	cursor: pointer;
+	
 }
 
 .a-btn {
-	text-decoration: none;
+	/* text-decoration: none; */
 	padding: 3px 6px;
 }
 .a-reg-btn {
@@ -126,6 +128,7 @@ fieldset div {
 }
 .a-reg-btn:hover {
 	border-color: #be3600;
+	text-decoration: none;
 }
 .add-btn {
 	position: absolute;

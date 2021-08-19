@@ -12,29 +12,53 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * A class representing a user credential
+ * Stores credential id, username, password(bcrypt), user's role, and associated User
+ * 
+ * @author Hyunryung Kim
+ * @see org.perscholas.whatgoeswhere.models.User
+ */
 @Entity
 @Table(name="Credentials")
 @NamedQuery(name="Credential.findAll", query="SELECT c FROM Credential c")
 @NamedQuery(name="Credential.findByUsername", query="SELECT c FROM Credential c WHERE c.username = ?1")
 @NamedQuery(name="Credential.findByUsernameAndPassword", query="SELECT c FROM Credential c WHERE c.username = ?1 AND c.password = ?2")
 public class Credential {
-
+	/**
+	 * An integer representing the credential id, auto-generated
+	 */
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
-	private int id;
+	private int id;	
+	/**
+	 * A string containing the username
+	 */
 	@Column(name="username", length=50, nullable=false, unique=true)
 	@Size(min=2, max=25, message="Username must be between 2 and 25 characters.")
 	@NotNull
 	private String username;
+	/**
+	 * A string containing the password
+	 */
 	@Column(name="password", length=100, nullable=false)
 	@Size(min=4, max=100, message="Password must be between 4 and 100 characters.")
 	private String password;
+	/**
+	 * A string containing the user's role (ROLE_UESR or ROLE_ADMIN)
+	 */
 	@Column(name="userRole")
 	private String userRole;
+	/**
+	 * User associated with this credential
+	 */
 	@OneToOne(cascade=CascadeType.ALL, orphanRemoval=false)
 	private User user;
 	
+	/**
+	 * Class constructor initializing all class fields
+	 */
 	public Credential() {
 		super();
 		username = "";
@@ -43,6 +67,14 @@ public class Credential {
 		user = new User();
 	}
 
+	/**
+	 * Class constructor accepting fields
+	 * 
+	 * @param username a string of this user's username
+	 * @param password a string of this user's password
+	 * @param user a User associated with this Crednetial
+	 * @see org.perscholas.whatgoeswhere.models.User
+	 */
 	public Credential(String username, String password, User user) {
 		super();
 		this.username = username;

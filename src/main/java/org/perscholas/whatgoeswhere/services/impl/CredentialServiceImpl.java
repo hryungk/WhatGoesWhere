@@ -11,15 +11,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Service class for Credential class
+ * 
+ * @author Hyunryung Kim
+ *
+ */
 @Service
 public class CredentialServiceImpl implements CredentialService {
-	
+	/**
+	 * Repository class for Credential class
+	 */
 	private CredentialRepository credentialRepository;
+	/**
+	 * Password encoder for the Credential's password
+	 */
 	private PasswordEncoder pswdEncoder;
 	
+	/**
+	 * Class constructor accepting fields
+	 * 
+	 * @param credentialRepository a CredentialRepository object for DAO methods
+	 * @param pswdEncoder a PasswordEncoder object to Bcrypt encode the password
+	 */
 	@Autowired // inject into this class from the Spring framework
-	public CredentialServiceImpl(CredentialRepository itemRepository, PasswordEncoder pswdEncoder) {
-		this.credentialRepository = itemRepository;
+	public CredentialServiceImpl(CredentialRepository credentialRepository, PasswordEncoder pswdEncoder) {
+		this.credentialRepository = credentialRepository;
 		this.pswdEncoder = pswdEncoder;
 	}
 	
@@ -50,7 +67,7 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 	
 	@Override
-	public Credential update(Credential credential) {
+	public Credential update(Credential credential) throws CredentialNotFoundException {
 		return credentialRepository.update(credential);
 	}
 

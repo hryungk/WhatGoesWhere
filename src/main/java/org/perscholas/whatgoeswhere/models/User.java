@@ -16,24 +16,49 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * A class representing a user
+ * Stores user id, email, first and last name, date the account is created, and a list of Item objects
+ * 
+ * @author Hyunryung Kim
+ * @see org.perscholas.whatgoeswhere.models.Item
+ *
+ */
 @Entity
 @Table(name="Users")
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
 @NamedQuery(name="User.findByEmail", query="SELECT u FROM User u WHERE u.email = ?1")
 public class User {
-
+	/**
+	 * An integer representing the User id, auto-generated
+	 */
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
 	private int id;
+	/**
+	 * A string containing this user's email
+	 */
 	@Column(name="email", length=50, nullable=false, unique=true) 
 	private String email; // User's email
+	/**
+	 * A string containing this user's first  name 
+	 */
 	@Column(name="fname", length=50)
-	private String firstName; // User's first name	
+	private String firstName; // User's first name
+	/**
+	 * A string containing this user's last name 
+	 */
 	@Column(name="lname", length=50)
-	private String lastName; // User's last name	
+	private String lastName; // User's last name
+	/**
+	 * A date containing this user's date of joining the service 
+	 */
 	@Column(name="joinedDate", nullable=false)
 	private LocalDate joinedDate; // The date the joining	
+	/**
+	 * A collection of Items this user had added to the system 
+	 */
 	@OneToMany(targetEntity = Item.class, cascade=CascadeType.PERSIST, orphanRemoval=false)
 	@JoinTable(
 			name = "User_Item",
@@ -43,6 +68,9 @@ public class User {
 				{ @JoinColumn(name = "item_id", referencedColumnName = "id")})
 	private List<Item> items; // A list of items the user has added to the system
 	
+	/**
+	 * Class constructor initializing all class fields
+	 */
 	public User() {
 		super();
 		email = "";
@@ -51,6 +79,15 @@ public class User {
 		joinedDate = null;
 		items = new ArrayList<>();
 	}
+	/**
+	 * Class constructor accepting fields
+	 * 
+	 * @param email a string of this user's name
+	 * @param firstName a string of this user's first name
+	 * @param lastName a string of this user's last name
+	 * @param joinedDate a date which this user has created the account 
+	 * @param items a List of Items this user had added to the database
+	 */
 	public User(String email, String firstName, String lastName, LocalDate joinedDate, List<Item> items) {
 		super();
 		this.email = email;

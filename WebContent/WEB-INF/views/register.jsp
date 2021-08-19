@@ -31,13 +31,13 @@
                     <h6 style="color: red;" ><c:out value="${usernameMessage }" /></h6>
                     <h6 style="color: red;"><c:out value="${emailMessage }" /></h6>
                     <div class="r-input">                    	
-						<input type="text" name="userName" placeholder="Username" required="required" value="${username }" autofocus />
+						<input type="text" name="userName" placeholder="Username" required="required" value="${username }" id="username" autofocus />
 					</div>
 					<div class="r-input">				
 						<input type="password" name="password" placeholder="Password" required="required" />
 					</div>
 					<div class="r-input">						
-						<input type="email" name="eMail" placeholder="Email" required="required"  value="${user.email }"/>
+						<input type="email" name="eMail" placeholder="Email" required="required" value="${user.email }" id="email"/>
 					</div>
 					<div class="r-input">
 						<input type="text" name="firstName" placeholder="First Name" required="required" value="${user.firstName }" />
@@ -53,7 +53,17 @@
     </section>
     
     <script src="scripts/go_back.js" type="text/javascript"></script>
-    
+    <script>
+	    let emailInput = document.getElementById('email');
+		if (emailInput.value == '') {
+			emailInput.autofocus=true;
+		}
+	    let usernameInput = document.getElementById('username');
+	    if (usernameInput.value == '') {
+	        emailInput.autofocus=false;
+			usernameInput.autofocus=true;
+		}
+    </script>
 	<!-- Footer -->
 	<jsp:include page="footer.jsp" />
 </body>
