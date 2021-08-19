@@ -2,11 +2,11 @@
 <persistence version="2.2" 
 xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 	<persistence-unit name="WhatGoesWhere">
-		<class>org.perscholas.whatgoeswhere.models.User</class>
-		<class>org.perscholas.whatgoeswhere.models.Item</class>
-		<class>org.perscholas.whatgoeswhere.models.UserItem</class>
-		<class>org.perscholas.whatgoeswhere.models.BestOptionConverter</class>
-		<class>org.perscholas.whatgoeswhere.models.Credential</class>
+		<class>com.hyunryungkim.whatgoeswhere.models.User</class>
+		<class>com.hyunryungkim.whatgoeswhere.models.Item</class>
+		<class>com.hyunryungkim.whatgoeswhere.models.UserItem</class>
+		<class>com.hyunryungkim.whatgoeswhere.models.BestOptionConverter</class>
+		<class>com.hyunryungkim.whatgoeswhere.models.Credential</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/whatgoeswhere_springsecurity?serverTimezone=UTC" />
