@@ -48,10 +48,10 @@ class UserItemServiceIT {
 	private UserService userService;
 	private ItemService itemService;
 	private UserItemService uiService;
-	private User user1, user2, user3;
-	private Item item1, item2, toDelete1, toDelete2, toDelete3;
-	private List<Item> items, items2delete;
-	
+	private User user1, userToDelete, user3;
+	private Item item1, item2, itemToDelete, itemToDelete31, itemToDelete32;
+	private List<Item> itemsForUser1, itemsForUser3;
+	private int existingUserNum;
 
 	@Autowired
 	public UserItemServiceIT(WebApplicationContext webApplicationContext, 
@@ -70,33 +70,33 @@ class UserItemServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-
+	    existingUserNum = uiService.findAll().size();
 		LocalDateTime now = LocalDateTime.now();
-		item1 = new Item("Banana", "", BestOption.COMPOSTING,"", "", now);		
-		item2 = new Item("Aerosole cans", "Empty", BestOption.RECYCLING,"Must be empty.", "", now);	
-		toDelete1 = new Item("Aerosole cans", "full or partially full", BestOption.DROPOFF,"If not empty, bring to facility", "Hazardous", now);
-		toDelete2 = new Item("Bread bags", "Empty", BestOption.DROPOFF,"Must be clean", "Drop off at a local grocery", now);
-		toDelete3 = new Item("Chip bags", "", BestOption.GARBAGE,"", "", now);
-		items = List.of(item1, item2);
-		items2delete = List.of(toDelete2, toDelete3);
+		item1 = new Item("testItemName1", "testCondition1", BestOption.COMPOSTING,"testSpecialInstrution1", "", now);		
+		item2 = new Item("testItemName2", "testCondition2", BestOption.RECYCLING,"testSpecialInstrution2", "testNote2", now);	
+		itemToDelete = new Item("testItemToDelete1", "testConditionToDelete1", BestOption.DROPOFF,"testSpecialInstrutionToDelete1", "testNoteToDelete1", now);
+		itemToDelete31 = new Item("testItemToDelete2", "testConditionToDelete2", BestOption.DROPOFF,"testSpecialInstrutionToDelete2", "testNoteToDelete2", now);
+		itemToDelete32 = new Item("testItemToDelete3", "testConditionToDelete3", BestOption.GARBAGE,"testSpecialInstrutionToDelete3", "", now);
+		itemsForUser1 = List.of(item1, item2);
+		itemsForUser3 = List.of(itemToDelete31, itemToDelete32);
 	    		
 		// Add users to the database to use for testing if they don't already exist.
 		LocalDate now_ld = LocalDate.now();
-		user1 = new User("hoppycat@email.com", "Helen", "Kim", now_ld, items);
+		user1 = new User("testuser1@email.com", "FirstName1", "LastName1", now_ld, itemsForUser1);
 		user1 = userService.add(user1);
-		items = user1.getItems();
-		item1 = items.get(0);
-		item2 = items.get(1);
+		itemsForUser1 = user1.getItems();
+		item1 = itemsForUser1.get(0);
+		item2 = itemsForUser1.get(1);
 		
-		user2 = new User("davidchi@email.com", "David","Chi", now_ld, List.of(toDelete1));
-		user2 = userService.add(user2);
-		toDelete1 = user2.getItems().get(0);
+		userToDelete = new User("testuser2@email.com", "FirstName2","LastName2", now_ld, List.of(itemToDelete));
+		userToDelete = userService.add(userToDelete);
+		itemToDelete = userToDelete.getItems().get(0);
 		
-		user3 = new User("pusheen@email.com", "Pusheen","Cat", now_ld, items2delete);
+		user3 = new User("testuser3@email.com", "FirstName3","LastName3", now_ld, itemsForUser3);
 		user3 = userService.add(user3);
-		items2delete = user3.getItems();
-		toDelete2 = items2delete.get(0);
-		toDelete3 = items2delete.get(1);
+		itemsForUser3 = user3.getItems();
+		itemToDelete31 = itemsForUser3.get(0);
+		itemToDelete32 = itemsForUser3.get(1);
 	}
 	
 	
@@ -110,9 +110,7 @@ class UserItemServiceIT {
 	void testFindAll() {
 		List<UserItem> actual = uiService.findAll();
 		assertNotNull(actual);
-		assertEquals(items.size(), actual.size());
-		assertEquals(item1.getId(), actual.get(0).getItemId());
-		assertEquals(item2.getId(), actual.get(1).getItemId());
+		assertEquals(existingUserNum + itemsForUser1.size(), actual.size());
 	}
 	
 	@Test
@@ -124,19 +122,19 @@ class UserItemServiceIT {
 	@Test
 	void testFindByUserId() {
 		List<UserItem> actual = uiService.findByUserId(user1.getId());
-		assertEquals(items.size(), actual.size());
+		assertEquals(itemsForUser1.size(), actual.size());
 		assertEquals(item1.getId(), actual.get(0).getItemId());
 		assertEquals(item2.getId(), actual.get(1).getItemId());
 	}
 	
 	@Test
 	void testDeleteByItemId() {
-		uiService.deleteByItemId(toDelete1.getId());
-		UserItem actual = uiService.findByItemId(toDelete1.getId());
+		uiService.deleteByItemId(itemToDelete.getId());
+		UserItem actual = uiService.findByItemId(itemToDelete.getId());
 		assertNull(actual);
 		
-		userService.delete(user2);
-		assertNull(userService.findById(user2.getId()));
+		userService.delete(userToDelete);
+		assertNull(userService.findById(userToDelete.getId()));
 	}
 	
 	@Test
@@ -153,11 +151,11 @@ class UserItemServiceIT {
 	@AfterAll
 	void clearSetup() {
 		userService.delete(user1);
-		for (Item item : items) {
+		for (Item item : itemsForUser1) {
 			itemService.delete(item.getId());
 		}
-		itemService.delete(toDelete1.getId());
-		itemService.delete(toDelete2.getId());
-		itemService.delete(toDelete3.getId());
+		itemService.delete(itemToDelete.getId());
+		itemService.delete(itemToDelete31.getId());
+		itemService.delete(itemToDelete32.getId());
 	}
 }

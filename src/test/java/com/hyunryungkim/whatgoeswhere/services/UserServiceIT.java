@@ -73,22 +73,22 @@ class UserServiceIT {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 	    existingUserNum = userService.getAll().size();
 		LocalDateTime now_ldt = LocalDateTime.now();
-		item1 = new Item("Banana", "", BestOption.COMPOSTING,"", "", now_ldt);		
-		item2 = new Item("Aerosole cans", "Empty", BestOption.RECYCLING,"Must be empty.", "", now_ldt);	
+		item1 = new Item("testItemName1", "testCondition1", BestOption.RECYCLING, "testSpecialInstrution1", "", now_ldt);
+		item2 = new Item("testItemName2", "testCondition2", BestOption.DROPOFF, "testSpecialInstrution2", "testNote2", now_ldt);
 		items = List.of(item1, item2);
-		item3 = new Item("Muffin liner", "Food soiled", BestOption.COMPOSTING,"", "", now_ldt);	
-		itemToDelete = new Item("Parchment paper", "Food soiled", BestOption.COMPOSTING,"", "", now_ldt);	
+		item3 =  new Item("testItemName3", "testCondition3", BestOption.COMPOSTING, "testSpecialInstrution3", "testNote3", now_ldt);
+		itemToDelete = new Item("testItemToDelete", "testConditionToDelete", BestOption.DROPOFF, "testSpecialInstructionToDelete", "testNoteToDelete", now_ldt);	
 		
 		// Add users to the database to use for testing if they don't already exist.
 		LocalDate now_ld = LocalDate.now();
-		user1 = new User("hoppycat@email.com", "Helen", "Kim", now_ld, new ArrayList<Item>());
-		user2 = new User("davidchi@email.com", "David","Chi", now_ld, new ArrayList<Item>());
+		user1 = new User("testuser1@email.com", "FirstName1", "LastName1", now_ld, new ArrayList<Item>());
+		user2 = new User("testuser2@email.com", "FirstName2","LastName2", now_ld, new ArrayList<Item>());
 		
 		user1 = userService.add(user1);				
 		user2 = userService.add(user2);
 				
-	    toAdd = new User("pusheen@email.com", "Pusheen","Cat", now_ld, new ArrayList<Item>());
-	    toDelete = new User("stormy@email.com", "Stormy","Sister", now_ld, List.of(itemToDelete));
+	    toAdd = new User("testusertoadd@email.com", "FirstNameToAdd","LastNameToAdd", now_ld, new ArrayList<Item>());
+	    toDelete = new User("testusertodelete@email.com", "FirstNameToDelete","LastNameToDelete", now_ld, List.of(itemToDelete));
 		toDelete = userService.add(toDelete);
 	}
 	

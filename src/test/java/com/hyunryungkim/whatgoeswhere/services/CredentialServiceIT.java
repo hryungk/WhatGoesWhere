@@ -57,6 +57,7 @@ class CredentialServiceIT {
 	private User user1, user2, userToAdd, userToDelete;
 	private Item item1, item2;
 	private List<Item> items;
+	private int existingCredentialNum;
 	
 	@Autowired
 	public CredentialServiceIT(WebApplicationContext webApplicationContext, HomeController homeController,
@@ -75,6 +76,7 @@ class CredentialServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+	    existingCredentialNum = credentialService.getAll().size();
 	    // Items for user1
 	    LocalDateTime now_ldt = LocalDateTime.now();
 		item1 = new Item("TestItem1", "", BestOption.COMPOSTING,"", "", now_ldt);		
@@ -112,7 +114,7 @@ class CredentialServiceIT {
 	void testGetAllCredentials() {
 		List<Credential> credentials = credentialService.getAll();
 		assertNotNull(credentials);
-		assertEquals(4, credentials.size());
+		assertEquals(3 + existingCredentialNum, credentials.size());
 	}
 	
 	@Test
