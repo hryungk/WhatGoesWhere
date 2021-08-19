@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
-@ComponentScan("org.perscholas.whatgoeswhere")
+@ComponentScan("com.hyunryungkim.whatgoeswhere")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	/**

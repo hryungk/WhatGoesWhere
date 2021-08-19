@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-@ComponentScan("org.perscholas.whatgoeswhere")
+@ComponentScan("com.hyunryungkim.whatgoeswhere")
 public class RootAppConfig {
 
 }

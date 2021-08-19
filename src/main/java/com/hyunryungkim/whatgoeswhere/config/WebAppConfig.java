@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan("org.perscholas.whatgoeswhere")
+@ComponentScan("com.hyunryungkim.whatgoeswhere")
 public class WebAppConfig implements WebMvcConfigurer{
 	/**
 	 * Attaches prefix and suffix for the controller mapping

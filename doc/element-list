@@ -1,8 +1,8 @@
-org.perscholas.whatgoeswhere.config
-org.perscholas.whatgoeswhere.controllers
-org.perscholas.whatgoeswhere.exceptions
-org.perscholas.whatgoeswhere.models
-org.perscholas.whatgoeswhere.repositories
-org.perscholas.whatgoeswhere.security
-org.perscholas.whatgoeswhere.services
-org.perscholas.whatgoeswhere.services.impl
+com.hyunryungkim.whatgoeswhere.config
+com.hyunryungkim.whatgoeswhere.controllers
+com.hyunryungkim.whatgoeswhere.exceptions
+com.hyunryungkim.whatgoeswhere.models
+com.hyunryungkim.whatgoeswhere.repositories
+com.hyunryungkim.whatgoeswhere.security
+com.hyunryungkim.whatgoeswhere.services
+com.hyunryungkim.whatgoeswhere.services.impl
