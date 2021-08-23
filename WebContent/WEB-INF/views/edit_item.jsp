@@ -58,6 +58,7 @@
 						value="<c:out value="${item.addedDate }" />" />
 					</div>
                 </fieldset>
+                <input type="hidden" name="pageName" value="${pageName }"/>
                 <input class="reg-btn" type="submit" value="Update">  
                 <a class="reg-btn a-reg-btn" id="a-btn" href="profile">Go Back</a>              
             </form:form>

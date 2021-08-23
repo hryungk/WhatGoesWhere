@@ -63,7 +63,7 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 
 	@Override
-	public boolean delete(Credential credential) {
+	public boolean delete(Credential credential) throws CredentialNotFoundException {
 		return credentialRepository.delete(credential);
 	}
 	

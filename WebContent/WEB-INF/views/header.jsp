@@ -3,9 +3,10 @@
 <%@ page import="org.springframework.security.core.GrantedAuthority"%>
 <%@ page import="java.util.Collection"%>
 	
+<%! boolean isAdmin = false; %>	
 <%
 	boolean isAnonymous = true;
-	boolean isAdmin = false;
+	/* boolean isAdmin = false; */
 	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	if (authentication != null) {
 		Object principal = authentication.getPrincipal();
@@ -44,6 +45,7 @@
 
 <script>	    
 	let isanonymous = <%=isAnonymous%>;
+	let isAdmin = <%=isAdmin%>;
 	if (isanonymous == false) {
   		let aDropdown = document.getElementById('navbarDropdown');
   		aDropdown.innerHTML = 'Account';
@@ -59,9 +61,8 @@
   		addi3.innerHTML = 'Update Password';
   		addi3.id = 'ddi-3';
   		addi3.className = 'dropdown-item';
-  		dropdownMenu.appendChild(addi3);
-		
-  		let isAdmin = <%=isAdmin%>;
+  		dropdownMenu.appendChild(addi3);		
+  		
   		if (isAdmin == true) {
   			let addi4 = document.createElement('a');
   			addi4.href = 'admin';

@@ -35,20 +35,20 @@ public class Credential {
 	/**
 	 * A string containing the username
 	 */
-	@Column(name="username", length=50, nullable=false, unique=true)
-	@Size(min=2, max=25, message="Username must be between 2 and 25 characters.")
+	@Column(name="username", length=25, nullable=false, unique=true)
+	@Size(min=5, max=25, message="Username must be between 5 and 25 characters.")
 	@NotNull
 	private String username;
 	/**
 	 * A string containing the password
 	 */
 	@Column(name="password", length=100, nullable=false)
-	@Size(min=4, max=100, message="Password must be between 4 and 100 characters.")
+	@Size(min=10, max=50, message="Password must be between 10 and 50 characters.")
 	private String password;
 	/**
 	 * A string containing the user's role (ROLE_UESR or ROLE_ADMIN)
 	 */
-	@Column(name="userRole")
+	@Column(name="userRole", length=10)
 	private String userRole;
 	/**
 	 * User associated with this credential

@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- JSTL includes -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+	String uri = request.getRequestURI();
+	String pageName = uri.substring(uri.lastIndexOf("/")+1);
+	pageName = pageName.substring(0, pageName.indexOf("."));
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,10 +31,15 @@
         <div style="height: 4em; position: relative; margin: 1em 0">
         	<a href="addItem" class="a-btn reg-btn a-reg-btn add-btn" id="a-btn">Add a new Item</a>
         </div>
+        <c:set var="role" scope="page" value="${role }"/>
         <div>
 	        <table class="table table-striped table-hover">
 	        	<thead>
-	        		<tr>
+	        		<tr id="thead-tr">
+	        			<c:if test = "${role == '[ROLE_ADMIN]' }">
+	        				<th></th>
+	        				<th></th>
+	        			</c:if>
 	        			<th>Name</th>
 	        			<th>Condition</th>
 	        			<th>Best Option</th>
@@ -41,6 +51,22 @@
 	        	<tbody>
 	        		<c:forEach var="item" items="${items}" varStatus="status">
 			       		<tr>
+			       			<c:if test="${role == '[ROLE_ADMIN]' }">
+			       				<td>
+								<form action="./deleteItem" method="POST" onsubmit="return(confirm('Are you sure you want to delete the item?'))" name="myForm">
+									<input type="hidden" name="itemId" value="${item.id}">
+									<input type="hidden" name="pageName" value="<%=pageName%>"/>
+									<button class="find-btn a-btn">Delete</button>
+								</form>
+								</td>
+								<td>
+									<form action="./editItem" method="get">
+										<input type="hidden" name="itemId" value="${item.id}">
+										<input type="hidden" name="pageName" value="<%=pageName%>"/>
+										<button class="find-btn a-btn">Edit</button>
+									</form>
+								</td>
+			       			</c:if>
 			       			<td><c:out value="${item.name }" /></td>
 			       			<td><c:out value="${item.condition }" /></td>
 			       			<td><c:out value="${item.bestOption.value }" /></td>
@@ -52,7 +78,7 @@
 	        	</tbody>        	
 	        </table>   
         </div>     
-    </section>
+    </section>    
     
      <!-- Footer -->
 	<jsp:include page="footer.jsp" />

@@ -171,7 +171,7 @@ class CredentialServiceIT {
 	}
 	
 	@Test
-	void testAddWithUserWithItem() throws CredentialAlreadyExistsException {
+	void testAddWithUserWithItem() throws CredentialAlreadyExistsException, CredentialNotFoundException {
 		credentialService.delete(credential1);
 		credential1.setUser(user1);
 		credential1 = credentialService.add(credential1);
@@ -211,17 +211,27 @@ class CredentialServiceIT {
 	
 	@Test
 	void testDelete() {
-		credentialService.delete(toDelete);
+		try {
+			credentialService.delete(toDelete);
+		} catch (CredentialNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Credential actual = credentialService.findById(toDelete.getId());
 		assertNull(actual);
 	}
 	
 	@AfterAll
 	void clearSetup() {
-		credentialService.delete(credential1);
-		credentialService.delete(credential2);
-		credentialService.delete(toAdd);
-		
+		try {
+			credentialService.delete(credential1);
+			credentialService.delete(credential2);
+			credentialService.delete(toAdd);
+		} catch (CredentialNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 		for (Item item : items)
 			itemService.delete(item.getId());
 	}

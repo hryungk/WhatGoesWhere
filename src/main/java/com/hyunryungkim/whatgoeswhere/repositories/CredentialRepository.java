@@ -154,11 +154,12 @@ public class CredentialRepository {
 	 * 
 	 * @param credential a Credential to be removed from the database
 	 * @return true if the removal was successful, false otherwise
+	 * @throws CredentialNotFoundException If a valid Credential is not found
 	 */
-	public boolean delete(Credential credential) {
+	public boolean delete(Credential credential) throws CredentialNotFoundException {
 		// if the user doesn't exist in the database, deletion fails.
 		if (findById(credential.getId()) == null) {			
-			return false;
+			throw new CredentialNotFoundException();
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();

@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<!-- JSTL includes -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,8 +21,41 @@
 	<!-- Header -->
 	<jsp:include page="header.jsp" />
 
-	<section id="container"> 
-        <h1>Admin Page</h1>
+	<section id="container">		
+        <h1>User List</h1>
+        <div>
+	        <table class="table table-striped table-hover">
+	        	<thead>
+	        		<tr>
+	        			<th></th>
+	        			<th>Username</th>
+	        			<th>Email</th>
+	        			<th>First Name</th>
+	        			<th>Last name</th>
+	        			<th>User Role</th>
+	        			<th>Joined On</th>
+	        		</tr>
+	        	</thead>
+	        	<tbody>
+	        		<c:forEach var="credential" items="${credentials }" varStatus="status">	        			
+			       		<tr>
+			       			<td>
+								<form action="./deleteUserById" method="POST" onsubmit="return(confirm('Are you sure you want to delete this user?'))">
+									<input type="hidden" name="userId" value="${credential.user.id}">
+									<button class="find-btn a-btn">Delete</button>
+								</form>
+							</td>
+			       			<td><c:out value="${credential.username }" /></td>
+			       			<td><c:out value="${credential.user.email }" /></td>
+			       			<td><c:out value="${credential.user.firstName }" /></td>
+			       			<td><c:out value="${credential.user.lastName }" /></td>
+			       			<td><c:out value="${credential.userRole }" /></td>
+			       			<td><c:out value="${credential.user.joinedDate }" /></td>
+			       		</tr>
+			   		</c:forEach>
+	        	</tbody>        	
+	        </table>   
+        </div>  
     </section>	
 	
 	<!-- Footer -->
