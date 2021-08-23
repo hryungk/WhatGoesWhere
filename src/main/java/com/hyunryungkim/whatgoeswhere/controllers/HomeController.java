@@ -494,6 +494,37 @@ public class HomeController {
 	}
 	
 	/**
+	 *  Maps get method for update password page
+	 * 
+	 * @param model a Model object holding model attributes
+	 * @return the JSP name for the update_password page
+	 */
+	@GetMapping("/updatePassword")
+	public String showUpdatePasswordPage(Model model) {
+		if (model.getAttribute(MESSAGE_ATTRIBUTE) == null) {
+			model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		}
+		return "update_password";
+	}
+	@PostMapping("/updatePassword")
+	public String updatePassword(@RequestParam("oldPassword")String oldPassword, @RequestParam("newPassword")String newPassword, Model model) {
+		try {
+			Credential credential = getCredential();
+			if (credentialService.checkIfValidOldPassword(oldPassword, credential.getPassword())) {
+				credential.setPassword(newPassword);
+				credentialService.update(credential);
+				return showProfilePage(model);
+			} else {
+				model.addAttribute(MESSAGE_ATTRIBUTE, "Your password does not match. Try again.");
+				return showUpdatePasswordPage(model);
+			}
+		} catch (CredentialNotFoundException e) {
+			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before accessing your profile page.");
+			return showUpdatePasswordPage(model);
+		} 
+	}
+	
+	/**
 	 * Logs out the current user from the request
 	 * 
 	 * @param request a HttpServletRequest object to automatically log the user out after registration
@@ -504,7 +535,6 @@ public class HomeController {
 		} catch (ServletException e) {
 			logger.log(Level.WARNING, "Error while logout ", e);
 		}
-		
 	}
 	
 	/**

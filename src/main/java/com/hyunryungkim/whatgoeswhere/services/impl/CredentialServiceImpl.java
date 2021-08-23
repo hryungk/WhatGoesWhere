@@ -27,18 +27,18 @@ public class CredentialServiceImpl implements CredentialService {
 	/**
 	 * Password encoder for the Credential's password
 	 */
-	private PasswordEncoder pswdEncoder;
+	private PasswordEncoder passwordEncoder;
 	
 	/**
 	 * Class constructor accepting fields
 	 * 
 	 * @param credentialRepository a CredentialRepository object for DAO methods
-	 * @param pswdEncoder a PasswordEncoder object to Bcrypt encode the password
+	 * @param passwordEncoder a PasswordEncoder object to Bcrypt encode the password
 	 */
 	@Autowired // inject into this class from the Spring framework
-	public CredentialServiceImpl(CredentialRepository credentialRepository, PasswordEncoder pswdEncoder) {
+	public CredentialServiceImpl(CredentialRepository credentialRepository, PasswordEncoder passwordEncoder) {
 		this.credentialRepository = credentialRepository;
-		this.pswdEncoder = pswdEncoder;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class CredentialServiceImpl implements CredentialService {
 	
 	@Override
 	public Credential add(Credential credential) throws CredentialAlreadyExistsException {
-		credential.setPassword(pswdEncoder.encode(credential.getPassword()));
+		credential.setPassword(passwordEncoder.encode(credential.getPassword()));
 		return credentialRepository.add(credential);
 	}
 
@@ -69,6 +69,7 @@ public class CredentialServiceImpl implements CredentialService {
 	
 	@Override
 	public Credential update(Credential credential) throws CredentialNotFoundException {
+		credential.setPassword(passwordEncoder.encode(credential.getPassword())); 
 		return credentialRepository.update(credential);
 	}
 
@@ -76,5 +77,9 @@ public class CredentialServiceImpl implements CredentialService {
 	public Credential findByUsernameAndPassword(String username, String password) throws CredentialNotFoundException {
 		return credentialRepository.findByUsernameAndPassword(username, password);
 	}
-
+	
+	@Override
+	public boolean checkIfValidOldPassword(String oldPassword, String newPassword) {
+		return passwordEncoder.matches(oldPassword, newPassword);
+	}
 }

@@ -74,4 +74,13 @@ public interface CredentialService {
 	 * @throws CredentialNotFoundException If a valid Credential is not found
 	 */
 	public Credential update(Credential credential) throws CredentialNotFoundException;
+	
+	/**
+	 * Returns whether password1 and password2 are matching or not
+	 * 
+	 * @param password1 a string representing a password to compare with password2
+	 * @param password2 a string representing a password to compare with password1
+	 * @return true if password1 and password2 are matching, false otherwise
+	 */
+	public boolean checkIfValidOldPassword(String password1, String password2);
 }

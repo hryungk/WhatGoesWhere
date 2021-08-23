@@ -34,8 +34,12 @@
 						<input type="text" name="userName" placeholder="Username" required="required" value="${username }" id="username" autofocus />
 					</div>
 					<div class="r-input">				
-						<input type="password" name="password" placeholder="Password" required="required" />
+						<input type="password" id="password" name="password" placeholder="Password" required="required" />
 					</div>
+					<div class="r-input" id="div-passConfirm">				
+						<input type="password" id="passConfirm" name="passwordConfirm" placeholder="Confirm Password" required="required" />
+					</div>
+					<span id="passConfirmMsg" style="color:red;"> </span>
 					<div class="r-input">						
 						<input type="email" name="eMail" placeholder="Email" required="required" value="${user.email }" id="email"/>
 					</div>
@@ -54,6 +58,18 @@
     
     <script src="scripts/go_back.js" type="text/javascript"></script>
     <script>
+	    let password = document.getElementById('password');
+	    let passwordConfirm = document.getElementById('passConfirm');
+	    passwordConfirm.addEventListener('input', function() {
+	    	let passwordConfirmMsg = document.getElementById('passConfirmMsg');
+	    	if (password.value != passwordConfirm.value) {
+		    	passwordConfirmMsg.innerHTML = 'Your password doesn\'t match.';
+		    	passwordConfirm.autofocus=true;
+		    } else {
+		    	passwordConfirmMsg.innerHTML = '';
+		    }
+	    });
+	    
 	    let emailInput = document.getElementById('email');
 		if (emailInput.value == '') {
 			emailInput.autofocus=true;
