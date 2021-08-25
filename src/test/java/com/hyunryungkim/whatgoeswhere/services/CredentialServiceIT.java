@@ -1,5 +1,6 @@
 package com.hyunryungkim.whatgoeswhere.services;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -186,7 +187,8 @@ class CredentialServiceIT {
 		credential1.setPassword(expected);
 		credential1 = credentialService.update(credential1);
 		String actual = credential1.getPassword();
-		assertEquals(expected, actual); 
+		assertTrue(credentialService.checkIfValidOldPassword(expected, actual));
+//		assertEquals(expected, actual); 
 	}
 //	@ParameterizedTest
 //	@MethodSource("provideCredentialsForTestUpdate")

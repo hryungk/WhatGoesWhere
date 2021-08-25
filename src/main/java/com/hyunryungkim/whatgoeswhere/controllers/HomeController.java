@@ -3,20 +3,12 @@ package com.hyunryungkim.whatgoeswhere.controllers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.persistence.RollbackException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,41 +49,21 @@ public class HomeController {
 	 * Service object for Item model
 	 */
 	private ItemService itemService;
-	/**
-	 * Logger for logging errors when signing in and out.
-	 */
-	private Logger logger = Logger.getLogger(HomeController.class.getName());
-	/**
-	 * Attribute name for any message of errors
-	 */
-	private final String MESSAGE_ATTRIBUTE = "message";
-	/**
-	 * Attribute name for a collection of Item objects
-	 */
-	private final String ITEMS_ATTRIBUTE = "items";
-	/**
-	 * Attribute name for the client's email address
-	 */
-	private final String EMAIL_ATTRIBUTE = "email";
-	/**
-	 * JSP name for the main page
-	 */
-	private final String HOME_PAGE = "index";
+	
 	/**
 	 * Class constructor binding various service classes
 	 * 
 	 * @param itemService a service object for Item model
 	 * @param userService a service object for User model
-	 * @param credentialService a service object for Credential model
 	 * @see com.hyunryungkim.whatgoeswhere.services.ItemService
 	 * @see com.hyunryungkim.whatgoeswhere.services.UserService
 	 * @see com.hyunryungkim.whatgoeswhere.services.CredentialService
 	 */
 	@Autowired
-	public HomeController(ItemService itemService, UserService userService, CredentialService credentialService) {
+	public HomeController(ItemService itemService, UserService userService) {
 		this.itemService = itemService;
 		this.userService = userService;
-		this.credentialService = credentialService;
+		this.credentialService = ServiceUtilities.credentialService;
 	}
 	
 	/**
@@ -104,7 +76,7 @@ public class HomeController {
 	 */
 	@GetMapping("/") // This is what you type for URL
 	public String showIndexPage(Model model) {
-		return HOME_PAGE; // return this to WebAppconfig
+		return ServiceUtilities.HOME_PAGE; // return this to WebAppconfig
 	}	
 	/**
 	 * Maps post method for the find request from the index page
@@ -118,8 +90,8 @@ public class HomeController {
 	public String searchItemName(@RequestParam("itemName") String itemName,			
 			Model model) {	
 		List<Item> items = itemService.findByName(itemName);
-		model.addAttribute(ITEMS_ATTRIBUTE, items);
-		return HOME_PAGE;
+		model.addAttribute(ServiceUtilities.ITEMS_ATTRIBUTE, items);
+		return ServiceUtilities.HOME_PAGE;
 	}
 	
 	/**
@@ -132,8 +104,8 @@ public class HomeController {
 	@GetMapping("/list")
 	public String showListPage(Model model) {
 		List<Item> items = itemService.getAll();
-		model.addAttribute(ITEMS_ATTRIBUTE, items);
-		model.addAttribute("role",getRole());
+		model.addAttribute(ServiceUtilities.ITEMS_ATTRIBUTE, items);
+		model.addAttribute("role",ServiceUtilities.getRole());
 		
 		return "list";
 	}
@@ -151,8 +123,8 @@ public class HomeController {
 	 */
 	@GetMapping("/addItem")
 	public String showAddItemPage(Model model) {
-		if (model.getAttribute(MESSAGE_ATTRIBUTE) == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		if (model.getAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE) == null) {
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, "");
 		}
 		// Pass an Item object
 		model.addAttribute("item", new Item());
@@ -178,15 +150,15 @@ public class HomeController {
 			return "add_item";			
 		}		
 		try {
-			User user = getUser();
+			User user = ServiceUtilities.getUser();
 			item.setAddedDate(LocalDateTime.now());	
 			itemService.add(item, user.getId());
 			return showListPage(model);
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before adding an item.");
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before adding an item.");
 			return showAddItemPage(model);
 		} catch (ItemAlreadyExistsException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE,e.getMessage());
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE,e.getMessage());
 			return showAddItemPage(model);
 		 }
 	}
@@ -200,8 +172,8 @@ public class HomeController {
 	 */
 	@GetMapping("/login")
 	public String showLogInPage(Model model) {
-		if (model.getAttribute(MESSAGE_ATTRIBUTE) == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		if (model.getAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE) == null) {
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, "");
 		}
 		return "login";
 	}
@@ -209,12 +181,12 @@ public class HomeController {
 //	public String logIn(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpServletRequest request) {
 //		try {
 //			Credential credential = credentialService.findByUsernameAndPassword(username, password);
-//			User user = credential.getUser();
+//			User user = ServiceUtilities.getUser();
 //			authWithHttpServletRequest(request, username, password); // login 	
 //			return showProfilePage(model, session);
 //		} catch (CredentialNotFoundException e) {
 //			String message = e.getMessage();
-//			model.addAttribute(MESSAGE_ATTRIBUTE, message);
+//			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, message);
 //			model.addAttribute("username", username);
 //			return showLogInPage(model);
 //		}
@@ -240,8 +212,8 @@ public class HomeController {
 	 */
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
-		if (model.getAttribute(MESSAGE_ATTRIBUTE) == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		if (model.getAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE) == null) {
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, "");
 		}
 		if (model.getAttribute("user") == null) {
 			User newUser = new User();
@@ -268,7 +240,7 @@ public class HomeController {
 		try {	
 			credentialService.add(credential);
 			model.addAttribute("user", newUser);
-			authWithHttpServletRequest(request, username, password); // login automatically
+			ServiceUtilities.authWithHttpServletRequest(request, username, password); // login automatically
 			return showProfilePage(model);
 		} catch (CredentialAlreadyExistsException e) {
 			model.addAttribute("usernameMessage", e.getMessage());
@@ -300,15 +272,15 @@ public class HomeController {
 	@GetMapping("/profile")
 	public String showProfilePage(Model model) {				
 		try {
-			Credential credential = getCredential();
-			User user = getUser();
+			Credential credential = ServiceUtilities.getCredential();
+			User user = ServiceUtilities.getUser();
 			model.addAttribute("user",user);
 			model.addAttribute("userName", credential.getUsername());
 			List<Item> items = user.getItems();
-			model.addAttribute(ITEMS_ATTRIBUTE, items);
+			model.addAttribute(ServiceUtilities.ITEMS_ATTRIBUTE, items);
 			return "profile";
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before accessing your profile page.");
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before accessing your profile page.");
 			return showLogInPage(model);
 		}
 	}
@@ -358,7 +330,7 @@ public class HomeController {
 			else
 				return showProfilePage(model);
 		} catch(ItemAlreadyExistsException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE,e.getMessage());
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE,e.getMessage());
 			return showEditItemPage(uitem.getId(), pageName, model);
 		}
 	}
@@ -392,35 +364,10 @@ public class HomeController {
 	@GetMapping("/deleteUser")
 	public String showDeleteUserPage(Model model) {		
 		try {
-			model.addAttribute(EMAIL_ATTRIBUTE, getUserEmail());
+			model.addAttribute(ServiceUtilities.EMAIL_ATTRIBUTE, ServiceUtilities.getUserEmail());
 			return "delete_user";
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before deleting your account.");
-			return showLogInPage(model);
-		}
-	}
-	/**
-	 * Maps post method for the deleteUser request
-	 * This page is not accessible without a valid credential so the exception is not expected to be thrown. 
-	 * 
-	 * @param message a string of message from the user input
-	 * @param model a Model object holding model attributes
-	 * @param request a HttpServletRequest object to automatically log the user out after deleting its account
-	 * @return the JSP name for the main page if no exception is caught, the login page otherwise
-	 */
-	@PostMapping("/deleteUser")
-	public String deleteUser(@RequestParam(MESSAGE_ATTRIBUTE) String message, Model model, HttpServletRequest request) {
-		try {
-			Credential credential = getCredential();
-			credentialService.delete(credential);
-			logoutWithHttpServletRequest(request);
-			
-			// Send email to admin
-			System.out.println(message);
-			
-			return showIndexPage(model);
-		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before deleting your account.");
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before deleting your account.");
 			return showLogInPage(model);
 		}
 	}
@@ -451,42 +398,6 @@ public class HomeController {
 		return "about";
 	}
 	
-	/**
-	 * Maps get method for the contact page
-	 * Sends a model attribute email of the current user. 
-	 * 
-	 * @param model a Model object holding model attributes
-	 * @return the JSP name for the contact page
-	 */
-	@GetMapping("/contact")
-	public String showContactPage(Model model) {
-		try {
-			String email = getUserEmail();
-			model.addAttribute(EMAIL_ATTRIBUTE, email);
-			return "contact";
-		} catch (CredentialNotFoundException e) {
-			model.addAttribute(EMAIL_ATTRIBUTE, "");
-			return "contact";
-		}
-	}
-	/**
-	 * Maps post method for the contact request	 * 
-	 * 
-	 * @param message a string of message from the user input
-	 * @param email an email address from the user input
-	 * @param model a Model object holding model attributes
-	 * @return the JSP name for the main page
-	 */
-	@PostMapping("/contact")
-	public String contact(@RequestParam(MESSAGE_ATTRIBUTE) String message, @RequestParam("eMail") String email, Model model) {
-		System.out.println("email: " + email);
-		System.out.println("message: " + message);
-		
-		// Send email to admin
-		
-		
-		return HOME_PAGE;
-	}
 
 	/**
 	 * Maps get method for the admin page
@@ -533,7 +444,7 @@ public class HomeController {
 			credentialService.delete(credential);
 			return showAdminPage(model);
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" as an Admin before deleting a user account.");
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" as an Admin before deleting a user account.");
 			return showLogInPage(model);
 		}
 	}
@@ -556,120 +467,28 @@ public class HomeController {
 	 */
 	@GetMapping("/updatePassword")
 	public String showUpdatePasswordPage(Model model) {
-		if (model.getAttribute(MESSAGE_ATTRIBUTE) == null) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, "");
+		if (model.getAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE) == null) {
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, "");
 		}
 		return "update_password";
 	}
 	@PostMapping("/updatePassword")
 	public String updatePassword(@RequestParam("oldPassword")String oldPassword, @RequestParam("newPassword")String newPassword, Model model) {
 		try {
-			Credential credential = getCredential();
+			Credential credential = ServiceUtilities.getCredential();
 			if (credentialService.checkIfValidOldPassword(oldPassword, credential.getPassword())) {
 				credential.setPassword(newPassword);
 				credentialService.update(credential);
 				return showProfilePage(model);
 			} else {
-				model.addAttribute(MESSAGE_ATTRIBUTE, "Your password does not match. Try again.");
+				model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, "Your password does not match. Try again.");
 				return showUpdatePasswordPage(model);
 			}
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(MESSAGE_ATTRIBUTE, e.getMessage()+" before accessing your profile page.");
+			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before accessing your profile page.");
 			return showUpdatePasswordPage(model);
 		} 
 	}
+
 	
-	/**
-	 * Logs out the current user from the request
-	 * 
-	 * @param request a HttpServletRequest object to automatically log the user out after registration
-	 */
-	private void logoutWithHttpServletRequest(HttpServletRequest request) {
-		try {
-			request.logout();
-		} catch (ServletException e) {
-			logger.log(Level.WARNING, "Error while logout ", e);
-		}
-	}
-	
-	/**
-	 * Logs in a new user with provided credentials
-	 * 
-	 * @param request a HttpServletRequest object to automatically log the user in after registration
-	 * @param username a string of username from the user input
-	 * @param password a string of password from the user input
-	 */
-	private void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
-	    try {
-	        request.login(username, password);
-	    } catch (ServletException e) {
-	        logger.log(Level.WARNING, "Error while login ", e);
-	    }
-	}
-	
-	/**
-	 * Returns the current user's Credential 
-	 * 
-	 * @return a Credential object of the current user if found, null otherwise 
-	 * @throws CredentialNotFoundException If a valid Credential is not found
-	 * @see com.hyunryungkim.whatgoeswhere.models.Credential
-	 */
-	private Credential getCredential() throws CredentialNotFoundException {		
-		// Get current user
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
-			throw new CredentialNotFoundException();
-		} else {
-			Object principal = authentication.getPrincipal();
-			boolean isAnonymous = principal.equals("anonymousUser");
-			if (isAnonymous) {
-				throw new CredentialNotFoundException();
-			} else {
-				// Print current user granted authorities
-//				Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-//				System.out.println(authorities);
-				String username =  ((UserDetails)principal).getUsername();
-				return credentialService.findByUsername(username);
-			}
-		}
-	}
-	
-	private String getRole() {
-		// Get current user
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
-			return "";
-		} else {
-			Object principal = authentication.getPrincipal();
-			boolean isAnonymous = principal.equals("anonymousUser");
-			if (isAnonymous) {
-				return "";
-			} else {
-				// Print current user granted authorities
-				Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-				return authorities.toString();
-			}
-		}
-	}
-	
-	/**
-	 * Returns the User object of the current user
-	 * 
-	 * @return the User object of the current user
-	 * @throws CredentialNotFoundException If a valid Credential is not found
-	 */
-	private User getUser() throws CredentialNotFoundException {
-		Credential credential = getCredential();		
-		return credential.getUser();
-	}	
-	/**
-	 * Returns the email address of the current user
-	 * 
-	 * @return the email address of the current user
-	 * @throws CredentialNotFoundException If a valid Credential is not found
-	 */
-	private String getUserEmail() throws CredentialNotFoundException {
-		User user = getUser();
-		return user.getEmail();
-	}	
 }

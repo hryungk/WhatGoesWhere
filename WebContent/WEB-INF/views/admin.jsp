@@ -41,7 +41,7 @@
 			       		<tr>
 			       			<td>
 								<form action="./deleteUserById" method="POST" onsubmit="return(confirm('Are you sure you want to delete this user?'))">
-									<input type="hidden" name="userId" value="${credential.user.id}">
+									<input type="hidden" name="userId" value="${credential.id}">
 									<button class="find-btn a-btn">Delete</button>
 								</form>
 							</td>

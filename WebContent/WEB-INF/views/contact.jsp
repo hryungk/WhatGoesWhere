@@ -29,6 +29,9 @@
                     <div class="r-input">
 						<input type="email" name="eMail" placeholder="Email (required)" required="required" value="${email }"/>
 					</div>
+					<div class="r-input">
+						<input type="text" name="subject" placeholder="Subject (required)" required="required" />
+					</div>
 					<div class="r-input">	 			
 						<textarea rows="10" name="message" placeholder="Enter your message (required)" required="required"></textarea>						
 					</div>					
