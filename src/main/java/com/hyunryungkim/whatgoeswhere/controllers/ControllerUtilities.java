@@ -27,7 +27,7 @@ import com.hyunryungkim.whatgoeswhere.services.CredentialService;
  *
  */
 @Controller
-public class ServiceUtilities {	
+public class ControllerUtilities {	
 	/**
 	 * Service object for Credential model
 	 */
@@ -41,13 +41,25 @@ public class ServiceUtilities {
 	 */
 	static final String ITEMS_ATTRIBUTE = "items";
 	/**
+	 * Attribute name for a User object
+	 */
+	static final String USER_ATTRIBUTE = "user";
+	/**
+	 * Attribute name for a username string
+	 */
+	static final String USERNAME_ATTRIBUTE = "username";
+	/**
 	 * Attribute name for the client's email address
 	 */
 	static final String EMAIL_ATTRIBUTE = "email";
 	/**
-	 * JSP name for the main page
+	 * Attribute name for the error message with email 
 	 */
-	static final String HOME_PAGE = "index";
+	static final String EMAIL_MESSAGE_ATTRIBUTE = "emailMessage";
+	/**
+	 * Attribute name for the error message with username
+	 */
+	static final String USERNAME_MESSAGE_ATTRIBUTE = "usernameMessage";
 	/**
 	 * Logger object for login and out
 	 */
@@ -59,9 +71,9 @@ public class ServiceUtilities {
 	 * @param credentialService a service object for Credential model
 	 */
 	@Autowired
-	private ServiceUtilities(CredentialService credentialService) {
-		ServiceUtilities.credentialService = credentialService;
-		ServiceUtilities.loggerUtilities = setupLogger(ServiceUtilities.class.getName());
+	private ControllerUtilities(CredentialService credentialService) {
+		ControllerUtilities.credentialService = credentialService;
+		ControllerUtilities.loggerUtilities = setupLogger(ControllerUtilities.class.getName());
 	}
 	
 	/**
@@ -82,14 +94,17 @@ public class ServiceUtilities {
 			if (isAnonymous) {
 				throw new CredentialNotFoundException();
 			} else {
-				// Print current user granted authorities
-//				Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-//				System.out.println(authorities);
+				// Retrieves current user granted authorities
 				String username =  ((UserDetails)principal).getUsername();
 				return credentialService.findByUsername(username);
 			}
 		}
 	}
+	/**
+	 * Returns the current user's role
+	 * 
+	 * @return a string containing the role of current user
+	 */
 	public static String getRole() {
 		// Get current user
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -118,6 +133,7 @@ public class ServiceUtilities {
 		Credential credential = getCredential();		
 		return credential.getUser();
 	}	
+	
 	/**
 	 * Returns the email address of the current user
 	 * 
@@ -129,6 +145,12 @@ public class ServiceUtilities {
 		return user.getEmail();
 	}
 	
+	/**
+	 * Returns a logger for the provided class name
+	 * 
+	 * @param className a string containing the name of calling class
+	 * @return a Logger object for the calling class
+	 */
 	public static Logger setupLogger(String className) {
 		Logger logger = Logger.getLogger(className);
 		logger.setUseParentHandlers(false);

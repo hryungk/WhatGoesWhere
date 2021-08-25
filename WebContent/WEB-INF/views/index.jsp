@@ -29,24 +29,25 @@
 	            <input type="submit" value="Search" class="find-btn" id="find-btn"/>
             </form>
         </div>
-        <a href="list">List of Items</a>
-    </section>
-    
-    <section>
-    	<table class="table table-striped table-hover" id="find-result-table">
-        	<tbody id="tbody">
-		       	<c:forEach var="item" items="${items}" varStatus="status">
-		       		<tr>
-		       			<td><c:out value="${item.name }" /></td>
-		       			<td><c:out value="${item.condition }" /></td>
-		       			<td><c:out value="${item.bestOption }" /></td>
-		       			<td><c:out value="${item.specialInstruction }" /></td>
-		       			<td><c:out value="${item.notes }" /></td>
-		       			<td><c:out value="${item.addedDate }" /></td>
-		       		</tr>
-		   		</c:forEach>
-        	</tbody>        	
-        </table>      	
+        <div>
+        	<a href="list">List of Items</a>
+       	</div>
+        <div style="margin: 2em;">
+	        <table class="table table-striped table-hover" id="find-result-table">
+	        	<tbody id="tbody">
+			       	<c:forEach var="item" items="${items}" varStatus="status">
+			       		<tr>
+			       			<td><c:out value="${item.name }" /></td>
+			       			<td><c:out value="${item.condition }" /></td>
+			       			<td><c:out value="${item.bestOption }" /></td>
+			       			<td><c:out value="${item.specialInstruction }" /></td>
+			       			<td><c:out value="${item.notes }" /></td>
+			       			<td><c:out value="${item.addedDate }" /></td>
+			       		</tr>
+			   		</c:forEach>
+	        	</tbody>        	
+	        </table>  
+        </div>
     </section>
     
     <script src="scripts/add_table_head.js" type="text/javascript"></script>

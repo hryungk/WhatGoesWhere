@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.hyunryungkim.whatgoeswhere.models.ModelUtilities;
 import com.hyunryungkim.whatgoeswhere.models.User;
 
 /**
@@ -21,10 +22,6 @@ import com.hyunryungkim.whatgoeswhere.models.User;
 @Repository
 public class UserRepository {
 	/**
-	 * A string of persistence-unit name for JPA to inject into entity manager factory
-	 */
-	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	/**
 	 * UserItem repository object is necessary for delete method
 	 */
 	private UserItemRepository uiRepository;
@@ -35,7 +32,7 @@ public class UserRepository {
 	 */
 	public UserRepository() {
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(ModelUtilities.DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -49,7 +46,7 @@ public class UserRepository {
 	 * @return a list of User objects in the database
 	 */
 	public List<User> getAll() {
-		return findUsers("User.findAll");
+		return findUsers(ModelUtilities.User.NAME_FIND_ALL);
 	}
 	
 	/**
@@ -59,7 +56,7 @@ public class UserRepository {
 	 * @return a User that has the given email, null if not found
 	 */
 	public User findByEmail(String email) {	
-		List<User> users = findUsers("User.findByEmail",email);	
+		List<User> users = findUsers(ModelUtilities.User.NAME_FINDBY_EMAIL,email);	
 		if (users.isEmpty())
 			return null;
 		return users.get(0); 
@@ -74,7 +71,7 @@ public class UserRepository {
 	 * @return a List of User objects returned by the query
 	 */
 	private List<User> findUsers(String queryName, String ... columns) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		TypedQuery<User> query = entityManager.createNamedQuery(queryName, User.class);
@@ -95,7 +92,7 @@ public class UserRepository {
 	 * @return a User that has the given id, null if not found
 	 */
 	public User findById(int id) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		User user = entityManager.find(User.class, id);
@@ -115,7 +112,7 @@ public class UserRepository {
 	public User add(User user) {
 		// If there already exists the same user in the system, addition fails.
 		if (findByEmail(user.getEmail()) == null) {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
@@ -142,7 +139,7 @@ public class UserRepository {
 		if (findById(user.getId()) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
@@ -169,7 +166,7 @@ public class UserRepository {
 		if (findById(user.getId()) == null) {
 			return null;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		

@@ -22,10 +22,11 @@ import javax.validation.constraints.NotEmpty;
  */
 @Entity
 @Table(name="Items", uniqueConstraints = { @UniqueConstraint(name = "UniqueNameAndState", columnNames = { "name", "state" }) })
-@NamedQuery(name="Item.findAll", query="SELECT i FROM Item i")
-@NamedQuery(name="Item.findByName", query="SELECT i FROM Item i WHERE i.name = ?1")
-@NamedQuery(name="Item.findByNameAndState", query="SELECT i FROM Item i WHERE i.name = ?1 AND i.condition = ?2")
+@NamedQuery(name=ModelUtilities.Item.NAME_FIND_ALL, query=ModelUtilities.Item.QUERY_FIND_ALL)
+@NamedQuery(name=ModelUtilities.Item.NAME_FINDBY_NAME, query=ModelUtilities.Item.QUERY_FINDBY_NAME)
+@NamedQuery(name=ModelUtilities.Item.NAME_FINDBY_NAME_STATE, query=ModelUtilities.Item.QUERY_FINDBY_NAME_STATE)
 public class Item {
+	static final String FINDALL = "Item.findAll";
 	/**
 	 * An integer representing the item id, auto-generated
 	 */

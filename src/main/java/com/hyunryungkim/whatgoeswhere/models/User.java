@@ -26,8 +26,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="Users")
-@NamedQuery(name="User.findAll", query="SELECT u FROM User u")
-@NamedQuery(name="User.findByEmail", query="SELECT u FROM User u WHERE u.email = ?1")
+@NamedQuery(name=ModelUtilities.User.NAME_FIND_ALL, query=ModelUtilities.User.QUERY_FIND_ALL)
+@NamedQuery(name=ModelUtilities.User.NAME_FINDBY_EMAIL, query=ModelUtilities.User.QUERY_FINDBY_EMAIL)
 public class User {
 	/**
 	 * An integer representing the User id, auto-generated

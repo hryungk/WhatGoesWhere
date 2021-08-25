@@ -24,9 +24,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name="User_Item")
 @IdClass(UserItemID.class)
-@NamedQuery(name="UserItem.findAll", query="SELECT ui FROM UserItem ui")
-@NamedQuery(name="UserItem.findByUserId", query="SELECT ui FROM UserItem ui WHERE ui.userId = ?1")
-@NamedQuery(name="UserItem.findByItemId", query="SELECT ui FROM UserItem ui WHERE ui.itemId = ?1")
+@NamedQuery(name=ModelUtilities.UserItem.NAME_FIND_ALL, query=ModelUtilities.UserItem.QUERY_FIND_ALL)
+@NamedQuery(name=ModelUtilities.UserItem.NAME_FINDBY_USERID, query=ModelUtilities.UserItem.QUERY_FINDBY_USERID)
+@NamedQuery(name=ModelUtilities.UserItem.NAME_FINDBY_ITEMID, query=ModelUtilities.UserItem.QUERY_FINDBY_ITEMID)
 public class UserItem {
 	/**
 	 * An integer representing the User id

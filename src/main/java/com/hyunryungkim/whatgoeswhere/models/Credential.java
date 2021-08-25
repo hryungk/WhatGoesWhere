@@ -21,9 +21,9 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name="Credentials")
-@NamedQuery(name="Credential.findAll", query="SELECT c FROM Credential c")
-@NamedQuery(name="Credential.findByUsername", query="SELECT c FROM Credential c WHERE c.username = ?1")
-@NamedQuery(name="Credential.findByUsernameAndPassword", query="SELECT c FROM Credential c WHERE c.username = ?1 AND c.password = ?2")
+@NamedQuery(name=ModelUtilities.Credential.NAME_FIND_ALL, query=ModelUtilities.Credential.QUERY_FIND_ALL)
+@NamedQuery(name=ModelUtilities.Credential.NAME_FINDBY_USERNAME, query=ModelUtilities.Credential.QUERY_FINDBY_USERNAME)
+@NamedQuery(name=ModelUtilities.Credential.NAME_FINDBY_USERNAME_PASSWORD, query=ModelUtilities.Credential.QUERY_FINDBY_USERNAME_PASSWORD)
 public class Credential {
 	/**
 	 * An integer representing the credential id, auto-generated

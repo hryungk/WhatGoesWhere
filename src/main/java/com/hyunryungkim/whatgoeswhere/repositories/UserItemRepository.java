@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.hyunryungkim.whatgoeswhere.models.ModelUtilities;
 import com.hyunryungkim.whatgoeswhere.models.UserItem;
 import com.hyunryungkim.whatgoeswhere.models.UserItemID;
 
@@ -22,16 +23,11 @@ import com.hyunryungkim.whatgoeswhere.models.UserItemID;
 @Repository
 public class UserItemRepository {
 	/**
-	 * A string of persistence-unit name for JPA to inject into entity manager factory
-	 */
-	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	
-	/**
 	 * Class constructor registering a database driver
 	 */
 	public UserItemRepository() {
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(ModelUtilities.DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +39,7 @@ public class UserItemRepository {
 	 * @return a list of UserItem objects in the database
 	 */
 	public List<UserItem> getAll() {
-		return findUserItems("findAll");
+		return findUserItems(ModelUtilities.UserItem.NAME_FIND_ALL);
 	}
 	
 	/**
@@ -53,7 +49,7 @@ public class UserItemRepository {
 	 * @return a UserItem that has the given Item id, null if not found
 	 */
 	public UserItem findByItemId(int itemId) {
-		List<UserItem> uiList = findUserItems("findByItemId", itemId);
+		List<UserItem> uiList = findUserItems(ModelUtilities.UserItem.NAME_FINDBY_ITEMID, itemId);
 		if (uiList.isEmpty())
 			return null;
 		return uiList.get(0); 		
@@ -66,14 +62,14 @@ public class UserItemRepository {
 	 * @return a list of UserItem objects that has the given User id, null if not found
 	 */
 	public List<UserItem> findByUserId(int userId) {
-		return findUserItems("findByUserId",userId);
+		return findUserItems(ModelUtilities.UserItem.NAME_FINDBY_USERID,userId);
 	}
 	
 	private List<UserItem> findUserItems(String queryName, int ... columns) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem."+queryName, UserItem.class);
+		TypedQuery<UserItem> query = entityManager.createNamedQuery(queryName, UserItem.class);
 		for (int i = 1; i <= columns.length; i++) {
 			query.setParameter(i, columns[i-1]);
 		}
@@ -96,7 +92,7 @@ public class UserItemRepository {
 		// If there already exists the same user in the system, addition fails.
 		if (findByItemId(itemId) == null) {		
 			UserItem ui = new UserItem(userId, itemId);
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
@@ -123,7 +119,7 @@ public class UserItemRepository {
 		if (findByItemId(userItem.getItemId()) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
@@ -148,11 +144,11 @@ public class UserItemRepository {
 		if (findByItemId(itemId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem.findByItemId", UserItem.class);
+		TypedQuery<UserItem> query = entityManager.createNamedQuery(ModelUtilities.UserItem.NAME_FINDBY_ITEMID, UserItem.class);
 		query.setParameter(1, itemId);		
 		UserItem itemToDelete = query.getResultList().get(0);
 		entityManager.remove(itemToDelete);
@@ -174,11 +170,11 @@ public class UserItemRepository {
 		if (findByUserId(userId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
-		TypedQuery<UserItem> query = entityManager.createNamedQuery("UserItem.findByUserId", UserItem.class);
+		TypedQuery<UserItem> query = entityManager.createNamedQuery(ModelUtilities.UserItem.NAME_FINDBY_USERID, UserItem.class);
 		query.setParameter(1, userId);		
 		List<UserItem> userItems = query.getResultList();
 		for (UserItem itemToDelete : userItems) {

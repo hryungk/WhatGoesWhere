@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hyunryungkim.whatgoeswhere.exceptions.ItemAlreadyExistsException;
 import com.hyunryungkim.whatgoeswhere.models.Item;
+import com.hyunryungkim.whatgoeswhere.models.ModelUtilities;
 
 /**
  * A DAO Repository class for Item model
@@ -22,10 +23,6 @@ import com.hyunryungkim.whatgoeswhere.models.Item;
 @Repository
 public class ItemRepository {
 	/**
-	 * A string of persistence-unit name for JPA to inject into entity manager factory
-	 */
-	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	/**
 	 * UserItem repository object is necessary for add and delete methods
 	 */
 	private UserItemRepository uiRepository;
@@ -36,7 +33,7 @@ public class ItemRepository {
 	 */
 	public ItemRepository() {			
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(ModelUtilities.DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -50,7 +47,7 @@ public class ItemRepository {
 	 * @return a list of Item objects in the database
 	 */
 	public List<Item> getAll() {
-		return findItems("findAll");
+		return findItems(ModelUtilities.Item.NAME_FIND_ALL);
 	}
 	
 	/**
@@ -60,7 +57,7 @@ public class ItemRepository {
 	 * @return an Item that has the given name, null if not found
 	 */
 	public List<Item> findByName(String name) {
-		return findItems("findByName", name);
+		return findItems(ModelUtilities.Item.NAME_FINDBY_NAME, "%"+name+"%");
 	}
 
 	/**
@@ -71,7 +68,7 @@ public class ItemRepository {
 	 * @return an Item that has the given name and state, null if not found
 	 */
 	public Item findByNameAndState(String name, String state) {	
-		List<Item> items = findItems("findByNameAndState",name,state);	
+		List<Item> items = findItems(ModelUtilities.Item.NAME_FINDBY_NAME_STATE,name,state);	
 		if (items.isEmpty())
 			return null;
 		return items.get(0); 
@@ -86,10 +83,10 @@ public class ItemRepository {
 	 * @return a List of Item objects returned by the query
 	 */
 	private List<Item> findItems(String queryName, String ... columns) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
-		TypedQuery<Item> query = entityManager.createNamedQuery("Item."+queryName, Item.class);
+		TypedQuery<Item> query = entityManager.createNamedQuery(queryName, Item.class);
 		for (int i = 1; i <= columns.length; i++) {
 			query.setParameter(i, columns[i-1]);
 		}
@@ -107,7 +104,7 @@ public class ItemRepository {
 	 * @return an Item that has the given id, null if not found
 	 */
 	public Item findById(int id) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		Item item = entityManager.find(Item.class, id);
@@ -131,7 +128,7 @@ public class ItemRepository {
 		if (findByNameAndState(item.getName(),item.getCondition()) != null) {
 			throw new ItemAlreadyExistsException(item.getName(),item.getCondition());
 		} else {		
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
@@ -161,7 +158,7 @@ public class ItemRepository {
 		if (findById(itemId) == null) {
 			return false;
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
@@ -186,7 +183,7 @@ public class ItemRepository {
 	 * @throws ItemAlreadyExistsException If there already exists the same Item in the database
 	 */
 	public Item update(Item item) throws ItemAlreadyExistsException {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		

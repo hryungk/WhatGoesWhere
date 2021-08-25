@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.hyunryungkim.whatgoeswhere.exceptions.CredentialAlreadyExistsException;
 import com.hyunryungkim.whatgoeswhere.exceptions.CredentialNotFoundException;
 import com.hyunryungkim.whatgoeswhere.models.Credential;
+import com.hyunryungkim.whatgoeswhere.models.ModelUtilities;
 
 /**
  * A DAO Repository class for Credential model
@@ -21,18 +22,13 @@ import com.hyunryungkim.whatgoeswhere.models.Credential;
  * 
  */
 @Repository
-public class CredentialRepository {
-	/**
-	 * A string of persistence-unit name for JPA to inject into entity manager factory
-	 */
-	private static final String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	
+public class CredentialRepository {	
 	/**
 	 * Class constructor registering a database driver
 	 */
 	public CredentialRepository() {		
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(ModelUtilities.DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +39,7 @@ public class CredentialRepository {
 	 * @return a list of Credential objects in the database
 	 */
 	public List<Credential> getAll() {
-		return findCredentials("Credential.findAll");
+		return findCredentials(ModelUtilities.Credential.NAME_FIND_ALL);
 	}
 	
 	/**
@@ -53,7 +49,7 @@ public class CredentialRepository {
 	 * @return a Credential that has the given username, null if not found
 	 */
 	public Credential findByUsername(String username) {	
-		List<Credential> credentials = findCredentials("Credential.findByUsername",username);	
+		List<Credential> credentials = findCredentials(ModelUtilities.Credential.NAME_FINDBY_USERNAME,username);	
 		if (credentials.isEmpty())
 			return null;
 		return credentials.get(0);	
@@ -68,7 +64,7 @@ public class CredentialRepository {
 	 * @throws CredentialNotFoundException If a valid Credential is not found
 	 */
 	public Credential findByUsernameAndPassword(String username, String password) throws CredentialNotFoundException {	
-		List<Credential> credentials = findCredentials("Credential.findByUsernameAndPassword",username, password);	
+		List<Credential> credentials = findCredentials(ModelUtilities.Credential.NAME_FINDBY_USERNAME_PASSWORD,username, password);	
 		if (credentials.isEmpty()) {
 			Credential credentialByUsername = findByUsername(username);
 			String message = "";
@@ -91,7 +87,7 @@ public class CredentialRepository {
 	 * @return a List of Credential objects returned by the query
 	 */
 	private List<Credential> findCredentials(String queryName, String ... columns) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		TypedQuery<Credential> query = entityManager.createNamedQuery(queryName, Credential.class);
@@ -112,7 +108,7 @@ public class CredentialRepository {
 	 * @return a Credential that has the given id, null if not found
 	 */
 	public Credential findById(int id) {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		
 		Credential user = entityManager.find(Credential.class, id);
@@ -134,7 +130,7 @@ public class CredentialRepository {
 		if (findByUsername(credential.getUsername()) != null) { // If the username already exist in the system, throw exception.
 			throw new CredentialAlreadyExistsException(credential.getUsername());
 		} else {	
-			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+			EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 			EntityManager entityManager = emfactory.createEntityManager();
 			entityManager.getTransaction().begin();
 			
@@ -161,7 +157,7 @@ public class CredentialRepository {
 		if (findById(credential.getId()) == null) {			
 			throw new CredentialNotFoundException();
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		
@@ -188,7 +184,7 @@ public class CredentialRepository {
 		if (findById(credential.getId()) == null) {
 			throw new CredentialNotFoundException();
 		}
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(PERSIST_UNIT_NAME);
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager entityManager = emfactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		

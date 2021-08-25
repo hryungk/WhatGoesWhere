@@ -38,8 +38,11 @@ public class EmailController {
 	/**
 	 * Logger object for this class
 	 */
-	Logger logger = ServiceUtilities.setupLogger(EmailController.class.getName());
-	String username="";
+	private Logger logger = ControllerUtilities.setupLogger(EmailController.class.getName());
+	/**
+	 * Username for gmail credential
+	 */
+	private String username="";
 	
 	/**
 	 * Class constructor binding email service classes
@@ -77,12 +80,12 @@ public class EmailController {
 	public String showContactPage(Model model) {
 		String email = "";
 		try {
-			email = ServiceUtilities.getUserEmail();
+			email = ControllerUtilities.getUserEmail();
 		} catch (CredentialNotFoundException e) {
 			logger.info("Anonymous user accessing contact page");
 		}
-		model.addAttribute(ServiceUtilities.EMAIL_ATTRIBUTE, email);
-		return "contact";
+		model.addAttribute(ControllerUtilities.EMAIL_ATTRIBUTE, email);
+		return PageName.CONTACT.getValue();
 	}	
 	/**
 	 * Maps post method for the contact page
@@ -102,7 +105,7 @@ public class EmailController {
 		
 		model.addAttribute("title", "Contact Success");
 		model.addAttribute("messageHead","You message has been sent.");
-		model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE,"Thank you for contacting us! We will get back to you shortly.");
+		model.addAttribute(ControllerUtilities.MESSAGE_ATTRIBUTE,"Thank you for contacting us! We will get back to you shortly.");
 		return showContactSuccessPage(model);
 	}
 	
@@ -114,7 +117,7 @@ public class EmailController {
 	 */
 	@GetMapping("/contactSuccess") 
 	public String showContactSuccessPage(Model model) {
-		return "contact_success";
+		return PageName.CONTACT_SUCCESS.getValue();
 	}	
 	
 	/**
@@ -127,11 +130,11 @@ public class EmailController {
 	 * @return the JSP name for the main page if no exception is caught, the login page otherwise
 	 */
 	@PostMapping("/deleteUser")
-	public String deleteUser(@RequestParam(ServiceUtilities.MESSAGE_ATTRIBUTE) String message, Model model, HttpServletRequest request) {
+	public String deleteUser(@RequestParam(ControllerUtilities.MESSAGE_ATTRIBUTE) String message, Model model, HttpServletRequest request) {
 		try {
 			// Send email to admin
-			Credential credential = ServiceUtilities.getCredential();
-			String mailFrom = ServiceUtilities.getUserEmail();
+			Credential credential = ControllerUtilities.getCredential();
+			String mailFrom = ControllerUtilities.getUserEmail();
 			String subject = String.format("User account #%d (%s) was deleted", credential.getId(), credential.getUsername());
 			message = "From: " + mailFrom + "\n" + message;
 			logger.log(Level.INFO,"Sender?= {0}, Subject?= {1}, Message?= {2}\n", new String[] {mailFrom, subject, message});			
@@ -140,14 +143,14 @@ public class EmailController {
 			
 			model.addAttribute("title", "Deletion Success");
 			model.addAttribute("messageHead","You have successfully deleted your account.");
-			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE,"We also received your note. We hope to see you again!");
+			model.addAttribute(ControllerUtilities.MESSAGE_ATTRIBUTE,"We also received your note. We hope to see you again!");
 			
-			ServiceUtilities.credentialService.delete(credential);	
-			ServiceUtilities.logoutWithHttpServletRequest(request);
+			ControllerUtilities.credentialService.delete(credential);	
+			ControllerUtilities.logoutWithHttpServletRequest(request);
 			return showContactSuccessPage(model);
 		} catch (CredentialNotFoundException e) {
-			model.addAttribute(ServiceUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before deleting your account.");
-			return "login";
+			model.addAttribute(ControllerUtilities.MESSAGE_ATTRIBUTE, e.getMessage()+" before deleting your account.");
+			return PageName.LOGIN.getValue();
 		}
 	}
 	
