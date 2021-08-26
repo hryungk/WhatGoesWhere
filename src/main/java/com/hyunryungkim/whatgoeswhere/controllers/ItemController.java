@@ -70,7 +70,7 @@ public class ItemController {
 	 */
 	@GetMapping("/list")
 	public String showListPage(Model model) {
-		List<Item> items = itemService.getAll();
+		List<Item> items = itemService.findAll();
 		model.addAttribute(ControllerUtilities.ITEMS_ATTRIBUTE, items);
 		model.addAttribute("role",ControllerUtilities.getRole());
 		

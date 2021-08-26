@@ -31,7 +31,7 @@
 	        			<th>Username</th>
 	        			<th>Email</th>
 	        			<th>First Name</th>
-	        			<th>Last name</th>
+	        			<th>Last Name</th>
 	        			<th>User Role</th>
 	        			<th>Joined On</th>
 	        		</tr>

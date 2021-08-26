@@ -22,6 +22,9 @@ import com.hyunryungkim.whatgoeswhere.models.User;
 import com.hyunryungkim.whatgoeswhere.services.CredentialService;
 
 /**
+ * Utility class for Controllers
+ * Includes name of model attributes
+ * Methods to retrieve current user info
  * 
  * @author Hyunryung Kim
  *

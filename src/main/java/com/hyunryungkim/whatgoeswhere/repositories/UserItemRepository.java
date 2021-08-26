@@ -38,7 +38,7 @@ public class UserItemRepository {
 	 * 
 	 * @return a list of UserItem objects in the database
 	 */
-	public List<UserItem> getAll() {
+	public List<UserItem> findAll() {
 		return findUserItems(ModelUtilities.UserItem.NAME_FIND_ALL);
 	}
 	

@@ -38,7 +38,7 @@ public class CredentialRepository {
 	 * 
 	 * @return a list of Credential objects in the database
 	 */
-	public List<Credential> getAll() {
+	public List<Credential> findAll() {
 		return findCredentials(ModelUtilities.Credential.NAME_FIND_ALL);
 	}
 	

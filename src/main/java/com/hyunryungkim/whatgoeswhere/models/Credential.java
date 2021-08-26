@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -48,12 +49,13 @@ public class Credential {
 	/**
 	 * A string containing the user's role (ROLE_UESR or ROLE_ADMIN)
 	 */
-	@Column(name="userRole", length=10)
+	@Column(name="user_role", length=10, nullable=false)
 	private String userRole;
 	/**
 	 * User associated with this credential
 	 */
 	@OneToOne(cascade=CascadeType.ALL, orphanRemoval=false)
+	@JoinColumn(name="User_id", nullable=false)
 	private User user;
 	
 	/**

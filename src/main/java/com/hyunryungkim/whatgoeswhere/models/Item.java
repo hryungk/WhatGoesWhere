@@ -26,7 +26,6 @@ import javax.validation.constraints.NotEmpty;
 @NamedQuery(name=ModelUtilities.Item.NAME_FINDBY_NAME, query=ModelUtilities.Item.QUERY_FINDBY_NAME)
 @NamedQuery(name=ModelUtilities.Item.NAME_FINDBY_NAME_STATE, query=ModelUtilities.Item.QUERY_FINDBY_NAME_STATE)
 public class Item {
-	static final String FINDALL = "Item.findAll";
 	/**
 	 * An integer representing the item id, auto-generated
 	 */

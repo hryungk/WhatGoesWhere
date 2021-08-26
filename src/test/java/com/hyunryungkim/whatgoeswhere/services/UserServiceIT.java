@@ -71,7 +71,7 @@ class UserServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	    existingUserNum = userService.getAll().size();
+	    existingUserNum = userService.findAll().size();
 		LocalDateTime now_ldt = LocalDateTime.now();
 		item1 = new Item("testItemName1", "testCondition1", BestOption.RECYCLING, "testSpecialInstrution1", "", now_ldt);
 		item2 = new Item("testItemName2", "testCondition2", BestOption.DROPOFF, "testSpecialInstrution2", "testNote2", now_ldt);
@@ -101,7 +101,7 @@ class UserServiceIT {
 	@Test
 //	@Disabled
 	void testGetAllUsers() {
-		List<User> actual = userService.getAll();
+		List<User> actual = userService.findAll();
 		actual.forEach(System.out::println);
 		assertNotNull(actual);
 		assertEquals(4 + existingUserNum, actual.size());

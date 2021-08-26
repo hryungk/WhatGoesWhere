@@ -46,7 +46,7 @@ public class ItemRepository {
 	 * 
 	 * @return a list of Item objects in the database
 	 */
-	public List<Item> getAll() {
+	public List<Item> findAll() {
 		return findItems(ModelUtilities.Item.NAME_FIND_ALL);
 	}
 	
@@ -150,12 +150,12 @@ public class ItemRepository {
 	 * Removes an Item with the given itemId and returns a boolean of the result
 	 * Delete method of CRUD
 	 * 
-	 * @param itemId an integer of the Item's id to be removed from the database
+	 * @param id an integer of the Item's id to be removed from the database
 	 * @return true if the removal was successful, false otherwise
 	 */
-	public boolean delete(int itemId) {
+	public boolean delete(int id) {
 		// if the item doesn't exist in the database, deletion fails.
-		if (findById(itemId) == null) {
+		if (findById(id) == null) {
 			return false;
 		}
 		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
@@ -163,9 +163,9 @@ public class ItemRepository {
 		entityManager.getTransaction().begin();
 		
 		// Delete the join table entities first
-		uiRepository.deleteByItemId(itemId);
+		uiRepository.deleteByItemId(id);
 		
-		Item itemToDelete = entityManager.find(Item.class, itemId);
+		Item itemToDelete = entityManager.find(Item.class, id);
 		entityManager.remove(itemToDelete);
 		
 		entityManager.getTransaction().commit();

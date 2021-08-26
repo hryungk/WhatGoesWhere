@@ -45,7 +45,7 @@ public class UserRepository {
 	 *  
 	 * @return a list of User objects in the database
 	 */
-	public List<User> getAll() {
+	public List<User> findAll() {
 		return findUsers(ModelUtilities.User.NAME_FIND_ALL);
 	}
 	

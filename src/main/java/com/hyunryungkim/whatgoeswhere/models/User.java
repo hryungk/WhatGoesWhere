@@ -44,17 +44,17 @@ public class User {
 	/**
 	 * A string containing this user's first  name 
 	 */
-	@Column(name="fname", length=50)
+	@Column(name="first_name", length=50, nullable=false)
 	private String firstName; // User's first name
 	/**
 	 * A string containing this user's last name 
 	 */
-	@Column(name="lname", length=50)
+	@Column(name="last_name", length=50, nullable=false)
 	private String lastName; // User's last name
 	/**
 	 * A date containing this user's date of joining the service 
 	 */
-	@Column(name="joinedDate", nullable=false)
+	@Column(name="joined_date", nullable=false)
 	private LocalDate joinedDate; // The date the joining	
 	/**
 	 * A collection of Items this user had added to the system 
@@ -63,9 +63,9 @@ public class User {
 	@JoinTable(
 			name = "User_Item",
 			joinColumns = 
-				{ @JoinColumn(name = "user_id", referencedColumnName = "id")}, 
+				{ @JoinColumn(name = "User_id", referencedColumnName = "id")}, 
 			inverseJoinColumns = 
-				{ @JoinColumn(name = "item_id", referencedColumnName = "id")})
+				{ @JoinColumn(name = "Item_id", referencedColumnName = "id")})
 	private List<Item> items; // A list of items the user has added to the system
 	
 	/**

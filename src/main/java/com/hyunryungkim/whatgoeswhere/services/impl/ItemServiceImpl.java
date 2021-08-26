@@ -34,8 +34,8 @@ public class ItemServiceImpl implements ItemService {
 	}
 	
 	@Override
-	public List<Item> getAll() {
-		return itemRepository.getAll();
+	public List<Item> findAll() {
+		return itemRepository.findAll();
 	}
 	
 	@Override
@@ -59,8 +59,8 @@ public class ItemServiceImpl implements ItemService {
 	}
 	
 	@Override
-	public boolean delete(int itemId) {
-		return itemRepository.delete(itemId);
+	public boolean delete(int id) {
+		return itemRepository.delete(id);
 	}
 	
 	@Override

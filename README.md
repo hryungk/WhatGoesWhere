@@ -21,40 +21,52 @@ A Java web application built using Spring MVC framework
 - Mockito v3.2.4
 - JUnit v1.6.2
 - Jupiter v5.7.2
-
-## Model (`@Entity`)
-- `Credential`: username, password
-- `User`: email, first name, last name, items, joined date
-- `Item`: name, condition, best option, special instruction, notes, added date
-- `UserItem` (Join Table): User to Item is mapped with @OneToMany relationship
-
-## View (`@Service`)
-Implemented via `@Autowired` repositories (`@Repository`)
-- `CredentialService`
-- `UserService`
-- `ItemService`
-- `UserItemService` (Join Table)
-
-## Controller (`@Controller`)
-- `HomeController`
-    - Handles exceptions caused by services.
+- Selenium v3.4.0
+- JavaMail v1.6.2
 
 ## JPA
 - `persistence.xml` includes model classes, JDBC connection information, and Eclipse Link configurations
 - Custom queries: 
-    - `CredentialRepsotiroy`
+    - `CredentialRepository`
+       - `findAll`
        - `findByUsername`
        - `findByUsernameAndPassword`
     - `ItemRepository`
+       - `findAll`
        - `findByName`
        - `findByNameAndState`
     - `UserRepository`
+       - `findAll`
        - `findByEmail`
     - `UserItemRepository`
-       - `findByUserId`
+       - `findAll` 
        - `findByItemId`
-       - `deleteByUserId`
+       - `findByUserId`
        - `deleteByItemId`
+       - `deleteByUserId`
+
+## Model (`@Entity`)
+- `Credential`: username, password, user role. `@OneToOne` to `User`
+- `User`: email, first name, last name, items, joined date
+- `Item`: name, condition, best option, special instruction, notes, added date
+- `UserItem` (Join Table): `User` to `Item` is mapped with `@OneToMany` relationship
+![Entity Relationship Diagram for models](./resources/WhatGoesWhere_ERD_Models.png)
+
+## View (`@Service`)
+Implemented via `@Autowired` repositories (`@Repository`)
+- `CredentialServiceImpl`
+- `UserServiceImpl`
+- `ItemServiceImpl`
+- `UserItemServiceImpl` (Join Table)
+- `EmailServiceImpl` (For JavaMail)
+- `UserDetailsServiceImpl` (For Spring Security)
+
+## Controller (`@Controller`)
+- `HomeController`: Handles mappings for public access page
+- `CredentialController`: Handles mappings related to CredentialService
+- `EmailController`: Handles mappings related to EmailService
+- `ItemController`: Handles mappings related to ItemService
+- `UserController`: Handles mappings related to UserService
 
 ## Custom Exceptions
 - `CredentialAlreadyExistsException`: thrown at `Credential`'s `add()` method
@@ -63,24 +75,26 @@ Implemented via `@Autowired` repositories (`@Repository`)
 
 ## JUnit Testing
 Tests all methods in each Service class.
-- `Credential`
-    - Integrated Test for `CredentialService` class
+- For `CredentialService`
+    - `CredentialServiceIT`: Integrated Test 
        - `CredentialAlreadyExistsException` is tested with `add()` method
        - `CredentialNotFoundException` is tested with `findByUsernameAndPassword()` method
-- `User`
-    - Integrated Test for `UserService` class
-    - `Mockito` Test for `UserService` class
-- `UserItem`
-    - Integrated Test for `UserItemService` class
-- `Item` 
-    - Parameterized Test for `Item` class
-    - `Mockito` Test for `ItemService` class
-    - Test Suite for the two above
-    - Integrated Test for `ItemService` class
+- For `UserService`
+    - `UserServiceIT`: Integrated Test 
+    - `UserServiceMockitoTest`:  Mockito Test 
+- For `UserItemService`
+    - `UserItemServiceIT`: Integrated Test
+- For `ItemService` 
+    - `ItemParameterizedTest`: Parameterized Test 
+    - `ItemServiceMockitoTest`: Mockito Test
+    - `ItemServiceTestSuite`: Test Suite for `ItemParameterizedTest` and `ItemServiceMockitoTest`
+    - `ItemServiceIT`: Integrated Test 
        - `ItemAlreadyExistsException` is tested for `add()` method 
-
+- Selenium
+    - Tested login, profile view, and admin login.
+    
 ## Views (Front-end)
-- JSP (12 pages): index, find, about, list, login, register, profile, delete_user, add_item, edit_item, contact, and admin
+- JSP (16 pages): about, access_denied, add_item, admin, contact_success, contact, delete_user, edit_item, error, index, list, login, logout_success, profile, register, update_password
 - CSS
     - custom external file: `stylesheet.css`
     - Bootstrap
@@ -95,15 +109,15 @@ Tests all methods in each Service class.
 ## Spring Security
 - `Credential` class holds username, password, and user's role.
 - `CurrentCredential` class holds Credential in the current session.
-- Anonymous user can access index, find, about, list, login, register, and contact page.
-- `ROLE_USER` can additionally access profile, add_item, edit_item, and delete_user page.
+- Anonymous user can access index, find, about, list, login, register, logout_success, contact, and contact_success page. 
+- `ROLE_USER` can additionally access profile, add_item, edit_item, delete_user, update_password, access_denied, and error page.
 - `ROLE_ADMIN` can additionally access admin page.
 
 ## Utility classes
-- `BestOption` (enum): 4 different disposal options for Users to choose from
-- [ ] Queries
-- [ ] Named queries
-- [ ] HTML pages
+- `BestOption`: an enum class containing 4 different disposal options for Users to choose from
+- `ControllerUtilities`: a utility class containing model attribute names and methods to retrieve current user information
+- `ModelUtilities`: a utility class containing name and queries of Named Queries 
+- `PageName`: an enum class containing HTML page names
 - [ ] URL patterns
 
 ## User Stories
@@ -121,8 +135,8 @@ Tests all methods in each Service class.
 - As a user, I want to go back from update item page to the profile page so that I can change my mind if I want to.
 - As a user, I want to delete items that I have added to the website so that I can remove unrelated information. (D)
 - As a user, I want to delete my account so that I stop using the service. (D)
-- [ ] As a user, I want to change my password (U)
+- As a user, I want to change my password (U)
+- As a user, I want to contact the support team so that I can share my opinions and make suggestions to the website. (Email functionality)
+- As an admin, I want to see all the users. (R)
 - [ ] As a user, I want to see the entire list sorted in alphabetical order with navigation for each letter so that I can look for items faster and I don’t have to scroll up and down the web page too much. (Bootstrap)
-- [ ] As a user, I want to contact the support team so that I can share my opinions and make suggestions to the website. (Email functionality)
 - [ ] As a user, I want to expect the same user interface experience regardless of which devices I’m using. (CSS)
-- [ ] As an admin, I want to see all the users. (R)

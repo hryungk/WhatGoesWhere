@@ -42,8 +42,8 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 	
 	@Override
-	public List<Credential> getAll() {
-		return credentialRepository.getAll();
+	public List<Credential> findAll() {
+		return credentialRepository.findAll();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class CredentialServiceImpl implements CredentialService {
 	}
 	
 	@Override
-	public boolean checkIfValidOldPassword(String oldPassword, String newPassword) {
-		return passwordEncoder.matches(oldPassword, newPassword);
+	public boolean checkIfValidOldPassword(String rawPassword, String encryptedPassword) {
+		return passwordEncoder.matches(rawPassword, encryptedPassword);
 	}
 }

@@ -20,8 +20,8 @@
 	<jsp:include page="header.jsp" />
 
 	<section id="container"> 
-        <h1>Contact Error</h1>
-        <h2>Sorry, the message was not sent because of the following error:</h2>
+        <h1>Error</h1>
+        <h2>Sorry, your request was not sent because of the following error:</h2>
         <p>${exception.message}</p>
         <a href="./">Go to main page</a>
     </section>	

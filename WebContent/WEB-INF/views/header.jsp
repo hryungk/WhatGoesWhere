@@ -39,8 +39,42 @@
 					</div>
 				</li>
 			</ul>
-		</nav>
+		</nav> 		
 	</div>
+	<%-- <nav class="navbar navbar-expand-lg navbar-light " style="width: 100%;">
+          <div class="container-fluid">
+            <a class="navbar-brand" id="nav-anchor-logo" href="${pageContext.request.contextPath }/">What Goes Where in Redmond?</a>            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse me-auto" id="navbarSupportedContent">
+              <ul class="navbar-nav mb-2 mb-lg-0" style="margin-left: auto;">
+                <li class="nav-item">
+                  <a class="nav-link active" id="nav-anchor-1" href="${pageContext.request.contextPath }/">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="nav-anchor-2" href="about">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="nav-anchor-3" href="list">List</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" id="nav-anchor-4" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sign In/Register
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="login">Sign In</a></li>
+                    <li><a class="dropdown-item" href="register">Register</a></li>
+                  </ul>
+                </li>
+              </ul>
+               <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            </div>
+          </div>
+        </nav> --%>
 </header>
 
 <script>	    

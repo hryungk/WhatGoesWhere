@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-//import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
@@ -45,14 +45,14 @@ public class WebAppConfig implements WebMvcConfigurer{
 //		return new InternalResourceViewResolver("/WEB-INF/views/",".jsp");
 	}
 
-//	@Bean
-//	SimpleMappingExceptionResolver exceptionResolver() {
-//		SimpleMappingExceptionResolver smer = new SimpleMappingExceptionResolver();
-//		Properties props = new Properties();
-//		props.put("java.lang.Exception", "error");
-//		smer.setExceptionMappings(props);
-//		return smer;
-//	}
+	@Bean
+	SimpleMappingExceptionResolver exceptionResolver() {
+		SimpleMappingExceptionResolver smer = new SimpleMappingExceptionResolver();
+		Properties props = new Properties();
+		props.put("java.lang.Exception", "error");
+		smer.setExceptionMappings(props);
+		return smer;
+	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

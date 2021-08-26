@@ -34,7 +34,7 @@ public class UserItemServiceImpl implements UserItemService{
 	
 	@Override
 	public List<UserItem> findAll() {
-		return uiRepository.getAll();
+		return uiRepository.findAll();
 	}
 
 	@Override

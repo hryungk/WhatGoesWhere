@@ -18,7 +18,7 @@ public interface CredentialService {
 	 * 
 	 * @return a list of Credential objects in the database
 	 */
-	public List<Credential> getAll() ;
+	public List<Credential> findAll() ;
 	
 	/**
 	 * Returns a Credential associated with the given Credential's id
@@ -77,11 +77,11 @@ public interface CredentialService {
 	public Credential update(Credential credential) throws CredentialNotFoundException;
 	
 	/**
-	 * Returns whether password1 and password2 are matching or not
+	 * Returns whether rawPassword and encryptedPassword are matching or not
 	 * 
-	 * @param password1 a string representing a raw password to encode and match
-	 * @param password2 a string representing the encoded password from storage to compare with
-	 * @return true if password1 and password2 are matching, false otherwise
+	 * @param rawPassword a string representing a raw password to encode and match
+	 * @param encryptedPassword a string representing the encoded password from storage to compare with
+	 * @return true if rawPassword and encryptedPassword are matching, false otherwise
 	 */
-	public boolean checkIfValidOldPassword(String password1, String password2);
+	public boolean checkIfValidOldPassword(String rawPassword, String encryptedPassword);
 }

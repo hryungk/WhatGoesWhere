@@ -16,7 +16,7 @@ public interface UserService {
 	 *  
 	 * @return a list of User objects in the database
 	 */
-	public List<User> getAll();
+	public List<User> findAll();
 	
 	/**
 	 * Returns a User associated with the given User's id

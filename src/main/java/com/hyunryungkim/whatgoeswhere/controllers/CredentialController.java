@@ -35,7 +35,7 @@ public class CredentialController {
 	 */
 	@GetMapping("/admin")
 	public String showAdminPage(Model model) {
-		List<Credential> credentials = credentialService.getAll();
+		List<Credential> credentials = credentialService.findAll();
 		model.addAttribute("credentials", credentials);
 		return PageName.ADMIN.getValue();
 	}

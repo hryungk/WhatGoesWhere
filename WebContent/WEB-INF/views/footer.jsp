@@ -16,7 +16,7 @@
 				<li><a href="${pageContext.request.contextPath }/">Home</a></li>
 				<li><a href="list">Item List</a></li>
 				<li><a href="about">About</a></li>
-				<li><a href="register">Register</a></li>					
+				<li><a href="register" id="sitemap-a-reg">Register</a></li>					
 			</ul>
 		</div>
 		<div class="footer-nav">	
@@ -35,13 +35,17 @@
 	<script>
 	    let footer_ul = document.getElementById('footer-support-ul');
 		<%-- let isanonymous = <%= isAnonymous%>; /* defined in header */--%>
-		if (isanonymous == false) {
-    	/* if (username != 'null') { */
+		if (isanonymous == false) { /* When someone is logged in */
+			/* Add delete account menu on the footer */
     		let li_deleteuser = document.createElement('li');
     		let a_deleteuser = document.createElement('a');
     		a_deleteuser.innerHTML = 'Delete account';
     		a_deleteuser.href = 'deleteUser';
     		li_deleteuser.appendChild(a_deleteuser);
     		footer_ul.appendChild(li_deleteuser);
+    		/* change register to sign out */
+    		let sitemap4 = document.getElementById('sitemap-a-reg');
+    		sitemap4.href='logout';
+    		sitemap4.innerHTML='Sign Out';
     	}
     </script>

@@ -32,13 +32,13 @@ public class UserItem {
 	 * An integer representing the User id
 	 */
 	@Id
-	@Column(name="user_id")
+	@Column(name="User_id")
 	private int userId;
 	/**
 	 * An integer representing the Item id
 	 */
 	@Id
-	@Column(name="item_id")
+	@Column(name="Item_id")
 	private int itemId;
 
 	/**

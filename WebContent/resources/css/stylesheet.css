@@ -37,6 +37,14 @@ ul {
     margin: 0;
     padding: 0;
 }
+/* #nav-anchor-logo, #nav-anchor-1, #nav-anchor-2, #nav-anchor-3, #nav-anchor-4 {
+	color: beige;
+	text-transform: none;
+}
+#nav-anchor-logo:hover , #nav-anchor-1:hover, #nav-anchor-2:hover, #nav-anchor-3:hover, #nav-anchor-4:hover {
+	color: orange;
+} */
+
 header a, footer a {
 	text-decoration: none;
 	color: beige;

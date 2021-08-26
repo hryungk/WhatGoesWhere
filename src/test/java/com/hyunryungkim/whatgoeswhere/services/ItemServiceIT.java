@@ -66,7 +66,7 @@ class ItemServiceIT {
 	@BeforeAll
 	public void setup() throws Exception {
 	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-	    existingItemNum = itemService.getAll().size();
+	    existingItemNum = itemService.findAll().size();
 	    // Add items to the database to use for testing if they don't already exist.
 		LocalDateTime now = LocalDateTime.now();
 		String itemName = "testItemName1";
@@ -90,7 +90,7 @@ class ItemServiceIT {
 	
 	@Test
 	void testGetAllItems() {
-		List<Item> actual = itemService.getAll();
+		List<Item> actual = itemService.findAll();
 //		actual.forEach(System.out::println);
 		assertNotNull(actual);
 		assertEquals(4 + existingItemNum, actual.size());

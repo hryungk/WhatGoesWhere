@@ -38,9 +38,9 @@ class UserServiceMockitoTest {
 		User user1 = new User("pusheen@email.com", "Pusheen","Cat", now, new ArrayList<Item>());
 		User user2 = new User("stormy@email.com", "Stormy","Cat", now, new ArrayList<Item>());
 		User user3 = new User("pip@email.com", "Pip","Cat", now, new ArrayList<Item>());
-		Mockito.when(userRepository.getAll()).thenReturn(List.of(user1, user2, user3));
+		Mockito.when(userRepository.findAll()).thenReturn(List.of(user1, user2, user3));
 		
-		List<User> actualList = userService.getAll();
+		List<User> actualList = userService.findAll();
 		User[] expected = {user1, user2, user3};
 		User[] actual = new User[actualList.size()];
 		actual = actualList.toArray(actual);

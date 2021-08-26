@@ -17,7 +17,7 @@ public interface ItemService {
 	 * 
 	 * @return a list of Item objects in the database
 	 */
-	public List<Item> getAll();	
+	public List<Item> findAll();	
 	
 	/**
 	 * Returns an Item associated with the given name
@@ -59,10 +59,10 @@ public interface ItemService {
 	 * Removes an Item with the given itemId and returns a boolean of the result
 	 * Delete method of CRUD
 	 * 
-	 * @param itemId an integer of the Item's id to be removed from the database
+	 * @param id an integer of the Item's id to be removed from the database
 	 * @return true if the removal was successful, false otherwise
 	 */
-	public boolean delete(int itemId);	
+	public boolean delete(int id);	
 
 	/**
 	 * Updates the given Item and returns the updated Item

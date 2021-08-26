@@ -37,9 +37,9 @@ class ItemServiceMockitoTest {
 		Item item1 = new Item(input1, "", BestOption.COMPOSTING, "No plastic should go in your compost cart.", "", now);
 		Item item2 = new Item(input1, "", BestOption.COMPOSTING, "No glass should go in your compost cart.", "", now);
 		Item item3 = new Item("Aluminum tray", "Clean", BestOption.GARBAGE, "", "", now);
-		Mockito.when(itemRepository.getAll()).thenReturn(List.of(item1, item2, item3));
+		Mockito.when(itemRepository.findAll()).thenReturn(List.of(item1, item2, item3));
 		
-		List<Item> actualList = itemService.getAll();
+		List<Item> actualList = itemService.findAll();
 		Item[] expected = {item1, item2, item3};
 		Item[] actual = new Item[actualList.size()];
 		actual = actualList.toArray(actual);
