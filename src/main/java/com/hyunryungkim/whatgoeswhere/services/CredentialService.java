@@ -79,8 +79,8 @@ public interface CredentialService {
 	/**
 	 * Returns whether password1 and password2 are matching or not
 	 * 
-	 * @param password1 a string representing a password to compare with password2
-	 * @param password2 a string representing a password to compare with password1
+	 * @param password1 a string representing a raw password to encode and match
+	 * @param password2 a string representing the encoded password from storage to compare with
 	 * @return true if password1 and password2 are matching, false otherwise
 	 */
 	public boolean checkIfValidOldPassword(String password1, String password2);

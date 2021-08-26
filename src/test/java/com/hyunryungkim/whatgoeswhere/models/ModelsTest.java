@@ -15,16 +15,11 @@ import javax.persistence.TypedQuery;
 
 import org.junit.jupiter.api.Test;
 
-import com.hyunryungkim.whatgoeswhere.models.BestOption;
-import com.hyunryungkim.whatgoeswhere.models.Item;
-import com.hyunryungkim.whatgoeswhere.models.User;
-import com.hyunryungkim.whatgoeswhere.models.UserItem;
-
 class ModelsTest {
 	
 	@Test
-	void testAddItem() {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+	void testAddItem() {		
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();
 		
@@ -44,7 +39,7 @@ class ModelsTest {
 	
 	@Test
 	void testAddUser() {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();
 		
@@ -62,7 +57,7 @@ class ModelsTest {
 	
 	@Test
 	void testAddUserWithItems() {
-		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("WhatGoesWhere");
+		EntityManagerFactory emfactory = Persistence.createEntityManagerFactory(ModelUtilities.PERSIST_UNIT_NAME);
 		EntityManager manager = emfactory.createEntityManager();
 		manager.getTransaction().begin();
 		
