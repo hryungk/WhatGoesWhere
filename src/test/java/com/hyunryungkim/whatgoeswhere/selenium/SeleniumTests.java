@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+//import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class SeleniumTests {
 	
 	private WebDriver driver;
-	private String path = "http://localhost:8080/" + ModelUtilities.PERSIST_UNIT_NAME + "/";
+	private String path = "http://localhost:8080/" + ModelUtilities.ROOT_DIRECTORY + "/";
 	User user1, user2;
 	String password1, password2;
 	Credential credential1, credential2;
@@ -74,6 +74,9 @@ class SeleniumTests {
 	void testLoginPage() {
 		driver.get(path + PageName.LOGIN.getValue());
 		assertEquals("Sign In", driver.getTitle());
+		
+		// Sign out
+		driver.get(path + PageName.LOGOUT.getValue());	
 	}
 	
 	@Test	
@@ -92,6 +95,9 @@ class SeleniumTests {
 		submitInput.click();
 		
 		assertEquals("What Goes Where in Redmond", driver.getTitle());
+		
+		// Sign out
+		driver.get(path + PageName.LOGOUT.getValue());		
 	}
 	
 	@Test	
@@ -114,6 +120,9 @@ class SeleniumTests {
 		
 		driver.get(path + PageName.ADMIN.getValue());		
 		assertEquals("Access Denied", driver.getTitle());
+
+		// Sign out
+		driver.get(path + PageName.LOGOUT.getValue());	
 	}
 	
 	@Test	
@@ -134,6 +143,9 @@ class SeleniumTests {
 		WebElement adminMenu= driver.findElement(By.cssSelector("#ddi-4"));
 		adminMenu.click();		
 		assertEquals("Admin Page", driver.getTitle());	
+
+		// Sign out
+		driver.get(path + PageName.LOGOUT.getValue());	
 	}
 	
 	@AfterAll
