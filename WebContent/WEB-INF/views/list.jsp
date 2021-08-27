@@ -19,6 +19,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	
+	<!--  Data table -->	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.11.0/datatables.min.css"/> 
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.11.0/datatables.min.js"></script>
+	
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 	<title>Item List</title>
 </head>
@@ -28,12 +32,10 @@
 
     <section> 
         <h1>Item List</h1>
-        <div style="height: 4em; position: relative; margin: 1em 0">
-        	<a href="addItem" class="a-btn reg-btn a-reg-btn add-btn" id="a-btn">Add a new Item</a>
-        </div>
         <c:set var="role" scope="page" value="${role }"/>
         <div>
-	        <table class="table table-striped table-hover">
+        	<a href="addItem" class="add-btn a-reg-btn" id="a-btn">Add a new Item</a>
+	        <table class="table table-striped table-hover" id="list-table">
 	        	<thead>
 	        		<tr id="thead-tr">
 	        			<c:if test = "${role == '[ROLE_ADMIN]' }">
@@ -79,7 +81,14 @@
 	        </table>   
         </div>     
     </section>    
-    
+    <script>
+	    $(document).ready(function() {
+	        $('#list-table').DataTable({
+	        pageLength : 5,
+	        lengthMenu: [5, 10, 20, -1]
+	      });
+	    } );
+    </script>
      <!-- Footer -->
 	<jsp:include page="footer.jsp" />
 	

@@ -14,12 +14,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	
-	<!--  Data table -->
-	<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.0/css/dataTables.bootstrap4.min.css">
-	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-	<script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap4.min.js"></script> -->
+	<!--  Data table -->	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.11.0/datatables.min.css"/> 
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.11.0/datatables.min.js"></script>	
 	
 	<!-- Bootstrap CSS 5 
     https://getbootstrap.com/docs/5.0/getting-started/introduction/   -->
@@ -62,15 +59,17 @@
         </div>
     </section>
     
-    <script src="scripts/add_table_head.js" type="text/javascript"></script>
-    <script>
-	    $(document).ready(function() {
-	        $('#find-result-table').DataTable();
-	    } );
-    </script>
-    
 	<!-- Footer -->
 	<jsp:include page="footer.jsp" />
 
+    <script src="scripts/add_table_head.js" type="text/javascript"></script>
+    <script>
+	    $(document).ready(function() {
+	        $('#find-result-table').DataTable({
+	        pageLength : 5,
+	        lengthMenu: [5, 10, 20, -1]
+	      });
+	    } );
+    </script>
 </body>
 </html>

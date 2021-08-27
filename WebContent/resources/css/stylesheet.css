@@ -6,16 +6,26 @@ html, body  {
     height: 100%;
 }
 
+body { /* flex header, section, footer */
+	display: flex;
+	flex-direction: column;
+}
+
 header {
     background-color: rgb(0, 187, 47);
     font-family: 'Lato', sans-serif;
-    font-weight: bold;    
+    font-weight: bold;  
+    flex: none; /* header stays at the top */
 }
 section {	
     background-color: beige;
     text-align: center;
     padding: 20px;
-    padding-bottom: 300px;
+    /* section between header and footer will be filled 
+    and overflow content will create scrolls */
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    flex: auto;
 }
 
 .width-60 {
@@ -37,13 +47,20 @@ ul {
     margin: 0;
     padding: 0;
 }
-/* #nav-anchor-logo, #nav-anchor-1, #nav-anchor-2, #nav-anchor-3, #nav-anchor-4 {
-	color: beige;
+#nav-anchor-logo {
 	text-transform: none;
+	font-size: 18pt;
+	color: beige;
 }
-#nav-anchor-logo:hover , #nav-anchor-1:hover, #nav-anchor-2:hover, #nav-anchor-3:hover, #nav-anchor-4:hover {
-	color: orange;
-} */
+#nav-anchor-1, #nav-anchor-2, #nav-anchor-3, #navbarDropdown {
+	color: beige;
+	font-size: 14pt;
+	padding-left: 1.0rem;
+	padding-right: 1.0rem;
+}
+#nav-anchor-logo:hover , #nav-anchor-1:hover, #nav-anchor-2:hover, #nav-anchor-3:hover, #navbarDropdown:hover {
+	color: orange;	
+}
 
 header a, footer a {
 	text-decoration: none;
@@ -119,7 +136,7 @@ fieldset div {
 	top: 1em;
 }
 
-.reg-btn:hover, .find-btn:hover {
+.reg-btn:hover, .find-btn:hover, .add-btn:hover {
 	background: #be3600;
 	color: white;
 	cursor: pointer;
@@ -139,9 +156,19 @@ fieldset div {
 	text-decoration: none;
 }
 .add-btn {
-	position: absolute;
+	/* position: absolute;
 	left: 0;
-	margin: 0;
+	margin: 0; */
+	font-size: 18px;
+	margin: 0 auto;
+	padding: 0.7rem 1.5rem;
+	
+	background: orange;
+	color: white;
+	border-radius: 7px;
+	border: 0;
+	
+	float: left;
 }
 table {
 	background-color: white;
@@ -190,11 +217,10 @@ table {
     text-align: center;
 }
 
-/* About page */
-
-
 /* Foooter */
 footer {
+	flex: none; /* For staying at the bottom */
+	
 	background: #202020;
 	color: beige;
 	padding: 1em;
