@@ -62,7 +62,7 @@ public interface CredentialService {
 	 * 
 	 * @param credential a Credential to be removed from the database
 	 * @return true if the removal was successful, false otherwise
-	 * @throws CredentialNotFoundException 
+	 * @throws CredentialNotFoundException If a valid Credential is not found
 	 */
 	public boolean delete(Credential credential) throws CredentialNotFoundException;
 	

@@ -38,6 +38,7 @@ public class ItemController {
 	 * Class constructor binding various service classes
 	 * 
 	 * @param itemService a service object for Item model
+	 * @param userService a service object for User model
 	 * @see com.hyunryungkim.whatgoeswhere.services.ItemService
 	 */
 	@Autowired
@@ -137,6 +138,7 @@ public class ItemController {
 	 * - bestOptions: a collection of BestOption enum values for select input  
 	 * 
 	 * @param itemId the id number of the item to be edited
+	 * @param pageName a string containing the previous page name
 	 * @param model a Model object holding model attributes
 	 * @return the JSP name for the editItem page
 	 * @see com.hyunryungkim.whatgoeswhere.models.Item
@@ -155,6 +157,7 @@ public class ItemController {
 	 * Maps post method for the editItem request 
 	 * 
 	 * @param uitem an item with updated data from user input
+	 * @param pageName a string containing the previous page name
 	 * @param model a Model object holding model attributes
 	 * @param errors result holder for DataBinder, capable of error registration
 	 * @return the JSP name for the profile page if no exception is caught, the editItem page otherwise
@@ -185,6 +188,7 @@ public class ItemController {
 	 * Maps post method for the deleteItem request
 	 * 
 	 * @param id the id number of the item to be deleted
+	 * @param pageName a string containing the previous page name
 	 * @param model a Model object holding model attributes
 	 * @return the JSP name for the profile page
 	 */

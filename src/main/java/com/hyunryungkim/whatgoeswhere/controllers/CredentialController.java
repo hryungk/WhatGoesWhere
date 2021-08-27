@@ -31,6 +31,7 @@ public class CredentialController {
 	/**
 	 * Maps get method for the admin page
 	 * 
+	 * @param model a Model object holding model attributes
 	 * @return the JSP name for the admin page
 	 */
 	@GetMapping("/admin")
@@ -44,7 +45,7 @@ public class CredentialController {
 	 * Maps post method for the deleteUser request
 	 * This page is not accessible without a valid credential so the exception is not expected to be thrown. 
 	 * 
-	 * @param message a string of message from the user input
+	 * @param userId an integer containing user's id to delete
 	 * @param model a Model object holding model attributes
 	 * @param request a HttpServletRequest object to automatically log the user out after deleting its account
 	 * @return the JSP name for the main page if no exception is caught, the login page otherwise

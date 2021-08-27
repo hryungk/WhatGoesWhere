@@ -3,7 +3,6 @@ package com.hyunryungkim.whatgoeswhere.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hyunryungkim.whatgoeswhere.models.User;
 
@@ -80,7 +79,7 @@ public class HomeController {
 	 * @return the JSP name for the register page
 	 */
 	@GetMapping("/register")
-	public String showRegisterPage(Model model, RedirectAttributes ra) {
+	public String showRegisterPage(Model model) {
 		User user = (User) model.asMap().get(ControllerUtilities.USER_ATTRIBUTE);
 		String userName = (String) model.asMap().get(ControllerUtilities.USERNAME_ATTRIBUTE);
 		String invalidEmailMessage = (String) model.asMap().get(ControllerUtilities.EMAIL_MESSAGE_ATTRIBUTE);

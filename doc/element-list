@@ -4,5 +4,6 @@ com.hyunryungkim.whatgoeswhere.exceptions
 com.hyunryungkim.whatgoeswhere.models
 com.hyunryungkim.whatgoeswhere.repositories
 com.hyunryungkim.whatgoeswhere.security
+com.hyunryungkim.whatgoeswhere.selenium
 com.hyunryungkim.whatgoeswhere.services
 com.hyunryungkim.whatgoeswhere.services.impl
