@@ -100,7 +100,7 @@ class UserServiceIT {
 	
 	@Test
 //	@Disabled
-	void testGetAllUsers() {
+	void testFindAllUsers() {
 		List<User> actual = userService.findAll();
 		actual.forEach(System.out::println);
 		assertNotNull(actual);
@@ -167,7 +167,6 @@ class UserServiceIT {
 	@Test
 //	@Disabled
 	void testUpdateUser() {		
-		System.out.println("\n\nStarting testUpdateUser()\n\n");
 		String newFirstName = "NewFirstName";
 		user2.setFirstName(newFirstName);
 		userService.update(user2);

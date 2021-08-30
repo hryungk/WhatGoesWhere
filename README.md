@@ -11,6 +11,7 @@ Below is the description of the project.
 ## Technical Specifications
 A Java web application built using Spring MVC framework
 - Java 11
+- Apache Maven
 - Web server: Tomcat v9.0
 - Framework: Spring MVC v5.3.8
 - Session management: Spring Security v5.5.1
@@ -28,20 +29,12 @@ A Java web application built using Spring MVC framework
 - `persistence.xml` includes model classes, JDBC connection information, and Eclipse Link configurations
 - Custom queries: 
     - `CredentialRepository`
-       - `findAll`
        - `findByUsername`
-       - `findByUsernameAndPassword`
     - `ItemRepository`
-       - `findAll`
        - `findByName`
-       - `findByNameAndState`
     - `UserRepository`
-       - `findAll`
        - `findByEmail`
     - `UserItemRepository`
-       - `findAll` 
-       - `findByItemId`
-       - `findByUserId`
        - `deleteByItemId`
        - `deleteByUserId`
 

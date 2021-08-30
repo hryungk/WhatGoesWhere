@@ -89,7 +89,7 @@ class ItemServiceIT {
 	}
 	
 	@Test
-	void testGetAllItems() {
+	void testFindAllItems() {
 		List<Item> actual = itemService.findAll();
 //		actual.forEach(System.out::println);
 		assertNotNull(actual);
@@ -121,7 +121,7 @@ class ItemServiceIT {
 	
 	@ParameterizedTest
 	@MethodSource("provideItemsToTestAddItem")
-	void testAdd(Item item, boolean expected) throws ItemAlreadyExistsException  {
+	void testAddWithException(Item item, boolean expected) throws ItemAlreadyExistsException  {
 		if(!expected) {
 	    	assertThrows(ItemAlreadyExistsException.class, () -> {
 				itemService.add(item, 0);

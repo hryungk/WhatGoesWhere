@@ -112,7 +112,7 @@ class CredentialServiceIT {
 	}
 	
 	@Test
-	void testGetAllCredentials() {
+	void testfindAllCredentials() {
 		List<Credential> credentials = credentialService.findAll();
 		assertNotNull(credentials);
 		assertEquals(3 + existingCredentialNum, credentials.size());
@@ -153,7 +153,7 @@ class CredentialServiceIT {
 	
 	@ParameterizedTest
 	@MethodSource("provideCredentialsForTestAdd")
-	void testAdd(Credential credential, boolean expected) throws CredentialAlreadyExistsException {
+	void testAddWithException(Credential credential, boolean expected) throws CredentialAlreadyExistsException {
 		if(!expected) {
 	    	assertThrows(CredentialAlreadyExistsException.class, () -> {
 				credentialService.add(credential);
