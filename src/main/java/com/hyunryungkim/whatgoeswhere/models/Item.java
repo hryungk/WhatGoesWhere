@@ -48,7 +48,7 @@ public class Item {
 	 * An enum containing this item's best disposing option
 	 */
 	@Column(length=50, nullable=false)
-	@NotEmpty(message="Best Option is required.")
+//	@NotEmpty(message="Best Option is required.")
 	private BestOption bestOption;
 	/**
 	 * A string containing special instructions for disposing the item

@@ -50,7 +50,7 @@ public class ControllerUtilities {
 	/**
 	 * Attribute name for a username string
 	 */
-	static final String USERNAME_ATTRIBUTE = "username";
+	static final String CREDENTIAL_ATTRIBUTE = "credential";
 	/**
 	 * Attribute name for the client's email address
 	 */

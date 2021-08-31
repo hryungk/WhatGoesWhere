@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- JSTL includes -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,17 +25,19 @@
     <section> 
         <h1>Register</h1>
         <div>
-           <form action="./registerNewUser" method="post"> <!-- name="myForm" onsubmit="return(validate())"> -->
+           <form:form action="./registerNewUser" method="post" modelAttribute="credential"> <!-- name="myForm" onsubmit="return(validate())"> -->
                 <fieldset>
                     <legend>Please fill out the form below:</legend>
                     <h6>(all fields are required)</h6>
                     <h6 style="color: red;" ><c:out value="${usernameMessage }" /></h6>
                     <h6 style="color: red;"><c:out value="${emailMessage }" /></h6>
                     <div class="r-input">                    	
-						<input type="text" name="userName" placeholder="Username" required="required" value="${username }" id="username" autofocus />
+						<form:input type="text" path="username" placeholder="Username" required="required" id="username" autofocus="autofocus" />
+						<form:errors path="username" class="form-error" />
 					</div>
 					<div class="r-input">				
-						<input type="password" id="password" name="password" placeholder="Password" required="required" />
+						<form:input type="password" id="password" path="password" placeholder="Password" required="required"/>
+						<form:errors path="password" class="form-error" />
 					</div>
 					<div class="r-input" id="div-passConfirm">				
 						<input type="password" id="passConfirm" name="passwordConfirm" placeholder="Confirm Password" required="required" />
@@ -52,7 +55,7 @@
                 </fieldset>
                 <input class="reg-btn" type="submit" value="Register">
                  <a class="reg-btn a-reg-btn" id="a-btn">Go Back</a>
-            </form>
+            </form:form>
         </div>
     </section>
     

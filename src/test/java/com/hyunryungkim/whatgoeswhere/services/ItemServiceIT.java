@@ -93,7 +93,7 @@ class ItemServiceIT {
 		List<Item> actual = itemService.findAll();
 //		actual.forEach(System.out::println);
 		assertNotNull(actual);
-		assertEquals(4 + existingItemNum, actual.size());
+		assertEquals(3 + existingItemNum, actual.size());
 	}
 	
 	@Test

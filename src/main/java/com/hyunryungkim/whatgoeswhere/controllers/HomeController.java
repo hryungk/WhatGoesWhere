@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.hyunryungkim.whatgoeswhere.models.Credential;
 import com.hyunryungkim.whatgoeswhere.models.User;
 
 /**
@@ -81,11 +82,11 @@ public class HomeController {
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
 		User user = (User) model.asMap().get(ControllerUtilities.USER_ATTRIBUTE);
-		String userName = (String) model.asMap().get(ControllerUtilities.USERNAME_ATTRIBUTE);
+		Credential credential = (Credential) model.asMap().get(ControllerUtilities.CREDENTIAL_ATTRIBUTE);
 		String invalidEmailMessage = (String) model.asMap().get(ControllerUtilities.EMAIL_MESSAGE_ATTRIBUTE);
 		String usernameMessage = (String) model.asMap().get(ControllerUtilities.USERNAME_MESSAGE_ATTRIBUTE);
 		model.addAttribute(ControllerUtilities.USER_ATTRIBUTE, user);
-		model.addAttribute(ControllerUtilities.USERNAME_ATTRIBUTE, userName);
+		model.addAttribute(ControllerUtilities.CREDENTIAL_ATTRIBUTE, credential);
 		model.addAttribute(ControllerUtilities.EMAIL_MESSAGE_ATTRIBUTE,invalidEmailMessage);
 		model.addAttribute(ControllerUtilities.USERNAME_MESSAGE_ATTRIBUTE,usernameMessage);
 		
@@ -95,6 +96,9 @@ public class HomeController {
 		if (model.getAttribute(ControllerUtilities.USER_ATTRIBUTE) == null) {
 			User newUser = new User();
 			model.addAttribute(ControllerUtilities.USER_ATTRIBUTE, newUser);
+		}
+		if (model.getAttribute("credential") == null) {
+			model.addAttribute("credential", new Credential());
 		}
 		return PageName.REGISTER.getValue();
 	}

@@ -131,5 +131,17 @@ Tests all methods in each Service class.
 - As a user, I want to change my password (U)
 - As a user, I want to contact the support team so that I can share my opinions and make suggestions to the website. (Email functionality)
 - As an admin, I want to see all the users. (R)
-- [ ] As a user, I want to see the entire list sorted in alphabetical order with navigation for each letter so that I can look for items faster and I don’t have to scroll up and down the web page too much. (Bootstrap)
+- As a user, I want to see the entire list sorted in alphabetical order with navigation for each letter so that I can look for items faster and I don’t have to scroll up and down the web page too much. (Bootstrap)
 - [ ] As a user, I want to expect the same user interface experience regardless of which devices I’m using. (CSS)
+
+## Technical Challenges
+- In One-To-Many relationship between User and Item, deleting a User or Item row won't cascade to the join table
+    - Resolution: Manually deleted the join table row first and delete the actual model table row.
+- Forwarding model attribute across methods in different controllers won't work.
+    - Resolution: Added the attributes to RedirectAttribute object's flash attribute and redirect to the desired path.
+- Adding enum object to the database won't resolve to a valid type
+    - Resolution: Created a class for attribute converter that converts between enum object and database column
+- Fixing header and footer to top and bottom of the viewport
+    - Resolution: Made the `<body>` a column flex box, the main container `<section>` auto flex, and `<header>` and `<footer>` no flex.
+- Item table becomes very long with a large number of data
+    - Resolution: Imported DataTables to format the table with pagination, sort, and search function.

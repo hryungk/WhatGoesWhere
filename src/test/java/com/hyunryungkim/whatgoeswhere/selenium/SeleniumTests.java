@@ -42,7 +42,7 @@ class SeleniumTests {
 	private String path = "http://localhost:8080/" + ModelUtilities.ROOT_DIRECTORY + "/";
 	User user1, user2;
 	String password1, password2;
-	Credential credential1, credential2;
+	Credential credentialUser, credentialAdmin;
 	CredentialService credentialService;
 	
 	@Autowired
@@ -61,12 +61,12 @@ class SeleniumTests {
  		// Add credentials to the database to use for testing if they don't already exist.
  		password1 = "testuser11234";
  		password2 = "testuser21234";
-	    credential1 = new Credential("testuser1", password1, user1); 
-	    credential2 = new Credential("testuser2", password2, user2);
-	    credential2.setUserRole("ROLE_ADMIN");
+	    credentialUser = new Credential("testuser1", password1, user1); 
+	    credentialAdmin = new Credential("testuser2", password2, user2);
+	    credentialAdmin.setUserRole("ROLE_ADMIN");
 	    
-	    credential1 = credentialService.add(credential1);
-	    credential2 = credentialService.add(credential2); 
+	    credentialUser = credentialService.add(credentialUser);
+	    credentialAdmin = credentialService.add(credentialAdmin); 
 	}
 	
 	@Test
@@ -74,9 +74,6 @@ class SeleniumTests {
 	void testLoginPage() {
 		driver.get(path + PageName.LOGIN.getValue());
 		assertEquals("Sign In", driver.getTitle());
-		
-		// Sign out
-		driver.get(path + PageName.LOGOUT.getValue());	
 	}
 	
 	@Test	
@@ -84,12 +81,12 @@ class SeleniumTests {
 	void testLogin() throws InterruptedException {
 		driver.get(path + PageName.LOGIN.getValue());
 		WebElement usernameInput = driver.findElement(By.cssSelector("#input-username"));
-		usernameInput.sendKeys(credential1.getUsername());
+		usernameInput.sendKeys(credentialUser.getUsername());
 		
 		WebElement passwordInput = driver.findElement(By.cssSelector("body > section > div > form > fieldset > div:nth-child(4) > input[type=password]"));
 		passwordInput.sendKeys(password1);
 		
-		assertTrue(credentialService.checkIfValidOldPassword(password1, credential1.getPassword()));
+		assertTrue(credentialService.checkIfValidOldPassword(password1, credentialUser.getPassword()));
 		
 		WebElement submitInput = driver.findElement(By.cssSelector("body > section > div > form > input"));
 		submitInput.click();
@@ -105,7 +102,7 @@ class SeleniumTests {
 	void testProfile() throws InterruptedException {
 		driver.get(path + PageName.PROFILE.getValue());
 		WebElement usernameInput = driver.findElement(By.cssSelector("#input-username"));
-		usernameInput.sendKeys(credential1.getUsername());
+		usernameInput.sendKeys(credentialUser.getUsername());
 		
 		WebElement passwordInput = driver.findElement(By.cssSelector("body > section > div > form > fieldset > div:nth-child(4) > input[type=password]"));
 		passwordInput.sendKeys(password1);
@@ -116,7 +113,7 @@ class SeleniumTests {
 		assertEquals("My Profile", driver.getTitle());
 		
 		WebElement username= driver.findElement(By.cssSelector("#table-profile > tbody > tr:nth-child(2) > td"));
-		assertTrue(username.getText().contains(credential1.getUsername()));	
+		assertTrue(username.getText().contains(credentialUser.getUsername()));	
 		
 		driver.get(path + PageName.ADMIN.getValue());		
 		assertEquals("Access Denied", driver.getTitle());
@@ -130,7 +127,7 @@ class SeleniumTests {
 	void testLoginAdmin() throws InterruptedException {
 		driver.get(path+PageName.LOGIN.getValue());
 		WebElement usernameInput = driver.findElement(By.cssSelector("#input-username"));
-		usernameInput.sendKeys(credential2.getUsername());
+		usernameInput.sendKeys(credentialAdmin.getUsername());
 		
 		WebElement passwordInput = driver.findElement(By.cssSelector("body > section > div > form > fieldset > div:nth-child(4) > input[type=password]"));
 		passwordInput.sendKeys(password2);
@@ -151,8 +148,8 @@ class SeleniumTests {
 	@AfterAll
 	void clearSetup() {
 		try {
-			credentialService.delete(credential1);
-			credentialService.delete(credential2);			
+			credentialService.delete(credentialUser);
+			credentialService.delete(credentialAdmin);			
 		} catch (CredentialNotFoundException e) {
 			e.printStackTrace();
 		}				

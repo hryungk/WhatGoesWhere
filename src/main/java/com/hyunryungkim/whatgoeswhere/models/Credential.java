@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -37,14 +36,13 @@ public class Credential {
 	 * A string containing the username
 	 */
 	@Column(name="username", length=25, nullable=false, unique=true)
-	@Size(min=5, max=25, message="Username must be between 5 and 25 characters.")
-	@NotNull
+	@Size(min=4, max=25, message="Username must be between {2} and {1} characters.")
 	private String username;
 	/**
 	 * A string containing the password
 	 */
 	@Column(name="password", length=100, nullable=false)
-	@Size(min=10, max=50, message="Password must be between 10 and 50 characters.")
+	@Size(min=4, max=100, message="Password must be between {2} and {1} characters.")
 	private String password;
 	/**
 	 * A string containing the user's role (ROLE_UESR or ROLE_ADMIN)

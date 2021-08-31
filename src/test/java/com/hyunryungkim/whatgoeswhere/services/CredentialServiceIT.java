@@ -212,30 +212,18 @@ class CredentialServiceIT {
 //	}
 	
 	@Test
-	void testDelete() {
-		try {
-			credentialService.delete(toDelete);
-		} catch (CredentialNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	void testDelete() throws CredentialNotFoundException{
+		credentialService.delete(toDelete);		
 		Credential actual = credentialService.findById(toDelete.getId());
 		assertNull(actual);
 	}
 	
 	@AfterAll
-	void clearSetup() {
-		try {
-			credentialService.delete(credential1);
-			credentialService.delete(credential2);
-			credentialService.delete(toAdd);
-		} catch (CredentialNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
-		for (Item item : items)
-			itemService.delete(item.getId());
+	void clearSetup() throws CredentialNotFoundException{		
+		credentialService.delete(credential1);
+		credentialService.delete(credential2);
+		credentialService.delete(toAdd);
+		items.forEach(i -> itemService.delete(i.getId()));
 	}
 
 }

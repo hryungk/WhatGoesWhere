@@ -6,11 +6,14 @@ import java.util.List;
 
 import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -68,12 +71,17 @@ public class UserController {
 	 * @return the JSP name for the profile page if no exception is caught, the register page otherwise
 	 */
 	@PostMapping("/registerNewUser")
-	public String addUser(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpServletRequest request, RedirectAttributes ra) {
+	public String addUser(@Valid @ModelAttribute("credential") Credential credential, BindingResult errors, @RequestParam("eMail") String email, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model, HttpServletRequest request, RedirectAttributes ra) {
 		User newUser = new User(email, firstName, lastName, LocalDate.now(), new ArrayList<>());
-		Credential credential = new Credential(username, password, newUser);
+		if (errors.hasErrors()) {
+			model.addAttribute(ControllerUtilities.USER_ATTRIBUTE, newUser);
+			return PageName.REGISTER.getValue();		
+		}	
+		String username = credential.getUsername();
+		String password = credential.getPassword();
+		credential.setUser(newUser);
 		try {	
 			credentialService.add(credential);
-//			model.addAttribute("user", newUser);
 			ControllerUtilities.authWithHttpServletRequest(request, username, password); // login automatically
 			return showProfilePage(model);
 		} catch (CredentialAlreadyExistsException e) {
@@ -83,15 +91,16 @@ public class UserController {
 				ra.addFlashAttribute(ControllerUtilities.EMAIL_MESSAGE_ATTRIBUTE, invalidEmailMessage);
 				newUser.setEmail("");
 			}			
-			ra.addFlashAttribute(ControllerUtilities.USER_ATTRIBUTE, newUser);
-			ra.addFlashAttribute(ControllerUtilities.USERNAME_ATTRIBUTE, "");
+			ra.addFlashAttribute(ControllerUtilities.USER_ATTRIBUTE, newUser);		
+			ra.addFlashAttribute(ControllerUtilities.CREDENTIAL_ATTRIBUTE, new Credential());
 			return "redirect:/"+PageName.REGISTER.getValue();
 		} catch (RollbackException e) {
 			String invalidEmailMessage = "The email address " + email + " is already registered. Choose a different one.";
 			ra.addFlashAttribute(ControllerUtilities.EMAIL_MESSAGE_ATTRIBUTE, invalidEmailMessage);
 			newUser.setEmail("");
 			ra.addFlashAttribute(ControllerUtilities.USER_ATTRIBUTE, newUser);
-			ra.addFlashAttribute(ControllerUtilities.USERNAME_ATTRIBUTE, username);
+			credential.setPassword("");
+			ra.addFlashAttribute(ControllerUtilities.CREDENTIAL_ATTRIBUTE, credential);
 			return "redirect:/"+PageName.REGISTER.getValue();
 		}
 	}

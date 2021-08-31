@@ -5,7 +5,8 @@ public interface ModelUtilities {
 	 * A string of persistence-unit name for JPA to inject into entity manager factory
 	 */
 	String PERSIST_UNIT_NAME = "WhatGoesWhere";
-	String ROOT_DIRECTORY = "KimHyunryung_WhatGoesWhere_CaseStudy";
+//	String ROOT_DIRECTORY = "KimHyunryung_WhatGoesWhere_CaseStudy";
+	String ROOT_DIRECTORY = "WhatGoesWhere";
 	String DB_DRIVER = "org.mariadb.jdbc.Driver";
 	
 	public final class Item {
